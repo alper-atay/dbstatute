@@ -2,6 +2,12 @@
 
 namespace DbStatute.Internals
 {
+    internal readonly struct PropertyNamePredicatePair
+    {
+
+    }
+
+
     internal readonly struct PropertyNameValuePredicateTriple
     {
         public PropertyNameValuePredicateTriple(string name, object value, ReadOnlyLogbookPredicate<object> predicate)

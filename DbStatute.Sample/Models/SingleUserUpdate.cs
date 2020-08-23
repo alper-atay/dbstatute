@@ -3,9 +3,9 @@
 namespace DbStatute.Sample.Models
 {
 
-    public class UserUpdate : SingleUpdate<int, User, UserUpdateQuery>
+    public class SingleUserUpdate : SingleUpdate<int, User, UserUpdateQuery>
     {
-        public UserUpdate(UserUpdateQuery updateQuery) : base(updateQuery)
+        public SingleUserUpdate(UserUpdateQuery updateQuery) : base(updateQuery)
         {
         }
 
