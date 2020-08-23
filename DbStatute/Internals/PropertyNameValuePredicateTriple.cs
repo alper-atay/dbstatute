@@ -2,9 +2,9 @@
 
 namespace DbStatute.Internals
 {
-    internal readonly struct PropertyNameValuePredicateTriple<TValue>
+    internal readonly struct PropertyNameValuePredicateTriple
     {
-        public PropertyNameValuePredicateTriple(string name, TValue value, ReadOnlyLogbookPredicate<TValue> predicate)
+        public PropertyNameValuePredicateTriple(string name, object value, ReadOnlyLogbookPredicate<object> predicate)
         {
             Name = name;
             Value = value;
@@ -12,8 +12,8 @@ namespace DbStatute.Internals
         }
 
         public string Name { get; }
-        public ReadOnlyLogbookPredicate<TValue> Predicate { get; }
-        public TValue Value { get; }
+        public ReadOnlyLogbookPredicate<object> Predicate { get; }
+        public object Value { get; }
 
         public override int GetHashCode()
         {

@@ -27,12 +27,12 @@ namespace DbStatute.Sample.Models
 
         // Empty examiners
 
-        private static IReadOnlyLogbook FullNameExaminer(string fullName)
+        private static IReadOnlyLogbook FullNameExaminer(object fullName)
         {
             return Logger.New();
         }
 
-        private static IReadOnlyLogbook NickExaminer(string nick)
+        private static IReadOnlyLogbook NickExaminer(object nick)
         {
             return Logger.New();
         }

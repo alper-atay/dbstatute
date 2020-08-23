@@ -3,69 +3,69 @@ using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying;
 using DbStatute.Internals;
 using RepoDb;
+using RepoDb.Exceptions;
+using RepoDb.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace DbStatute.Querying
 {
+    /// <summary>
+    /// Need to test
+    ///
+    ///
+    /// </summary>
+    /// <typeparam name="TId"></typeparam>
+    /// <typeparam name="TModel"></typeparam>
 
     public abstract class UpdateQuery<TId, TModel> : IUpdateQuery
         where TId : struct, IConvertible
         where TModel : class, IModel<TId>, new()
     {
-        private readonly List<PropertyNameValuePredicateTriple<dynamic>> _fieldMap = new List<PropertyNameValuePredicateTriple<dynamic>>();
-
-        public IEnumerable<Field> UpdateFields => GetUpdateFields();
+        private readonly List<PropertyNameValuePredicateTriple> _fieldMap = new List<PropertyNameValuePredicateTriple>();
 
         public TModel Model { get; } = new TModel();
+        public IEnumerable<Field> UpdateFields => GetUpdateFields();
 
         public bool IsEnableUpdateField<TValue>(Expression<Func<TModel, TValue>> property)
         {
-            return true;
+            string propertyName = property.ToMember()?.GetName();
+            int propertyNameHasCode = propertyName.GetHashCode();
+
+            return _fieldMap.Exists(x => x.Name.GetHashCode() == propertyNameHasCode);
         }
 
-        // TODO
-        // Setting a will update field
-        public void SetUpdateField<TValue>(Expression<Func<TModel, TValue>> property, TValue value, ReadOnlyLogbookPredicate<TValue> predicate)
+        public void SetUpdateField<TValue>(Expression<Func<TModel, TValue>> property, TValue value, ReadOnlyLogbookPredicate<object> predicate)
         {
-            // First mission is lambda to
-            // property lambda to property name -> x.Nick to Nick and check in List
-            //
-            //
-
-            string propertyName = string.Empty;
-            int propertyNameHashCode = propertyName.GetHashCode();
-
-            if (_fieldMap.Exists(x => x.GetHashCode() == propertyNameHashCode))
+            Type valueType = typeof(TValue);
+            if (!valueType.IsDbType())
             {
-                //already exists and will be delete
-
-                _fieldMap.RemoveAll(x => x.GetHashCode() == propertyNameHashCode);
+                throw new InvalidTypeException($"Value ({valueType.FullName}) is not resolvable to DbType");
             }
 
-            // Problem predicate can not castting? How can i fix that.
-            // Predicate uses purpose rules
-            // For example Nick cannot contain letters other than the English alphabet.
-            // Or Special character like space, star, / \ etc.
-            _fieldMap.Add(new PropertyNameValuePredicateTriple<dynamic>(propertyName, value, predicate));
+            string propertyName = property.ToMember()?.GetName();
+            int propertyNameHashCode = propertyName.GetHashCode();
 
-            // We must be have TModel property setting with lambda
-            // Model.Nick = value :(
-            // How can i make?
+            if (_fieldMap.Exists(x => x.Name.GetHashCode() == propertyNameHashCode))
+            {
+                _fieldMap.RemoveAll(x => x.Name.GetHashCode() == propertyNameHashCode);
+            }
 
+            _fieldMap.Add(new PropertyNameValuePredicateTriple(propertyName, value, predicate));
 
-
-            // And then calling GetUpdateFields
+            Type modelType = typeof(TModel);
+            PropertyInfo propertyInfo = modelType.GetProperty(propertyName);
+            propertyInfo.SetValue(Model, value);
         }
 
         public IReadOnlyLogbook Test()
         {
             ILogbook logs = Logger.New();
 
-            // Automatically predicate the value there
-            foreach (PropertyNameValuePredicateTriple<dynamic> triple in _fieldMap)
+            foreach (PropertyNameValuePredicateTriple triple in _fieldMap)
             {
                 logs.AddRange(triple.Predicate.Invoke(triple.Value));
             }
@@ -75,15 +75,14 @@ namespace DbStatute.Querying
 
         public void UnsetUpdateField<TValue>(Expression<Func<TModel, TValue>> property)
         {
+            string propertyName = property.ToMember()?.GetName();
+            int propertyNameHasCode = propertyName.GetHashCode();
+
+            _fieldMap.RemoveAll(x => x.Name.GetHashCode() == propertyNameHasCode);
         }
 
         private IEnumerable<Field> GetUpdateFields()
         {
-
-            // If _fieldMap count is zero
-            // We dont have any fields
-            // Return to as null
-            // It is not problem we will be control in Update
             if (_fieldMap.Count == 0)
             {
                 return null;
@@ -91,7 +90,7 @@ namespace DbStatute.Querying
 
             ICollection<Field> fields = new Collection<Field>();
 
-            foreach (PropertyNameValuePredicateTriple<dynamic> triple in _fieldMap)
+            foreach (PropertyNameValuePredicateTriple triple in _fieldMap)
             {
                 fields.Add(new Field(triple.Name));
             }
