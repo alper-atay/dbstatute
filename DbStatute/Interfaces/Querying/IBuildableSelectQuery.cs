@@ -2,7 +2,7 @@
 
 namespace DbStatute.Interfaces.Querying
 {
-    public interface IBuildableQuery
+    public interface IBuildableSelectQuery
     {
         QueryGroup Build();
     }

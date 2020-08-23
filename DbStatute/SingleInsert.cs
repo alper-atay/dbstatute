@@ -16,6 +16,7 @@ namespace DbStatute
             RawModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
         }
 
+        public override int InsertedCount => InsertedModel is null ? 0 : 1;
         public TModel InsertedModel { get; private set; }
         public TModel RawModel { get; }
 

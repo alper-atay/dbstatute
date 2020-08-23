@@ -11,7 +11,7 @@ namespace DbStatute
     public abstract class MultipleSelectByQuery<TId, TModel, TSelectQuery> : MultipleSelect<TId, TModel>
         where TId : struct, IConvertible
         where TModel : class, IModel<TId>
-        where TSelectQuery : ISelectQuery<TId>
+        where TSelectQuery : ISelectQuery<TId, TModel>
     {
         protected MultipleSelectByQuery(TSelectQuery selectQuery)
         {
