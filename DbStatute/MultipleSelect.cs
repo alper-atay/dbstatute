@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 namespace DbStatute
 {
     public abstract class MultipleSelect<TId, TModel> : Select
-        where TId : struct, IConvertible
-        where TModel : class, IModel<TId>
+        where TId : notnull, IConvertible
+        where TModel : class, IModel<TId>, new()
     {
         private readonly List<TModel> _selectedModels = new List<TModel>();
 

@@ -7,27 +7,31 @@ using System.Threading.Tasks;
 namespace DbStatute
 {
     public abstract class SingleDelete<TId, TModel, TSingleSelect> : Delete
-        where TId : struct, IConvertible
-        where TModel : class, IModel<TId>
+        where TId : notnull, IConvertible
+        where TModel : class, IModel<TId>, new()
         where TSingleSelect : SingleSelect<TId, TModel>
     {
+        private int _deletedCount;
+
         protected SingleDelete(TSingleSelect singleSelect)
         {
             SingleSelect = singleSelect ?? throw new ArgumentNullException(nameof(singleSelect));
         }
 
+        public override int DeletedCount => _deletedCount;
+
         public TSingleSelect SingleSelect { get; }
 
         public async Task DeleteAsync(IDbConnection dbConnection)
         {
-            DeletedCount = 0;
+            _deletedCount = 0;
 
             if (ReadOnlyLogs.Safely)
             {
-                DeletedCount = await DeleteOperationAsync(dbConnection);
+                _deletedCount = await DeleteOperationAsync(dbConnection);
             }
 
-            if (DeletedCount == 0)
+            if (_deletedCount == 0)
             {
                 OnFailed();
             }

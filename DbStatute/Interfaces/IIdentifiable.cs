@@ -3,7 +3,7 @@
 namespace DbStatute.Interfaces
 {
     public interface IIdentifiable<TId>
-        where TId : struct, IConvertible
+        where TId : notnull, IConvertible
     {
         TId Id { get; set; }
     }

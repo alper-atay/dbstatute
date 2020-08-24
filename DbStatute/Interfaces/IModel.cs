@@ -2,8 +2,8 @@
 
 namespace DbStatute.Interfaces
 {
-    public interface IModel<TId> : IIdentifiable<TId>
-        where TId : struct, IConvertible
+    public interface IModel<TId> : IIdentifiable<TId>, ICloneable
+        where TId : notnull, IConvertible
     {
     }
 }

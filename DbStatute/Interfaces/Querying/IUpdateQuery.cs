@@ -1,6 +1,5 @@
 ﻿using Basiclog;
 using RepoDb;
-using System;
 using System.Collections.Generic;
 
 namespace DbStatute.Interfaces.Querying

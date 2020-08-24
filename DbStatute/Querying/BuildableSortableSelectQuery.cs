@@ -8,8 +8,8 @@ using System.Linq;
 namespace DbStatute.Querying
 {
     public abstract class BuildableSortableSelectQuery<TId, TModel> : SelectQuery<TId, TModel>, IBuildableSelectQuery, ISortableQuery
-        where TId : struct, IConvertible
-        where TModel : class, IModel<TId>
+        where TId : notnull, IConvertible
+        where TModel : class, IModel<TId>, new()
     {
         public bool HasOrderField => !(OrderFields is null) && OrderFields.Count() > 0;
         public abstract IEnumerable<OrderField> OrderFields { get; }

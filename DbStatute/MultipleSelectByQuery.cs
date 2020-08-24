@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 namespace DbStatute
 {
     public abstract class MultipleSelectByQuery<TId, TModel, TSelectQuery> : MultipleSelect<TId, TModel>
-        where TId : struct, IConvertible
-        where TModel : class, IModel<TId>
+        where TId : notnull, IConvertible
+        where TModel : class, IModel<TId>, new()
         where TSelectQuery : ISelectQuery<TId, TModel>
     {
         protected MultipleSelectByQuery(TSelectQuery selectQuery)

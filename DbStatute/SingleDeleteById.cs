@@ -4,8 +4,8 @@ using System;
 namespace DbStatute
 {
     public abstract class SingleDeleteById<TId, TModel, TSingleSelectById> : SingleDelete<TId, TModel, TSingleSelectById>
-        where TId : struct, IConvertible
-        where TModel : class, IModel<TId>
+        where TId : notnull, IConvertible
+        where TModel : class, IModel<TId>, new()
         where TSingleSelectById : SingleSelectById<TId, TModel>
     {
         protected SingleDeleteById(TSingleSelectById singleSelectById) : base(singleSelectById)

@@ -7,22 +7,27 @@ using System.Threading.Tasks;
 namespace DbStatute
 {
     public abstract class MultipleDelete<TId, TModel, TMultipleSelect> : Delete
-        where TId : struct, IConvertible
-        where TModel : class, IModel<TId>
+        where TId : notnull, IConvertible
+        where TModel : class, IModel<TId>, new()
         where TMultipleSelect : MultipleSelect<TId, TModel>
     {
+        private int _deletedCount;
+
         protected MultipleDelete(TMultipleSelect multipleSelect)
         {
             MultipleSelect = multipleSelect ?? throw new ArgumentNullException(nameof(multipleSelect));
         }
 
+        public override int DeletedCount => _deletedCount;
         public TMultipleSelect MultipleSelect { get; }
 
         public async Task DeleteAsync(IDbConnection dbConnection)
         {
+            _deletedCount = 0;
+
             if (Logs.Safely)
             {
-                DeletedCount = await DeleteOperationAsync(dbConnection);
+                _deletedCount = await DeleteOperationAsync(dbConnection);
             }
 
             if (DeletedCount == 0)

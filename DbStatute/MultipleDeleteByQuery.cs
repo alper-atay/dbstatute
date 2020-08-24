@@ -5,8 +5,8 @@ using System;
 namespace DbStatute
 {
     public abstract class MultipleDeleteByQuery<TId, TModel, TSelectQuery, TMultipleSelectByQuery> : MultipleDelete<TId, TModel, TMultipleSelectByQuery>
-        where TId : struct, IConvertible
-        where TModel : class, IModel<TId>
+        where TId : notnull, IConvertible
+        where TModel : class, IModel<TId>, new()
         where TSelectQuery : ISelectQuery<TId, TModel>
         where TMultipleSelectByQuery : MultipleSelectByQuery<TId, TModel, TSelectQuery>
     {

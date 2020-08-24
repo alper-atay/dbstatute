@@ -5,24 +5,10 @@ namespace DbStatute.Sample.Models
 {
     public class UserUpdateQuery : UpdateQuery<int, User>
     {
-        public void SetFullNameUpdateField(string fullName)
+        public UserUpdateQuery()
         {
-            SetUpdateField(x => x.FullName, fullName, FullNameExaminer);
-        }
-
-        public void SetNickUpdateField(string nick)
-        {
-            SetUpdateField(x => x.Nick, nick, NickExaminer);
-        }
-
-        public void UnsetFullNameUpdateField()
-        {
-            UnsetUpdateField(x => x.FullName);
-        }
-
-        public void UnsetNickUpdateField()
-        {
-            UnsetUpdateField(x => x.Nick);
+            RegisterPredicate(x => x.Nick, NickExaminer);
+            RegisterPredicate(x => x.FullName, FullNameExaminer);
         }
 
         // Empty examiners

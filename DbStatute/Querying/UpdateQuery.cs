@@ -14,15 +14,16 @@ using System.Reflection;
 namespace DbStatute.Querying
 {
     public abstract class UpdateQuery<TId, TModel> : IUpdateQuery
-        where TId : struct, IConvertible
+        where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
     {
         private readonly IDictionary<string, ReadOnlyLogbookPredicate<object>> _propertyPredicateMap = new Dictionary<string, ReadOnlyLogbookPredicate<object>>();
-        private readonly List<PropertyNameValuePredicateTriple> _triples = new List<PropertyNameValuePredicateTriple>();
-        public TModel Model { get; } = new TModel();
+        private readonly IDictionary<string, object> _propertyValueMap = new Dictionary<string, object>();
+        private readonly TModel _updaterModel = new TModel();
         public IEnumerable<Field> UpdateFields => GetUpdateFields();
+        public TModel UpdaterModel => (TModel)_updaterModel.Clone();
 
-        public bool IsEnableUpdateField<TValue>(Expression<Func<TModel, TValue>> property)
+        public bool IsFieldEnabled<TValue>(Expression<Func<TModel, TValue>> property)
         {
             string propertyName = property.ToMember()?.GetName();
             if (string.IsNullOrWhiteSpace(propertyName))
@@ -30,12 +31,10 @@ namespace DbStatute.Querying
                 throw new PropertyNotFoundException($"{typeof(TModel).FullName} has not property");
             }
 
-            int propertyNameHashCode = propertyName.GetHashCode();
-
-            return _triples.Exists(x => x.Name.GetHashCode() == propertyNameHashCode);
+            return _propertyValueMap.ContainsKey(propertyName);
         }
 
-        public void SetUpdateField<TValue>(Expression<Func<TModel, TValue>> property, TValue value, ReadOnlyLogbookPredicate<object> predicate)
+        public void SetField<TValue>(Expression<Func<TModel, TValue>> property, TValue value)
         {
             Type valueType = typeof(TValue);
             if (!valueType.IsDbType())
@@ -44,38 +43,43 @@ namespace DbStatute.Querying
             }
 
             string propertyName = property.ToMember()?.GetName();
-            int propertyNameHashCode = propertyName.GetHashCode();
-
-            if (_triples.Exists(x => x.Name.GetHashCode() == propertyNameHashCode))
+            if (string.IsNullOrWhiteSpace(propertyName))
             {
-                _triples.RemoveAll(x => x.Name.GetHashCode() == propertyNameHashCode);
+                throw new PropertyNotFoundException($"{typeof(TModel).FullName} has not property");
             }
-
-            _triples.Add(new PropertyNameValuePredicateTriple(propertyName, value, predicate));
 
             Type modelType = typeof(TModel);
             PropertyInfo propertyInfo = modelType.GetProperty(propertyName);
-            propertyInfo.SetValue(Model, value);
+            propertyInfo.SetValue(UpdaterModel, value);
         }
 
         public IReadOnlyLogbook Test()
         {
             ILogbook logs = Logger.New();
 
-            foreach (PropertyNameValuePredicateTriple triple in _triples)
+            foreach (KeyValuePair<string, ReadOnlyLogbookPredicate<object>> propertyValuePair in _propertyPredicateMap)
             {
-                logs.AddRange(triple.Predicate.Invoke(triple.Value));
+                string name = propertyValuePair.Key;
+                ReadOnlyLogbookPredicate<object> value = propertyValuePair.Value;
+
+                if (_propertyPredicateMap.TryGetValue(name, out ReadOnlyLogbookPredicate<object> predicate))
+                {
+                    logs.AddRange(predicate.Invoke(value));
+                }
             }
 
             return logs;
         }
 
-        public void UnsetUpdateField<TValue>(Expression<Func<TModel, TValue>> property)
+        public bool UnsetField<TValue>(Expression<Func<TModel, TValue>> property)
         {
             string propertyName = property.ToMember()?.GetName();
-            int propertyNameHasCode = propertyName.GetHashCode();
+            if (string.IsNullOrWhiteSpace(propertyName))
+            {
+                throw new PropertyNotFoundException($"{typeof(TModel).FullName} has not property");
+            }
 
-            _triples.RemoveAll(x => x.Name.GetHashCode() == propertyNameHasCode);
+            return _propertyValueMap.Remove(propertyName);
         }
 
         protected void RegisterPredicate<TValue>(Expression<Func<TModel, TValue>> property, ReadOnlyLogbookPredicate<object> predicate, bool overrideEnabled = false)
@@ -101,18 +105,35 @@ namespace DbStatute.Querying
             _propertyPredicateMap.Add(propertyName, predicate);
         }
 
+        protected bool UnregisterPredicate<TValue>(Expression<Func<TModel, TValue>> property)
+        {
+            string propertyName = property.ToMember()?.GetName();
+            if (string.IsNullOrWhiteSpace(propertyName))
+            {
+                throw new PropertyNotFoundException($"{typeof(TModel).FullName} has not property");
+            }
+
+            if (_propertyPredicateMap.ContainsKey(propertyName))
+            {
+                _propertyPredicateMap.Remove(propertyName);
+                return true;
+            }
+
+            return false;
+        }
+
         private IEnumerable<Field> GetUpdateFields()
         {
-            if (_triples.Count == 0)
+            if (_propertyValueMap.Count == 0)
             {
                 return null;
             }
 
             ICollection<Field> fields = new Collection<Field>();
 
-            foreach (PropertyNameValuePredicateTriple triple in _triples)
+            foreach (string name in _propertyPredicateMap.Keys)
             {
-                fields.Add(new Field(triple.Name));
+                fields.Add(new Field(name));
             }
 
             return fields;

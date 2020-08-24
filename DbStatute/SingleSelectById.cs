@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 namespace DbStatute
 {
     public abstract class SingleSelectById<TId, TModel> : SingleSelect<TId, TModel>
-        where TId : struct, IConvertible
-        where TModel : class, IModel<TId>
+        where TId : notnull, IConvertible
+        where TModel : class, IModel<TId>, new()
     {
         protected SingleSelectById(TId id)
         {

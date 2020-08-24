@@ -1,9 +1,8 @@
 ﻿namespace DbStatute.Sample.Models
 {
-
-    public class SingleUserUpdate : SingleUpdateByQuery<int, User, UserUpdateQuery>
+    public class SingleUserSelectByQuery : SingleSelectByQuery<int, User, UserSelectQuery>
     {
-        public SingleUserUpdate(UserUpdateQuery updateQuery) : base(updateQuery)
+        public SingleUserSelectByQuery(UserSelectQuery selectQuery) : base(selectQuery)
         {
         }
 
@@ -15,4 +14,5 @@
         {
         }
     }
+
 }

@@ -2,6 +2,6 @@
 {
     public abstract class Delete : Statute
     {
-        public int DeletedCount { get; protected set; }
+        public abstract int DeletedCount { get; }
     }
 }

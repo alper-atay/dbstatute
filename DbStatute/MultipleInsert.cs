@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 namespace DbStatute
 {
     public abstract class MultipleInsert<TId, TModel> : Insert
-        where TId : struct, IConvertible
-        where TModel : class, IModel<TId>
+        where TId : notnull, IConvertible
+        where TModel : class, IModel<TId>, new()
     {
         private readonly List<TModel> _insertedModels = new List<TModel>();
 

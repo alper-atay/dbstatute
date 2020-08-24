@@ -9,19 +9,17 @@ using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class SingleUpdate<TId, TModel, TUpdateQuery> : Update
-        where TId : struct, IConvertible
+    public abstract class SingleUpdateByQuery<TId, TModel, TUpdateQuery> : UpdateByQuery<TId, TModel, TUpdateQuery>
+        where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
         where TUpdateQuery : UpdateQuery<TId, TModel>
     {
-        protected SingleUpdate(TUpdateQuery updateQuery)
+        protected SingleUpdateByQuery(TUpdateQuery updateQuery) : base(updateQuery)
         {
-            UpdateQuery = updateQuery ?? throw new ArgumentNullException(nameof(updateQuery));
         }
 
         public override int UpdatedCount => UpdatedModel is null ? 0 : 1;
         public TModel UpdatedModel { get; private set; }
-        public TUpdateQuery UpdateQuery { get; }
 
         public async Task<TModel> UpdateAsync(TId id, IDbConnection dbConnection)
         {
@@ -30,7 +28,7 @@ namespace DbStatute
             if (ReadOnlyLogs.Safely)
             {
                 IEnumerable<Field> updateFields = UpdateQuery.UpdateFields;
-                TModel updateModel = UpdateQuery.Model;
+                TModel updateModel = UpdateQuery.UpdaterModel;
                 updateModel.Id = id;
 
                 //We need to single update with fields
