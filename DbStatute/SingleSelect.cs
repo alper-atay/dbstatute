@@ -9,26 +9,21 @@ namespace DbStatute
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
     {
+        private TModel _selectedModel;
+
         public override int SelectedCount => SelectedModel is null ? 0 : 1;
-        public TModel SelectedModel { get; private set; }
+        public TModel SelectedModel => (TModel)_selectedModel?.Clone();
 
         public async Task<TModel> SelectAsync(IDbConnection dbConnection)
         {
-            SelectedModel = null;
+            _selectedModel = null;
 
             if (Logs.Safely)
             {
-                SelectedModel = await SelectOperationAsync(dbConnection);
+                _selectedModel = await SelectOperationAsync(dbConnection);
             }
 
-            if (SelectedModel is null)
-            {
-                OnFailed();
-            }
-            else
-            {
-                OnSucceed();
-            }
+            StatuteResult = _selectedModel is null ? StatuteResult.Failure : StatuteResult.Success;
 
             return SelectedModel;
         }

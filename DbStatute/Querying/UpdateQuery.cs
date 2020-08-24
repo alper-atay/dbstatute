@@ -20,6 +20,7 @@ namespace DbStatute.Querying
         private readonly IDictionary<string, ReadOnlyLogbookPredicate<object>> _propertyPredicateMap = new Dictionary<string, ReadOnlyLogbookPredicate<object>>();
         private readonly IDictionary<string, object> _propertyValueMap = new Dictionary<string, object>();
         private readonly TModel _updaterModel = new TModel();
+
         public IEnumerable<Field> UpdateFields => GetUpdateFields();
         public TModel UpdaterModel => (TModel)_updaterModel.Clone();
 

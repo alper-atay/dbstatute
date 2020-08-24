@@ -11,31 +11,31 @@ namespace DbStatute
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
     {
+        private TModel _insertedModel;
+
         protected SingleInsert(TModel rawModel)
         {
             RawModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
         }
 
         public override int InsertedCount => InsertedModel is null ? 0 : 1;
-        public TModel InsertedModel { get; private set; }
+        public TModel InsertedModel => (TModel)_insertedModel?.Clone();
         public TModel RawModel { get; }
 
-        public async Task InsertAsync(IDbConnection dbConnection)
+        public async Task<TModel> InsertAsync(IDbConnection dbConnection)
         {
+            _insertedModel = null;
+
             if (ReadOnlyLogs.Safely)
             {
                 TId insertedModelId = await InsertOperationAsync(dbConnection);
-                InsertedModel = await dbConnection.QueryAsync<TModel>(insertedModelId, top: 1).ContinueWith(x => x.Result.FirstOrDefault());
+                _insertedModel = await dbConnection.QueryAsync<TModel>(insertedModelId, top: 1)
+                    .ContinueWith(x => x.Result.FirstOrDefault());
             }
 
-            if (InsertedModel is null)
-            {
-                OnFailed();
-            }
-            else
-            {
-                OnSucceed();
-            }
+            StatuteResult = _insertedModel is null ? StatuteResult.Failure : StatuteResult.Success;
+
+            return InsertedModel;
         }
 
         protected virtual async Task<TId> InsertOperationAsync(IDbConnection dbConnection)
