@@ -8,10 +8,10 @@ namespace DbStatute.Internals
     {
         public static bool IsDbType(this Type type)
         {
-            ClientTypeToDbTypeResolver clientTypeToDbTypeResolver = new ClientTypeToDbTypeResolver();
-            DbType? propertyMemberDbType = clientTypeToDbTypeResolver.Resolve(type);
+            ClientTypeToDbTypeResolver dbTypeResolver = new ClientTypeToDbTypeResolver();
+            DbType? resolvedDbType = dbTypeResolver.Resolve(type);
 
-            return propertyMemberDbType.HasValue;
+            return resolvedDbType.HasValue;
         }
     }
 }
