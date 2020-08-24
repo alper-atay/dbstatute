@@ -4,12 +4,12 @@ using System;
 
 namespace DbStatute
 {
-    public abstract class UpdateByQuery<TId, TModel, TUpdateQuery> : Update, IUpdateByQuery<TId, TModel, TUpdateQuery>
+    public abstract class MergeByQuery<TId, TModel, TUpdateQuery> : Merge
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
         where TUpdateQuery : UpdateQuery<TId, TModel>
     {
-        protected UpdateByQuery(TUpdateQuery updateQuery)
+        protected MergeByQuery(TUpdateQuery updateQuery)
         {
             UpdateQuery = updateQuery ?? throw new ArgumentNullException(nameof(updateQuery));
         }

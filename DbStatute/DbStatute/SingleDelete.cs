@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class SingleDelete<TId, TModel, TSingleSelect> : Delete
+    public abstract class SingleDelete<TId, TModel, TSingleSelect> : Delete, ISingleDelete<TId, TModel, TSingleSelect>
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
         where TSingleSelect : SingleSelect<TId, TModel>
@@ -19,7 +19,6 @@ namespace DbStatute
         }
 
         public override int DeletedCount => _deletedCount;
-
         public TSingleSelect SingleSelect { get; }
 
         public async Task DeleteAsync(IDbConnection dbConnection)

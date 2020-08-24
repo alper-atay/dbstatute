@@ -3,7 +3,7 @@ using System;
 
 namespace DbStatute
 {
-    public abstract class SingleDeleteById<TId, TModel, TSingleSelectById> : SingleDelete<TId, TModel, TSingleSelectById>
+    public abstract class SingleDeleteById<TId, TModel, TSingleSelectById> : SingleDelete<TId, TModel, TSingleSelectById>, ISingleDeleteById<TId, TModel, TSingleSelectById>
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
         where TSingleSelectById : SingleSelectById<TId, TModel>
@@ -11,5 +11,7 @@ namespace DbStatute
         protected SingleDeleteById(TSingleSelectById singleSelectById) : base(singleSelectById)
         {
         }
+
+        public TSingleSelectById SingleSelectById => SingleSelect;
     }
 }

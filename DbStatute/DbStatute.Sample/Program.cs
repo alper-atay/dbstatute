@@ -26,7 +26,7 @@ namespace DbStatute.Sample
 
             User insertedUser = singleUserInsert.InsertedModel;
 
-            await singleUserUpdate.UpdateAsync(1, null);
+            await singleUserUpdate.UpdateAsync(null, 1);
 
             Console.WriteLine("Hello World!");
         }

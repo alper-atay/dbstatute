@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class SingleUpdateByQuery<TId, TModel, TUpdateQuery> : UpdateByQuery<TId, TModel, TUpdateQuery>
+    public abstract class SingleUpdateByQuery<TId, TModel, TUpdateQuery> : UpdateByQuery<TId, TModel, TUpdateQuery>, ISingleUpdateByQuery<TId, TModel, TUpdateQuery>
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
         where TUpdateQuery : UpdateQuery<TId, TModel>

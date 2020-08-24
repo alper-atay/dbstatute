@@ -1,5 +1,8 @@
 ﻿using Basiclog;
+using DbStatute.Interfaces;
+using RepoDb.Interfaces;
 using System;
+using System.Data;
 
 namespace DbStatute
 {
@@ -17,7 +20,11 @@ namespace DbStatute
 
         public event Action Succeed;
 
+        public int? CommandTimeout { get; set; } = null;
+        public IDbTransaction DbTransaction { get; set; } = null;
+        public string Hints { get; set; } = null;
         public IReadOnlyLogbook ReadOnlyLogs => Logs;
+        public IStatementBuilder StatementBuilder { get; set; } = null;
 
         public StatuteResult StatuteResult
         {
@@ -46,6 +53,7 @@ namespace DbStatute
             }
         }
 
+        public ITrace Trace { get; set; } = null;
         protected ILogbook Logs { get; } = Logger.New();
 
         protected abstract void OnFailed();

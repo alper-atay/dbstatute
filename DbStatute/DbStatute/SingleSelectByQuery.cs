@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class SingleSelectByQuery<TId, TModel, TSelectQuery> : SingleSelect<TId, TModel>
+    public abstract class SingleSelectByQuery<TId, TModel, TSelectQuery> : SingleSelect<TId, TModel>, ISingleSelectByQuery<TId, TModel, TSelectQuery>
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
         where TSelectQuery : SelectQuery<TId, TModel>

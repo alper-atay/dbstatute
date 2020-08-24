@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class SingleInsert<TId, TModel> : Insert
+    public abstract class SingleInsert<TId, TModel> : Insert, ISingleInsert<TId, TModel>
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
     {
@@ -18,7 +18,7 @@ namespace DbStatute
             RawModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
         }
 
-        public override int InsertedCount => InsertedModel is null ? 0 : 1;
+        public override int InsertedCount => _insertedModel is null ? 0 : 1;
         public TModel InsertedModel => (TModel)_insertedModel?.Clone();
         public TModel RawModel { get; }
 
