@@ -1,5 +1,5 @@
 ﻿using DbStatute.Interfaces;
-using DbStatute.Querying;
+using DbStatute.Interfaces.Querying;
 using RepoDb;
 using System;
 using System.Data;
@@ -11,7 +11,7 @@ namespace DbStatute
     public abstract class SingleSelectByQuery<TId, TModel, TSelectQuery> : SingleSelect<TId, TModel>, ISingleSelectByQuery<TId, TModel, TSelectQuery>
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
-        where TSelectQuery : SelectQuery<TId, TModel>
+        where TSelectQuery : ISelectQuery<TId, TModel>
     {
         protected SingleSelectByQuery(TSelectQuery selectQuery)
         {

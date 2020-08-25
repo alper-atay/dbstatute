@@ -12,20 +12,18 @@ namespace DbStatute.Interfaces.Querying
         IReadOnlyDictionary<string, object> ValueMap { get; }
     }
 
-    public interface IUpdateQuery<TId, TModel> : IUpdateQuery
+    public interface IUpdateQuery<TId, TModel> : IUpdateQuery, IFieldQualifier<TId, TModel>
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
     {
         TModel UpdaterModel { get; }
-
-        bool IsFieldEnabled<TValue>(Expression<Func<TModel, TValue>> property);
 
         void RegisterPredicate<TValue>(Expression<Func<TModel, TValue>> property, ReadOnlyLogbookPredicate<object> predicate, bool overrideEnabled = false);
 
         void SetField<TValue>(Expression<Func<TModel, TValue>> property, TValue value);
 
         bool UnregisterPredicate<TValue>(Expression<Func<TModel, TValue>> property);
-
-        bool UnsetField<TValue>(Expression<Func<TModel, TValue>> property);
     }
+
+
 }

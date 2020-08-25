@@ -18,7 +18,7 @@ namespace DbStatute
         {
             _selectedModel = null;
 
-            if (Logs.Safely)
+            if (ReadOnlyLogs.Safely)
             {
                 _selectedModel = await SelectOperationAsync(dbConnection);
             }

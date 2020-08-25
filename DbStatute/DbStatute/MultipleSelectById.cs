@@ -21,7 +21,7 @@ namespace DbStatute
 
         public IEnumerable<TId> Ids { get; }
 
-        protected override async IAsyncEnumerable<TModel> SelectAsSingularOperationAsync(IDbConnection dbConnection)
+        protected override async IAsyncEnumerable<TModel> SelectAsSignlyOperationAsync(IDbConnection dbConnection)
         {
             if (!ReadOnlyLogs.Safely)
             {
@@ -39,7 +39,7 @@ namespace DbStatute
                 cacheKey = Cacheable.Key;
             }
 
-            foreach (var id in Ids)
+            foreach (TId id in Ids)
             {
                 yield return await dbConnection.QueryAsync<TModel>(id, null, 1, Hints, cacheKey, cacheItemExpiration, CommandTimeout, Transaction, cache, Trace, StatementBuilder)
                     .ContinueWith(x => x.Result.FirstOrDefault());

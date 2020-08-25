@@ -23,7 +23,7 @@ namespace DbStatute
 
         // Select all queried rows
         // Can we pick one by one in DB?
-        protected override async IAsyncEnumerable<TModel> SelectAsSingularOperationAsync(IDbConnection dbConnection)
+        protected override async IAsyncEnumerable<TModel> SelectAsSignlyOperationAsync(IDbConnection dbConnection)
         {
             if (!ReadOnlyLogs.Safely)
             {

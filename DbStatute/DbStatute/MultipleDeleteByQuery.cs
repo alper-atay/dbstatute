@@ -8,7 +8,7 @@ namespace DbStatute
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
         where TSelectQuery : ISelectQuery<TId, TModel>
-        where TMultipleSelectByQuery : MultipleSelectByQuery<TId, TModel, TSelectQuery>
+        where TMultipleSelectByQuery : IMultipleSelectByQuery<TId, TModel, TSelectQuery>
     {
         protected MultipleDeleteByQuery(TMultipleSelectByQuery multipleSelectByQuery) : base(multipleSelectByQuery)
         {

@@ -1,7 +1,6 @@
 ﻿using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying;
 using RepoDb;
-using RepoDb.Exceptions;
 using RepoDb.Extensions;
 using System;
 using System.Collections.Generic;
@@ -27,27 +26,29 @@ namespace DbStatute.Querying
 
         public IEnumerable<Field> Fields => _fields;
 
-        public void SetField<TProperty>(Expression<Func<TModel, TProperty>> property, Type type = null)
+        public bool IsFieldSetted<TValue>(Expression<Func<TModel, TValue>> property)
         {
-            string propertyName = property.ToMember()?.GetName();
-            if (string.IsNullOrWhiteSpace(propertyName))
-            {
-                throw new PropertyNotFoundException($"{typeof(TModel).FullName} has not property");
-            }
+            Field field = property.ToMember().GetField();
 
-            // Need to check property value type for DbType
-            Field field = new Field(propertyName, type);
+            return _fields.Contains(field);
+        }
+
+        public virtual void SetField<TProperty>(Expression<Func<TModel, TProperty>> property)
+        {
+            Field field = property.ToMember().GetField();
+
             _fields.Add(field);
         }
 
-        public bool UnsetField<TProperty>(Expression<Func<TModel, TProperty>> property)
+        public virtual bool UnsetField<TProperty>(Expression<Func<TModel, TProperty>> property)
         {
-            string propertyName = property.ToMember()?.GetName();
-            if (string.IsNullOrWhiteSpace(propertyName))
-            {
-                throw new PropertyNotFoundException($"{typeof(TModel).FullName} has not property");
-            }
+            Field field = property.ToMember().GetField();
 
+            return _fields.Remove(field);
+        }
+
+        protected bool UnsetField(string propertyName)
+        {
             int removeCount = _fields.RemoveWhere(x => x.Name == propertyName);
 
             return removeCount > 0;

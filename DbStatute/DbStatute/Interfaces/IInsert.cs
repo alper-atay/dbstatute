@@ -1,6 +1,6 @@
 ﻿namespace DbStatute.Interfaces
 {
-    public interface IInsert
+    public interface IInsert : IStatute
     {
         int InsertedCount { get; }
     }

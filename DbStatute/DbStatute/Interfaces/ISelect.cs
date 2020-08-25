@@ -1,6 +1,6 @@
 ﻿namespace DbStatute.Interfaces
 {
-    public interface ISelect
+    public interface ISelect : IStatute
     {
         int SelectedCount { get; }
     }

@@ -13,5 +13,7 @@ namespace DbStatute.Interfaces
         IEnumerable<TModel> RawModels { get; }
 
         Task<IEnumerable<TModel>> InsertAsync(IDbConnection dbConnection);
+
+        IAsyncEnumerable<TModel> InsertAsSingleAsync(IDbConnection dbConnection);
     }
 }

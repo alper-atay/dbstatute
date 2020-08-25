@@ -1,5 +1,5 @@
 ﻿using DbStatute.Interfaces;
-using DbStatute.Querying;
+using DbStatute.Interfaces.Querying;
 using System;
 
 namespace DbStatute
@@ -7,7 +7,7 @@ namespace DbStatute
     public abstract class MergeByQuery<TId, TModel, TUpdateQuery> : Merge
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
-        where TUpdateQuery : UpdateQuery<TId, TModel>
+        where TUpdateQuery : IUpdateQuery<TId, TModel>
     {
         protected MergeByQuery(TUpdateQuery updateQuery)
         {

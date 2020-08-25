@@ -2,39 +2,26 @@
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying;
 using DbStatute.Internals;
-using RepoDb;
 using RepoDb.Exceptions;
 using RepoDb.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace DbStatute.Querying
 {
-    public abstract class UpdateQuery<TId, TModel> : IUpdateQuery<TId, TModel>
+    public abstract class UpdateQuery<TId, TModel> : FieldQualifier<TId, TModel>, IUpdateQuery<TId, TModel>
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
     {
         private readonly Dictionary<string, ReadOnlyLogbookPredicate<object>> _predicateMap = new Dictionary<string, ReadOnlyLogbookPredicate<object>>();
         private readonly TModel _updaterModel = new TModel();
         private readonly Dictionary<string, object> _valueMap = new Dictionary<string, object>();
+
         public IReadOnlyDictionary<string, ReadOnlyLogbookPredicate<object>> PredicateMap => _predicateMap;
-        public IEnumerable<Field> Fields => GetUpdateFields();
         public TModel UpdaterModel => (TModel)_updaterModel.Clone();
         public IReadOnlyDictionary<string, object> ValueMap => _valueMap;
-
-        public bool IsFieldEnabled<TValue>(Expression<Func<TModel, TValue>> property)
-        {
-            string propertyName = property.ToMember()?.GetName();
-            if (string.IsNullOrWhiteSpace(propertyName))
-            {
-                throw new PropertyNotFoundException($"{typeof(TModel).FullName} has not property");
-            }
-
-            return _valueMap.ContainsKey(propertyName);
-        }
 
         public void RegisterPredicate<TValue>(Expression<Func<TModel, TValue>> property, ReadOnlyLogbookPredicate<object> predicate, bool overrideEnabled = false)
         {
@@ -61,18 +48,27 @@ namespace DbStatute.Querying
 
         public void SetField<TValue>(Expression<Func<TModel, TValue>> property, TValue value)
         {
+            MemberExpression propertyMember = property.ToMember();
+
+            Type propertyType = propertyMember.GetMemberType();
             Type valueType = typeof(TValue);
+
+            if (propertyType != valueType)
+            {
+                throw new InvalidTypeException("Property and value type not equals");
+            }
+
+            if (!propertyType.IsDbType())
+            {
+                throw new InvalidTypeException($"Property ({propertyType.FullName}) is not resolvable to DbType");
+            }
+
             if (!valueType.IsDbType())
             {
                 throw new InvalidTypeException($"Value ({valueType.FullName}) is not resolvable to DbType");
             }
 
-            string propertyName = property.ToMember()?.GetName();
-            if (string.IsNullOrWhiteSpace(propertyName))
-            {
-                throw new PropertyNotFoundException($"{typeof(TModel).FullName} has not property");
-            }
-
+            string propertyName = propertyMember.GetName();
             Type modelType = typeof(TModel);
             PropertyInfo propertyInfo = modelType.GetProperty(propertyName);
             propertyInfo.SetValue(UpdaterModel, value);
@@ -98,47 +94,16 @@ namespace DbStatute.Querying
 
         public bool UnregisterPredicate<TValue>(Expression<Func<TModel, TValue>> property)
         {
-            string propertyName = property.ToMember()?.GetName();
-            if (string.IsNullOrWhiteSpace(propertyName))
-            {
-                throw new PropertyNotFoundException($"{typeof(TModel).FullName} has not property");
-            }
+            string propertyName = property?.ToMember().GetName();
 
-            if (_predicateMap.ContainsKey(propertyName))
-            {
-                _predicateMap.Remove(propertyName);
-                return true;
-            }
-
-            return false;
+            return _predicateMap.Remove(propertyName);
         }
 
-        public bool UnsetField<TValue>(Expression<Func<TModel, TValue>> property)
+        public override bool UnsetField<TValue>(Expression<Func<TModel, TValue>> property)
         {
             string propertyName = property.ToMember()?.GetName();
-            if (string.IsNullOrWhiteSpace(propertyName))
-            {
-                throw new PropertyNotFoundException($"{typeof(TModel).FullName} has not property");
-            }
 
-            return _valueMap.Remove(propertyName);
-        }
-
-        private IEnumerable<Field> GetUpdateFields()
-        {
-            if (_valueMap.Count == 0)
-            {
-                return null;
-            }
-
-            ICollection<Field> fields = new Collection<Field>();
-
-            foreach (string name in _predicateMap.Keys)
-            {
-                fields.Add(new Field(name));
-            }
-
-            return fields;
+            return _valueMap.Remove(propertyName) || UnsetField(propertyName);
         }
     }
 }

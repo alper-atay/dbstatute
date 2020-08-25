@@ -14,7 +14,9 @@ namespace DbStatute.Interfaces.Querying
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
     {
-        void SetField<TProperty>(Expression<Func<TModel, TProperty>> property, Type type = null);
+        bool IsFieldSetted<TValue>(Expression<Func<TModel, TValue>> property);
+
+        void SetField<TProperty>(Expression<Func<TModel, TProperty>> property);
 
         bool UnsetField<TProperty>(Expression<Func<TModel, TProperty>> property);
     }

@@ -5,13 +5,16 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Interfaces
 {
-    public interface ISingleUpdateByQuery<TId, TModel, TUpdateQuery> : IUpdateByQuery<TId, TModel, TUpdateQuery>
+    public interface ISingleUpdate<TId, TModel, TUpdateQuery, TSingleSelect> : IUpdate
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
         where TUpdateQuery : IUpdateQuery<TId, TModel>
+        where TSingleSelect : ISingleSelect<TId, TModel>
     {
+        TSingleSelect SingleSelect { get; }
         TModel UpdatedModel { get; }
+        TUpdateQuery UpdateQuery { get; }
 
-        Task<TModel> UpdateAsync(IDbConnection dbConnection, TId id);
+        Task<TModel> UpdateAsync(IDbConnection dbConnection);
     }
 }

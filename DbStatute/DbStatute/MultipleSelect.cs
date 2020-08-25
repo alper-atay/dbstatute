@@ -17,11 +17,11 @@ namespace DbStatute
         public override int SelectedCount => _selectedModels.Count;
         public IEnumerable<TModel> SelectedModels => SelectedCount > 0 ? _selectedModels : null;
 
-        public async IAsyncEnumerable<TModel> SelectAsSingular(IDbConnection dbConnection)
+        public async IAsyncEnumerable<TModel> SelectAsSinglyAsync(IDbConnection dbConnection)
         {
             _selectedModels.Clear();
 
-            await foreach (TModel selectedModel in SelectAsSingularOperationAsync(dbConnection))
+            await foreach (TModel selectedModel in SelectAsSignlyOperationAsync(dbConnection))
             {
                 if (selectedModel is null)
                 {
@@ -71,7 +71,7 @@ namespace DbStatute
             return SelectedModels;
         }
 
-        protected abstract IAsyncEnumerable<TModel> SelectAsSingularOperationAsync(IDbConnection dbConnection);
+        protected abstract IAsyncEnumerable<TModel> SelectAsSignlyOperationAsync(IDbConnection dbConnection);
 
         protected abstract Task<IEnumerable<TModel>> SelectOperationAsync(IDbConnection dbConnection);
     }

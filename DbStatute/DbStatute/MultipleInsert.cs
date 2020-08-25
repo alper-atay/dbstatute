@@ -1,5 +1,6 @@
 ﻿using DbStatute.Interfaces;
 using RepoDb;
+using RepoDb.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -19,25 +20,39 @@ namespace DbStatute
             RawModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
         }
 
+        public int BatchSize { get; set; } = 10;
+        public ICacheable Cacheable { get; set; }
         public override int InsertedCount => _insertedModels.Count;
         public IEnumerable<TModel> InsertedModels => InsertedCount > 0 ? _insertedModels : null;
         public IEnumerable<TModel> RawModels { get; }
+
+        public async IAsyncEnumerable<TModel> InsertAsSingleAsync(IDbConnection dbConnection)
+        {
+            _insertedModels.Clear();
+
+            await foreach (TModel insertedModel in InsertAsSingleOperationAsync(dbConnection))
+            {
+                if (insertedModel is null)
+                {
+                    continue;
+                }
+
+                yield return insertedModel;
+
+                _insertedModels.Add(insertedModel);
+            }
+
+            StatuteResult = InsertedModels is null ? StatuteResult.Failure : StatuteResult.Success;
+        }
 
         public async Task<IEnumerable<TModel>> InsertAsync(IDbConnection dbConnection)
         {
             _insertedModels.Clear();
 
-            if (ReadOnlyLogs.Safely)
+            IEnumerable<TModel> insertedModels = await InsertOperationAsync(dbConnection);
+            if (insertedModels != null)
             {
-                await foreach (TModel insertedModel in InsertOperationAsync(dbConnection))
-                {
-                    if (insertedModel is null)
-                    {
-                        continue;
-                    }
-
-                    _insertedModels.Add(insertedModel);
-                }
+                _insertedModels.AddRange(insertedModels);
             }
 
             StatuteResult = InsertedModels is null ? StatuteResult.Failure : StatuteResult.Success;
@@ -45,17 +60,29 @@ namespace DbStatute
             return InsertedModels;
         }
 
-        protected virtual async IAsyncEnumerable<TModel> InsertOperationAsync(IDbConnection dbConnection)
+        protected virtual async IAsyncEnumerable<TModel> InsertAsSingleOperationAsync(IDbConnection dbConnection)
         {
-            if (RawModels.Count() == 0)
+            if (!ReadOnlyLogs.Safely)
             {
-                yield return null;
+                yield break;
+            }
+
+            ICache cache = null;
+            int cacheItemExpiration = 180;
+            string cacheKey = null;
+
+            if (Cacheable != null)
+            {
+                cache = Cacheable.Cache;
+                cacheItemExpiration = Cacheable.ItemExpiration ?? 180;
+                cacheKey = Cacheable.Key;
             }
 
             foreach (TModel rawModel in RawModels)
             {
-                TId insertedModelId = (TId)await dbConnection.InsertAsync(rawModel);
-                TModel insertedModel = await dbConnection.QueryAsync<TModel>(insertedModelId, top: 1).ContinueWith(x => x.Result.FirstOrDefault());
+                TId insertedModelId = (TId)await dbConnection.InsertAsync(rawModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                TModel insertedModel = await dbConnection.QueryAsync<TModel>(insertedModelId, null, 1, Hints, cacheKey, cacheItemExpiration, CommandTimeout, Transaction, cache, Trace, StatementBuilder)
+                    .ContinueWith(x => x.Result.FirstOrDefault());
 
                 if (insertedModel is null)
                 {
@@ -64,6 +91,25 @@ namespace DbStatute
 
                 yield return insertedModel;
             }
+        }
+
+        protected virtual async Task<IEnumerable<TModel>> InsertOperationAsync(IDbConnection dbConnection)
+        {
+            if (!ReadOnlyLogs.Safely)
+            {
+                return null;
+            }
+
+            // TODO
+            // Collect inserted models with Trace ?
+            int insertedModelCount = await dbConnection.InsertAllAsync(RawModels, BatchSize, Hints, CommandTimeout, Transaction, null /*Trace*/, StatementBuilder);
+
+            if (insertedModelCount > 0)
+            {
+                return Enumerable.Empty<TModel>();
+            }
+
+            return null;
         }
     }
 }

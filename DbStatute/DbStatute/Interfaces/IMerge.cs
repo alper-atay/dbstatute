@@ -1,6 +1,6 @@
 ﻿namespace DbStatute.Interfaces
 {
-    public interface IMerge
+    public interface IMerge : IStatute
     {
         int MergedCount { get; }
     }

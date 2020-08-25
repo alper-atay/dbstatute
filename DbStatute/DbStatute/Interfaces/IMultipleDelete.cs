@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -11,6 +12,10 @@ namespace DbStatute.Interfaces
     {
         TMultipleSelect MultipleSelect { get; }
 
+        IAsyncEnumerable<TModel> DeleteAsSinglyAsync(IDbConnection dbConnection);
+
         Task<int> DeleteAsync(IDbConnection dbConnection);
+
+        Task<int> DeleteByActingAsync(IDbConnection dbConnection, Action<TModel> action);
     }
 }

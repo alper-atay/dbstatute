@@ -1,5 +1,5 @@
 ﻿using DbStatute.Interfaces;
-using DbStatute.Querying;
+using DbStatute.Interfaces.Querying;
 using RepoDb;
 using System;
 using System.Data;
@@ -11,7 +11,7 @@ namespace DbStatute
     public abstract class SingleMergeByQuery<TId, TModel, TUpdateQuery> : MergeByQuery<TId, TModel, TUpdateQuery>, ISingleMergeByQuery<TId, TModel, TUpdateQuery>
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
-        where TUpdateQuery : UpdateQuery<TId, TModel>
+        where TUpdateQuery : IUpdateQuery<TId, TModel>
     {
         private TModel _mergedModel;
 

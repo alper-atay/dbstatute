@@ -1,6 +1,6 @@
 ﻿namespace DbStatute.Interfaces
 {
-    public interface IUpdate
+    public interface IUpdate : IStatute
     {
         int UpdatedCount { get; }
     }
