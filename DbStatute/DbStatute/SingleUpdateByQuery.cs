@@ -39,7 +39,7 @@ namespace DbStatute
 
         protected virtual async Task<TModel> UpdateOperationAsync(IDbConnection dbConnection, TId id)
         {
-            IEnumerable<Field> updateFields = UpdateQuery.UpdateFields;
+            IEnumerable<Field> updateFields = UpdateQuery.Fields;
             TModel updateModel = UpdateQuery.UpdaterModel;
             updateModel.Id = id;
             TModel updatedModel = null;

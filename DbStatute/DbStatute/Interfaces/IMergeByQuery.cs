@@ -6,7 +6,7 @@ namespace DbStatute.Interfaces
     public interface IMergeByQuery<TId, TModel, TUpdateQuery> : IMerge
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
-        where TUpdateQuery : IUpdateQuery
+        where TUpdateQuery : IUpdateQuery<TId, TModel>
     {
 
     }

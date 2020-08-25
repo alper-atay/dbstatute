@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class MultipleInsert<TId, TModel> : Insert
+    public abstract class MultipleInsert<TId, TModel> : Insert, IMultipleInsert<TId, TModel>
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
     {
@@ -23,7 +23,7 @@ namespace DbStatute
         public IEnumerable<TModel> InsertedModels => InsertedCount > 0 ? _insertedModels : null;
         public IEnumerable<TModel> RawModels { get; }
 
-        public async Task InsertAsync(IDbConnection dbConnection)
+        public async Task<IEnumerable<TModel>> InsertAsync(IDbConnection dbConnection)
         {
             _insertedModels.Clear();
 
@@ -40,14 +40,9 @@ namespace DbStatute
                 }
             }
 
-            if (InsertedModels is null)
-            {
-                OnFailed();
-            }
-            else
-            {
-                OnSucceed();
-            }
+            StatuteResult = InsertedModels is null ? StatuteResult.Failure : StatuteResult.Success;
+
+            return InsertedModels;
         }
 
         protected virtual async IAsyncEnumerable<TModel> InsertOperationAsync(IDbConnection dbConnection)

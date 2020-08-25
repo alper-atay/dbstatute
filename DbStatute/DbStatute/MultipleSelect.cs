@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class MultipleSelect<TId, TModel> : Select
+    public abstract class MultipleSelect<TId, TModel> : Select, IMultipleSelect<TId, TModel>
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
     {
@@ -19,23 +19,13 @@ namespace DbStatute
         {
             _selectedModels.Clear();
 
-            if (Logs.Safely)
+            IEnumerable<TModel> selectedModels = await SelectOperationAsync(dbConnection);
+            if (selectedModels != null)
             {
-                IEnumerable<TModel> selectedModels = await SelectOperationAsync(dbConnection);
-                if (selectedModels != null)
-                {
-                    _selectedModels.AddRange(selectedModels);
-                }
+                _selectedModels.AddRange(selectedModels);
             }
 
-            if (SelectedCount == 0)
-            {
-                OnFailed();
-            }
-            else
-            {
-                OnSucceed();
-            }
+            StatuteResult = SelectedModels is null ? StatuteResult.Failure : StatuteResult.Success;
 
             return SelectedModels;
         }

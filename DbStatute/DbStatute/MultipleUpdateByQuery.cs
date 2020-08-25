@@ -20,7 +20,7 @@ namespace DbStatute
     /// <typeparam name="TModel"></typeparam>
     /// <typeparam name="TUpdateQuery"></typeparam>
 
-    public abstract class MultipleUpdateByQuery<TId, TModel, TUpdateQuery> : UpdateByQuery<TId, TModel, TUpdateQuery>
+    public abstract class MultipleUpdateByQuery<TId, TModel, TUpdateQuery> : UpdateByQuery<TId, TModel, TUpdateQuery>, IMultipleUpdateByQuery<TId, TModel, TUpdateQuery>
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
         where TUpdateQuery : UpdateQuery<TId, TModel>
@@ -39,7 +39,7 @@ namespace DbStatute
         public override int UpdatedCount => _updatedModelIds.Count;
         public IEnumerable<TId> UpdatedModelIds => UpdatedCount > 0 ? _updatedModelIds : null;
 
-        public async Task UpdateAsSingularAsync(IDbConnection dbConnection, IEnumerable<TId> ids)
+        public async Task<IEnumerable<TId>> UpdateAsSingularAsync(IDbConnection dbConnection, IEnumerable<TId> ids)
         {
             if (ids is null)
             {
@@ -55,6 +55,8 @@ namespace DbStatute
             {
                 _updatedModelIds.AddRange(await UpdateAsSingularOperationAsync(dbConnection, ids));
             }
+
+            return UpdatedModelIds;
         }
 
         // Need a cool name :D
@@ -63,7 +65,7 @@ namespace DbStatute
         // Maybe every update need to some changes on application
         // Relations need to synchronization
         // (rhyme)
-        public async Task UpdateAsSingularEmissionAsync(IDbConnection dbConnection, IEnumerable<TId> ids, Action<TModel> action)
+        public async Task<IEnumerable<TId>> UpdateAsSingularEmissionAsync(IDbConnection dbConnection, IEnumerable<TId> ids, Action<TModel> action)
         {
             if (ids is null)
             {
@@ -94,11 +96,13 @@ namespace DbStatute
                     _updatedModelIds.Add(updatedModel.Id);
                 }
             }
+
+            return UpdatedModelIds;
         }
 
         protected async IAsyncEnumerable<TModel> UpdateAsSingularEmissionOperationAsync(IDbConnection dbConnection, IEnumerable<TId> ids)
         {
-            IEnumerable<Field> updateFields = UpdateQuery.UpdateFields;
+            IEnumerable<Field> updateFields = UpdateQuery.Fields;
             TModel updateModel = UpdateQuery.UpdaterModel;
 
             foreach (TId id in ids)
@@ -133,7 +137,7 @@ namespace DbStatute
 
             foreach (TId id in ids)
             {
-                IEnumerable<Field> updateFields = UpdateQuery.UpdateFields;
+                IEnumerable<Field> updateFields = UpdateQuery.Fields;
                 TModel updateModel = UpdateQuery.UpdaterModel;
                 updateModel.Id = id;
 

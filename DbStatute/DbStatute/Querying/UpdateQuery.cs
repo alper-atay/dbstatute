@@ -21,7 +21,7 @@ namespace DbStatute.Querying
         private readonly TModel _updaterModel = new TModel();
         private readonly Dictionary<string, object> _valueMap = new Dictionary<string, object>();
         public IReadOnlyDictionary<string, ReadOnlyLogbookPredicate<object>> PredicateMap => _predicateMap;
-        public IEnumerable<Field> UpdateFields => GetUpdateFields();
+        public IEnumerable<Field> Fields => GetUpdateFields();
         public TModel UpdaterModel => (TModel)_updaterModel.Clone();
         public IReadOnlyDictionary<string, object> ValueMap => _valueMap;
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class MultipleDelete<TId, TModel, TMultipleSelect> : Delete
+    public abstract class MultipleDelete<TId, TModel, TMultipleSelect> : Delete, IMultipleDelete<TId, TModel, TMultipleSelect>
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
         where TMultipleSelect : MultipleSelect<TId, TModel>
@@ -21,7 +21,7 @@ namespace DbStatute
         public override int DeletedCount => _deletedCount;
         public TMultipleSelect MultipleSelect { get; }
 
-        public async Task DeleteAsync(IDbConnection dbConnection)
+        public async Task<int> DeleteAsync(IDbConnection dbConnection)
         {
             _deletedCount = 0;
 
@@ -30,14 +30,9 @@ namespace DbStatute
                 _deletedCount = await DeleteOperationAsync(dbConnection);
             }
 
-            if (DeletedCount == 0)
-            {
-                OnFailed();
-            }
-            else
-            {
-                OnSucceed();
-            }
+            StatuteResult = _deletedCount == 0 ? StatuteResult.Failure : StatuteResult.Success;
+
+            return DeletedCount;
         }
 
         protected virtual async Task<int> DeleteOperationAsync(IDbConnection dbConnection)

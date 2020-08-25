@@ -1,15 +1,14 @@
 ﻿using Basiclog;
-using RepoDb;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace DbStatute.Interfaces.Querying
 {
-    public interface IUpdateQuery : IReadOnlyLogbookTestable
+    public interface IUpdateQuery : IFieldQualifier, IReadOnlyLogbookTestable
     {
         IReadOnlyDictionary<string, ReadOnlyLogbookPredicate<object>> PredicateMap { get; }
-        IEnumerable<Field> UpdateFields { get; }
+
         IReadOnlyDictionary<string, object> ValueMap { get; }
     }
 

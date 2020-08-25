@@ -4,21 +4,25 @@ using RepoDb;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class MultipleSelectByQuery<TId, TModel, TSelectQuery> : MultipleSelect<TId, TModel>, IMultipleSelectByQuery<TId, TModel, TSelectQuery>
+    public abstract class MultipleSelectByQueryAndFieldQualifier<TId, TModel, TSelectQuery, TFieldQualifier> : MultipleSelectByQuery<TId, TModel, TSelectQuery>, IMultipleSelectByQueryAndFieldQualifier<TId, TModel, TSelectQuery, TFieldQualifier>
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
         where TSelectQuery : ISelectQuery<TId, TModel>
+        where TFieldQualifier : IFieldQualifier<TId, TModel>
     {
-        protected MultipleSelectByQuery(TSelectQuery selectQuery)
+        private IEnumerable<dynamic> _dynamicModels;
+
+        protected MultipleSelectByQueryAndFieldQualifier(TSelectQuery selectQuery, TFieldQualifier fieldQualifier) : base(selectQuery)
         {
-            SelectQuery = selectQuery ?? throw new ArgumentNullException(nameof(selectQuery));
+            FieldQualifier = fieldQualifier;
         }
 
-        public TSelectQuery SelectQuery { get; }
+        public TFieldQualifier FieldQualifier { get; }
 
         protected override async Task<IEnumerable<TModel>> SelectOperationAsync(IDbConnection dbConnection)
         {
@@ -33,7 +37,11 @@ namespace DbStatute
                     }
                 }
 
-                return await dbConnection.QueryAsync<TModel>(SelectQuery.QueryGroup, orderFields);
+                string tableName = ClassMappedNameCache.Get<TModel>();
+
+                _dynamicModels = await dbConnection.QueryAsync(tableName, SelectQuery.QueryGroup, FieldQualifier.Fields, orderFields);
+
+                return _dynamicModels.Cast<TModel>();
             }
 
             return null;
