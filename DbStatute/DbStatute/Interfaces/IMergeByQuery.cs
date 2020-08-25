@@ -8,6 +8,5 @@ namespace DbStatute.Interfaces
         where TModel : class, IModel<TId>, new()
         where TUpdateQuery : IUpdateQuery<TId, TModel>
     {
-
     }
 }

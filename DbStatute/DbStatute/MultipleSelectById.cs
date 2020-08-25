@@ -1,9 +1,11 @@
 ﻿using DbStatute.Interfaces;
 using RepoDb;
 using RepoDb.Enumerations;
+using RepoDb.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DbStatute
@@ -19,16 +21,52 @@ namespace DbStatute
 
         public IEnumerable<TId> Ids { get; }
 
-        protected override async Task<IEnumerable<TModel>> SelectOperationAsync(IDbConnection dbConnection)
+        protected override async IAsyncEnumerable<TModel> SelectAsSingularOperationAsync(IDbConnection dbConnection)
         {
-            if (ReadOnlyLogs.Safely)
+            if (!ReadOnlyLogs.Safely)
             {
-                QueryField queryFieldById = new QueryField(new Field(nameof(IModel<TId>.Id)), Operation.In, Ids);
-
-                return await dbConnection.QueryAsync<TModel>(queryFieldById);
+                yield break;
             }
 
-            return null;
+            ICache cache = null;
+            int cacheItemExpiration = 180;
+            string cacheKey = null;
+
+            if (Cacheable != null)
+            {
+                cache = Cacheable.Cache;
+                cacheItemExpiration = Cacheable.ItemExpiration ?? 180;
+                cacheKey = Cacheable.Key;
+            }
+
+            foreach (var id in Ids)
+            {
+                yield return await dbConnection.QueryAsync<TModel>(id, null, 1, Hints, cacheKey, cacheItemExpiration, CommandTimeout, Transaction, cache, Trace, StatementBuilder)
+                    .ContinueWith(x => x.Result.FirstOrDefault());
+            }
+        }
+
+        protected override async Task<IEnumerable<TModel>> SelectOperationAsync(IDbConnection dbConnection)
+        {
+            if (!ReadOnlyLogs.Safely)
+            {
+                return null;
+            }
+
+            QueryField queryField = new QueryField(new Field(nameof(IModel<TId>.Id)), Operation.In, Ids);
+
+            ICache cache = null;
+            int cacheItemExpiration = 180;
+            string cacheKey = null;
+
+            if (Cacheable != null)
+            {
+                cache = Cacheable.Cache;
+                cacheItemExpiration = Cacheable.ItemExpiration ?? 180;
+                cacheKey = Cacheable.Key;
+            }
+
+            return await dbConnection.QueryAsync<TModel>(queryField, null, MaxSelectCount, Hints, cacheKey, cacheItemExpiration, CommandTimeout, Transaction, cache, Trace, StatementBuilder);
         }
     }
 }

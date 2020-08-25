@@ -8,5 +8,6 @@ namespace DbStatute.Interfaces
         where TModel : class, IModel<TId>, new()
     {
         IEnumerable<TId> Ids { get; }
+        ICacheable Cacheable { get; set; }
     }
 }

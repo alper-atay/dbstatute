@@ -11,6 +11,10 @@ namespace DbStatute.Interfaces
     {
         IEnumerable<TModel> SelectedModels { get; }
 
+        IAsyncEnumerable<TModel> SelectAsSingular(IDbConnection dbConnection);
+
         Task<IEnumerable<TModel>> SelectAsync(IDbConnection dbConnection);
+
+        Task<IEnumerable<TModel>> SelectByActingAsync(IDbConnection dbConnection, Action<TModel> action);
     }
 }

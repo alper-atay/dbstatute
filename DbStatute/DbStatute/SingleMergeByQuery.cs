@@ -40,7 +40,7 @@ namespace DbStatute
 
         protected virtual async Task<TId> MergeOperationAsync(IDbConnection dbConnection)
         {
-            return await dbConnection.MergeAsync<TModel, TId>(RawModel, UpdateQuery.Fields, Hints, CommandTimeout, DbTransaction, Trace, StatementBuilder);
+            return await dbConnection.MergeAsync<TModel, TId>(RawModel, UpdateQuery.Fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
         }
     }
 }

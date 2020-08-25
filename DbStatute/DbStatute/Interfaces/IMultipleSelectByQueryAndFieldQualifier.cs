@@ -1,5 +1,6 @@
 ﻿using DbStatute.Interfaces.Querying;
 using System;
+using System.Collections.Generic;
 
 namespace DbStatute.Interfaces
 {
@@ -9,6 +10,8 @@ namespace DbStatute.Interfaces
         where TSelectQuery : ISelectQuery<TId, TModel>
         where TFieldQualifier : IFieldQualifier<TId, TModel>
     {
+        int DynamicSelectedModelCount { get; }
+        IEnumerable<dynamic> DynamicSelectedModels { get; }
         TFieldQualifier FieldQualifier { get; }
     }
 }

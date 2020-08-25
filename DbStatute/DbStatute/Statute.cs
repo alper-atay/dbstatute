@@ -6,7 +6,7 @@ using System.Data;
 
 namespace DbStatute
 {
-    public abstract class Statute
+    public abstract class Statute : IStatute
     {
         private StatuteResult _statuteResult = StatuteResult.Unknown;
 
@@ -16,20 +16,23 @@ namespace DbStatute
             Succeed += OnSucceed;
         }
 
+        public IReadOnlyLogbook ReadOnlyLogs => Logs;
+        protected ILogbook Logs { get; } = Logger.New();
+
+        #region IStatute
+
         public event Action Failed;
 
         public event Action Succeed;
 
         public int? CommandTimeout { get; set; } = null;
-        public IDbTransaction DbTransaction { get; set; } = null;
         public string Hints { get; set; } = null;
-        public IReadOnlyLogbook ReadOnlyLogs => Logs;
         public IStatementBuilder StatementBuilder { get; set; } = null;
 
         public StatuteResult StatuteResult
         {
             get => _statuteResult;
-            protected set
+            set
             {
                 _statuteResult = value;
 
@@ -54,7 +57,9 @@ namespace DbStatute
         }
 
         public ITrace Trace { get; set; } = null;
-        protected ILogbook Logs { get; } = Logger.New();
+        public IDbTransaction Transaction { get; set; } = null;
+
+        #endregion IStatute
 
         protected abstract void OnFailed();
 

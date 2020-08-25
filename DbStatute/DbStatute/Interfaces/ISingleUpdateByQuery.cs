@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 namespace DbStatute.Interfaces
 {
     public interface ISingleUpdateByQuery<TId, TModel, TUpdateQuery> : IUpdateByQuery<TId, TModel, TUpdateQuery>
-    where TId : notnull, IConvertible
-    where TModel : class, IModel<TId>, new()
-    where TUpdateQuery : IUpdateQuery<TId, TModel>
+        where TId : notnull, IConvertible
+        where TModel : class, IModel<TId>, new()
+        where TUpdateQuery : IUpdateQuery<TId, TModel>
     {
         TModel UpdatedModel { get; }
 
