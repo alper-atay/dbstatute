@@ -7,9 +7,10 @@ namespace DbStatute.Interfaces.Querying.Statutes
         IFieldQualifier FieldQualifier { get; }
     }
 
-    public interface IUpdateQuery<TId, TModel> : IUpdateQuery
+    public interface IUpdateQuery<TId, TModel> : IStatuteQuery<TId, TModel>, IUpdateQuery
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
     {
+        new IFieldQualifier<TId, TModel> FieldQualifier { get; }
     }
 }

@@ -8,4 +8,6 @@ namespace DbStatute.Querying.Statutes
         public IReadOnlyLogbook ReadOnlyLogs => Logs;
         protected ILogbook Logs { get; } = Logger.NewLogbook();
     }
+
+
 }

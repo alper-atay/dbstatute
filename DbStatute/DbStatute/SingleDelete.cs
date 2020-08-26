@@ -30,14 +30,7 @@ namespace DbStatute
                 _deletedCount = await DeleteOperationAsync(dbConnection);
             }
 
-            if (_deletedCount == 0)
-            {
-                OnFailed();
-            }
-            else
-            {
-                OnSucceed();
-            }
+            StatuteResult = _deletedCount > 0 ? StatuteResult.Success : StatuteResult.Failure;
         }
 
         protected virtual async Task<int> DeleteOperationAsync(IDbConnection dbConnection)
@@ -46,7 +39,7 @@ namespace DbStatute
 
             if (SingleSelect.SelectedModel != null)
             {
-                return await dbConnection.DeleteAsync(SingleSelect.SelectedModel);
+                return await dbConnection.DeleteAsync(SingleSelect.SelectedModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
             }
 
             return 0;

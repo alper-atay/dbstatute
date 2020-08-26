@@ -6,10 +6,9 @@ namespace DbStatute.Interfaces.Querying.Statutes
     {
     }
 
-    public interface IMergerQuery<TId, TModel> : IMergeQuery
+    public interface IMergerQuery<TId, TModel> : IStatuteQuery<TId, TModel>, IMergeQuery
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
     {
-        TModel MergerModel { get; }
     }
 }
