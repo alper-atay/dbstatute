@@ -1,11 +1,11 @@
-﻿using DbStatute.Querying;
+﻿using DbStatute.Querying.Qualifiers;
 using RepoDb;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace DbStatute.Interfaces.Querying
+namespace DbStatute.Interfaces.Querying.Qualifiers
 {
     public interface IFieldQualifier
     {

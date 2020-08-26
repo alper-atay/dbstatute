@@ -1,4 +1,4 @@
-﻿namespace DbStatute.Interfaces.Querying.Statutes
+﻿namespace DbStatute.Interfaces.Querying
 {
     public interface IStatuteQuery
     {

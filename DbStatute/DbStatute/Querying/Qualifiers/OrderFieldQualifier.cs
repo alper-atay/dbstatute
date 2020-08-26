@@ -1,5 +1,5 @@
 ﻿using DbStatute.Interfaces;
-using DbStatute.Interfaces.Querying;
+using DbStatute.Interfaces.Querying.Qualifiers;
 using RepoDb;
 using RepoDb.Enumerations;
 using RepoDb.Extensions;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace DbStatute.Querying
+namespace DbStatute.Querying.Qualifiers
 {
     public class OrderFieldQualifier : IOrderFieldQualifier
     {

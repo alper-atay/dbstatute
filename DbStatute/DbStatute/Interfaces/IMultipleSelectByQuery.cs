@@ -1,4 +1,4 @@
-﻿using DbStatute.Interfaces.Querying.Statutes;
+﻿using DbStatute.Interfaces.Querying;
 
 namespace DbStatute.Interfaces
 {

@@ -1,4 +1,6 @@
-﻿namespace DbStatute.Interfaces.Querying.Statutes
+﻿using DbStatute.Interfaces.Querying.Qualifiers;
+
+namespace DbStatute.Interfaces.Querying
 {
     public interface IInsertQuery : IStatuteQuery
     {

@@ -1,4 +1,4 @@
-﻿using DbStatute.Interfaces.Querying.Statutes;
+﻿using DbStatute.Interfaces.Querying;
 using System;
 using System.Collections.Generic;
 using System.Data;

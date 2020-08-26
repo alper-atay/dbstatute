@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 
-namespace DbStatute.Interfaces.Querying
+namespace DbStatute.Interfaces.Querying.Qualifiers
 {
     public interface IOperationalQueryQualifier : IQueryQualifier
     {

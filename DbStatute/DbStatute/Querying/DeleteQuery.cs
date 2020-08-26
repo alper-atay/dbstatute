@@ -1,7 +1,7 @@
 ﻿using DbStatute.Interfaces;
-using DbStatute.Interfaces.Querying.Statutes;
+using DbStatute.Interfaces.Querying;
 
-namespace DbStatute.Querying.Statutes
+namespace DbStatute.Querying
 {
     public class DeleteQuery : IDeleteQuery
     {

@@ -1,4 +1,4 @@
-﻿using DbStatute.Interfaces.Querying.Statutes;
+﻿using DbStatute.Interfaces.Querying;
 
 namespace DbStatute.Interfaces
 {
@@ -8,7 +8,7 @@ namespace DbStatute.Interfaces
         TMergeQuery MergeQuery { get; }
     }
 
-    public interface ISingleMergeByQuery<TModel, TMergeQuery> : ISingleMerge<TModel>, ISingleMerge
+    public interface ISingleMergeByQuery<TModel, TMergeQuery> : ISingleMerge<TModel>, ISingleMergeByQuery<TMergeQuery>
         where TModel : class, IModel, new()
         where TMergeQuery : IMergerQuery<TModel>
     {

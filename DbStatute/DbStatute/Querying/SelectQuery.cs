@@ -1,9 +1,10 @@
 ﻿using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying;
-using DbStatute.Interfaces.Querying.Statutes;
+using DbStatute.Interfaces.Querying.Qualifiers;
+using DbStatute.Querying.Qualifiers;
 using System;
 
-namespace DbStatute.Querying.Statutes
+namespace DbStatute.Querying
 {
     public class SelectQuery : StatuteQuery, ISelectQuery
     {

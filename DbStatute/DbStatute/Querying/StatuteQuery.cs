@@ -1,9 +1,9 @@
 ﻿using Basiclog;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Querying.Statutes;
+using DbStatute.Interfaces.Querying;
 using System;
 
-namespace DbStatute.Querying.Statutes
+namespace DbStatute.Querying
 {
     public abstract class StatuteQuery : IStatuteQuery
     {

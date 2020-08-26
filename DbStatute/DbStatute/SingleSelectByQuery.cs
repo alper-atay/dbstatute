@@ -1,5 +1,5 @@
 ﻿using DbStatute.Interfaces;
-using DbStatute.Interfaces.Querying.Statutes;
+using DbStatute.Interfaces.Querying;
 using RepoDb;
 using RepoDb.Interfaces;
 using System.Data;

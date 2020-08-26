@@ -1,8 +1,8 @@
 ﻿using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying;
-using DbStatute.Interfaces.Querying.Statutes;
+using DbStatute.Interfaces.Querying.Qualifiers;
 
-namespace DbStatute.Querying.Statutes
+namespace DbStatute.Querying
 {
     public class UpdateQuery<TModel> : StatuteQuery, IUpdateQuery<TModel>
         where TModel : class, IModel, new()
