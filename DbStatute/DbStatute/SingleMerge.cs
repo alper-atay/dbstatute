@@ -33,6 +33,8 @@ namespace DbStatute
                     .ContinueWith(x => x.Result.FirstOrDefault());
             }
 
+            StatuteResult = _mergedModel is null ? StatuteResult.Failure : StatuteResult.Success;
+
             return MergedModel;
         }
 

@@ -1,5 +1,5 @@
 ﻿using DbStatute.Interfaces;
-using DbStatute.Interfaces.Querying;
+using DbStatute.Interfaces.Querying.Statutes;
 using RepoDb;
 using RepoDb.Interfaces;
 using System;
@@ -45,14 +45,7 @@ namespace DbStatute
                 return null;
             }
 
-            IEnumerable<OrderField> orderFields = null;
-            if (SelectQuery is ISortableQuery sortableQuery)
-            {
-                if (sortableQuery.HasOrderField)
-                {
-                    orderFields = sortableQuery.OrderFields;
-                }
-            }
+            IEnumerable<OrderField> orderFields = SelectQuery.OrderFieldQualifier.OrderFields;
 
             ICache cache = null;
             int cacheItemExpiration = 180;
@@ -65,7 +58,9 @@ namespace DbStatute
                 cacheKey = Cacheable.Key;
             }
 
-            return await dbConnection.QueryAsync<TModel>(SelectQuery.QueryGroup, orderFields, MaxSelectCount, Hints, cacheKey, cacheItemExpiration, CommandTimeout, Transaction, cache, Trace, StatementBuilder);
+            Logs.AddRange(SelectQuery.OperationalQueryQualifier.BuildQueryGroup(out QueryGroup queryGroup));
+
+            return await dbConnection.QueryAsync<TModel>(queryGroup, orderFields, MaxSelectCount, Hints, cacheKey, cacheItemExpiration, CommandTimeout, Transaction, cache, Trace, StatementBuilder);
         }
     }
 }

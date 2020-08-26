@@ -3,11 +3,10 @@ using System;
 
 namespace DbStatute.Interfaces
 {
-    public interface IMultipleSelectByQuery<TId, TModel, TSelectQuery> : IMultipleSelect<TId, TModel>
+    public interface IMultipleMergeByQuery<TId, TModel, TMergeQuery> : IMerge
         where TId : notnull, IConvertible
         where TModel : class, IModel<TId>, new()
-        where TSelectQuery : ISelectQuery<TId, TModel>
+        where TMergeQuery : IMergerQuery<TId, TModel>
     {
-        TSelectQuery SelectQuery { get; }
     }
 }

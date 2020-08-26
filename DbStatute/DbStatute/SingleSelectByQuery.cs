@@ -1,6 +1,7 @@
 ﻿using DbStatute.Interfaces;
-using DbStatute.Interfaces.Querying;
+using DbStatute.Interfaces.Querying.Statutes;
 using RepoDb;
+using RepoDb.Interfaces;
 using System;
 using System.Data;
 using System.Linq;
@@ -22,26 +23,26 @@ namespace DbStatute
 
         protected override Task<TModel> SelectOperationAsync(IDbConnection dbConnection)
         {
-            Logs.AddRange(SelectQuery.Test());
-            if (ReadOnlyLogs.Safely)
+            Logs.AddRange(SelectQuery.OperationalQueryQualifier.BuildQueryGroup(out QueryGroup queryGroup));
+
+            if (!ReadOnlyLogs.Safely)
             {
-                QueryGroup queryGroup = SelectQuery.QueryGroup;
-                int queryFieldCount = queryGroup.GetFields(true).Count();
-
-                if (queryFieldCount > 0)
-                {
-                    return dbConnection.QueryAsync<TModel>(SelectQuery.QueryGroup, top: 1)
-                        .ContinueWith(x => x.Result.FirstOrDefault());
-                }
-                else
-                {
-                    Logs.Warning($"{GetType().FullName} class, query group does not contain query fields!");
-                }
-
                 return null;
             }
 
-            return null;
+            ICache cache = null;
+            int cacheItemExpiration = 180;
+            string cacheKey = null;
+
+            if (Cacheable != null)
+            {
+                cache = Cacheable.Cache;
+                cacheItemExpiration = Cacheable.ItemExpiration ?? 180;
+                cacheKey = Cacheable.Key;
+            }
+
+            return dbConnection.QueryAsync<TModel>(queryGroup, SelectQuery.OrderFieldQualifier.OrderFields, 1, Hints, cacheKey, cacheItemExpiration, CommandTimeout, Transaction, cache, Trace, StatementBuilder)
+                .ContinueWith(x => x.Result.FirstOrDefault());
         }
     }
 }

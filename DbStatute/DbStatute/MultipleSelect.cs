@@ -12,7 +12,6 @@ namespace DbStatute
     {
         private readonly List<TModel> _selectedModels = new List<TModel>();
 
-        public ICacheable Cacheable { get; set; }
         public int? MaxSelectCount { get; }
         public override int SelectedCount => _selectedModels.Count;
         public IEnumerable<TModel> SelectedModels => SelectedCount > 0 ? _selectedModels : null;

@@ -1,9 +1,9 @@
 ﻿using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying;
 using RepoDb;
-using RepoDb.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace DbStatute.Querying
@@ -26,28 +26,73 @@ namespace DbStatute.Querying
 
         public IEnumerable<Field> Fields => _fields;
 
-        public bool IsFieldSetted<TValue>(Expression<Func<TModel, TValue>> property)
+        public bool IsFieldSetted(Expression<Func<TModel, object>> property)
         {
-            Field field = property.ToMember().GetField();
+            Field field = Field.Parse(property).Single();
 
             return _fields.Contains(field);
         }
 
-        public virtual void SetField<TProperty>(Expression<Func<TModel, TProperty>> property)
+        public bool IsFieldSetted(string propertyName, Type propertyType = null)
         {
-            Field field = property.ToMember().GetField();
+            Field field = new Field(propertyName, propertyType);
 
-            _fields.Add(field);
+            return _fields.Contains(field);
         }
 
-        public virtual bool UnsetField<TProperty>(Expression<Func<TModel, TProperty>> property)
+        public bool SetField(Expression<Func<TModel, object>> property, bool overrideEnabled = false)
         {
-            Field field = property.ToMember().GetField();
+            if (IsFieldSetted(property))
+            {
+                if (overrideEnabled)
+                {
+                    UnsetField(property);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            Field field = Field.Parse(property).Single();
+
+            return _fields.Add(field);
+        }
+
+        public bool SetField(string propertyName, Type propertyType = null, bool overrideEnabled = false)
+        {
+            if (IsFieldSetted(propertyName))
+            {
+                if (overrideEnabled)
+                {
+                    UnsetField(propertyName);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            Field field = new Field(propertyName, propertyType);
+
+            return _fields.Add(field);
+        }
+
+        public bool UnsetField(Expression<Func<TModel, object>> property)
+        {
+            Field field = Field.Parse(property).Single();
 
             return _fields.Remove(field);
         }
 
-        protected bool UnsetField(string propertyName)
+        public bool UnsetField(string propertyName, Type propertyType = null)
+        {
+            Field field = new Field(propertyName, propertyType);
+
+            return _fields.Remove(field);
+        }
+
+        public bool UnsetField(string propertyName)
         {
             int removeCount = _fields.RemoveWhere(x => x.Name == propertyName);
 

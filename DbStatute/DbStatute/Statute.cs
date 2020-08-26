@@ -17,7 +17,7 @@ namespace DbStatute
         }
 
         public IReadOnlyLogbook ReadOnlyLogs => Logs;
-        protected ILogbook Logs { get; } = Logger.New();
+        protected ILogbook Logs { get; } = Logger.NewLogbook();
 
         #region IStatute
 

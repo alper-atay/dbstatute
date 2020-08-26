@@ -1,5 +1,5 @@
 ﻿using DbStatute.Interfaces;
-using DbStatute.Interfaces.Querying;
+using DbStatute.Interfaces.Querying.Statutes;
 using RepoDb;
 using System;
 using System.Data;
@@ -38,12 +38,6 @@ namespace DbStatute
 
         protected virtual async Task<TModel> UpdateOperationAsync(IDbConnection dbConnection)
         {
-            Logs.AddRange(UpdateQuery.Test());
-            if (!ReadOnlyLogs.Safely)
-            {
-                return null;
-            }
-
             TModel selectedModel = await SingleSelect.SelectAsync(dbConnection);
             Logs.AddRange(SingleSelect.ReadOnlyLogs);
 
@@ -54,6 +48,7 @@ namespace DbStatute
 
             //TODO: Use field qualifier
             //Wait next RepoDb beta release
+            //UpdateQuery.FieldQualifier
             int updateModelId = await dbConnection.UpdateAsync(selectedModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
             if (updateModelId > 0)
