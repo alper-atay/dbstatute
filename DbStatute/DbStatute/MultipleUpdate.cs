@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 namespace DbStatute
 {
     public abstract class MultipleUpdate<TModel, TUpdateQuery, TMultipleSelect> : Update<TModel>, IMultipleUpdate<TModel, TUpdateQuery, TMultipleSelect>
-
         where TModel : class, IModel, new()
         where TUpdateQuery : IUpdateQuery<TModel>
         where TMultipleSelect : IMultipleSelect<TModel>
@@ -19,6 +18,7 @@ namespace DbStatute
         protected MultipleUpdate(TMultipleSelect multipleSelect, TUpdateQuery updateQuery)
         {
             MultipleSelect = multipleSelect;
+            UpdateQuery = updateQuery;
         }
 
         public int BatchSize { get; set; } = 10;
@@ -43,6 +43,11 @@ namespace DbStatute
             }
 
             StatuteResult = _updatedCount == 0 ? StatuteResult.Failure : StatuteResult.Success;
+        }
+
+        IAsyncEnumerable<object> IMultipleUpdate<TUpdateQuery, TMultipleSelect>.UpdateAsSinglyAsync(IDbConnection dbConnection)
+        {
+            return UpdateAsSinglyOperationAsync(dbConnection);
         }
 
         public async Task<int> UpdateAsync(IDbConnection dbConnection)
@@ -123,11 +128,6 @@ namespace DbStatute
             }
 
             return 0;
-        }
-
-        IAsyncEnumerable<object> IMultipleUpdate<TUpdateQuery, TMultipleSelect>.UpdateAsSinglyAsync(IDbConnection dbConnection)
-        {
-            throw new NotImplementedException();
         }
     }
 }

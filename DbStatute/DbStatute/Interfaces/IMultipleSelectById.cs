@@ -7,7 +7,6 @@ namespace DbStatute.Interfaces
         IEnumerable<object> Ids { get; }
     }
 
-
     public interface IMultipleSelectById<TModel> : IMultipleSelect<TModel>, IMultipleSelectById
         where TModel : class, IModel, new()
     {

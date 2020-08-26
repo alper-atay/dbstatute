@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Interfaces
 {
-
-
     public interface IMultipleDelete<TModel, TMultipleSelect> : IDelete<TModel>
         where TModel : class, IModel, new()
         where TMultipleSelect : IMultipleSelect<TModel>
