@@ -1,14 +1,11 @@
-﻿using System;
-
-namespace DbStatute.Interfaces.Querying.Statutes
+﻿namespace DbStatute.Interfaces.Querying.Statutes
 {
     public interface IStatuteQuery
     {
     }
 
-    public interface IStatuteQuery<TId, TModel> : IStatuteQuery
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public interface IStatuteQuery<TModel> : IStatuteQuery
+        where TModel : class, IModel, new()
     {
     }
 }

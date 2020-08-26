@@ -6,69 +6,65 @@ using RepoDb.Exceptions;
 using RepoDb.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 
 namespace DbStatute.Querying
 {
-    public class QueryQualifier<TId, TModel> : IQueryQualifier<TId, TModel>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public class QueryQualifier : IQueryQualifier
     {
-        private readonly FieldQualifier<TId, TModel> _fieldQualifier = new FieldQualifier<TId, TModel>();
+        public QueryQualifier()
+        {
+            PredicateMap = new Dictionary<string, ReadOnlyLogbookPredicate<object>>();
+            ValueMap = new Dictionary<string, object>();
+            FieldQualifier = IFieldQualifier.Empty;
+        }
+
+        public QueryQualifier(IFieldQualifier fieldQualifier)
+        {
+            PredicateMap = new Dictionary<string, ReadOnlyLogbookPredicate<object>>();
+            ValueMap = new Dictionary<string, object>();
+            FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
+        }
+
+        public QueryQualifier(Dictionary<string, ReadOnlyLogbookPredicate<object>> predicateMap, Dictionary<string, object> valueMap)
+        {
+            PredicateMap = predicateMap ?? throw new ArgumentNullException(nameof(predicateMap));
+            ValueMap = valueMap ?? throw new ArgumentNullException(nameof(valueMap));
+            FieldQualifier = IFieldQualifier.Empty;
+        }
+
+        public QueryQualifier(Dictionary<string, ReadOnlyLogbookPredicate<object>> predicateMap, Dictionary<string, object> valueMap, IFieldQualifier fieldQualifier)
+        {
+            PredicateMap = predicateMap ?? throw new ArgumentNullException(nameof(predicateMap));
+            ValueMap = valueMap ?? throw new ArgumentNullException(nameof(valueMap));
+            FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
+        }
+
+        public IFieldQualifier FieldQualifier { get; }
+        public IReadOnlyDictionary<string, ReadOnlyLogbookPredicate<object>> PredicateMap { get; }
+        public IReadOnlyDictionary<string, object> ValueMap { get; }
+
+        public virtual IReadOnlyLogbook GetQueryGroup(out QueryGroup queryGroup)
+        {
+            return IQueryQualifier.GetQueryGroup(this, out queryGroup);
+        }
+    }
+
+    public class QueryQualifier<TModel> : IQueryQualifier<TModel>
+        where TModel : class, IModel, new()
+    {
+        private readonly FieldQualifier<TModel> _fieldQualifier = new FieldQualifier<TModel>();
         private readonly Dictionary<string, ReadOnlyLogbookPredicate<object>> _predicateMap = new Dictionary<string, ReadOnlyLogbookPredicate<object>>();
         private readonly Dictionary<string, object> _valueMap = new Dictionary<string, object>();
 
+        public IFieldQualifier<TModel> FieldQualifier => _fieldQualifier;
+        IFieldQualifier IQueryQualifier.FieldQualifier => _fieldQualifier;
         public IReadOnlyDictionary<string, ReadOnlyLogbookPredicate<object>> PredicateMap => _predicateMap;
         public IReadOnlyDictionary<string, object> ValueMap => _valueMap;
 
-        public virtual IReadOnlyLogbook BuildQueryGroup(out QueryGroup queryGroup)
+        public virtual IReadOnlyLogbook GetQueryGroup(out QueryGroup queryGroup)
         {
-            queryGroup = null;
-
-            ILogbook logs = Logger.NewLogbook();
-
-            IFieldQualifier fieldQualifier = GetFieldQualifier();
-            IEnumerable<Field> fields = fieldQualifier.Fields;
-
-            ICollection<QueryField> queryFields = new Collection<QueryField>();
-
-            foreach (Field field in fields)
-            {
-                string name = field.Name;
-                bool valueFound = ValueMap.TryGetValue(name, out object value);
-                bool predicateFound = PredicateMap.TryGetValue(name, out ReadOnlyLogbookPredicate<object> predicate);
-
-                if (valueFound)
-                {
-                    QueryField queryField = new QueryField(field, value);
-                    queryFields.Add(queryField);
-                }
-
-                if (valueFound && predicateFound)
-                {
-                    logs.AddRange(predicate.Invoke(value));
-                }
-            }
-
-            int queryFieldCount = queryFields.Count;
-
-            if (queryFieldCount > 0)
-            {
-                queryGroup = new QueryGroup(queryFields);
-            }
-
-            return logs;
-        }
-
-        public IFieldQualifier<TId, TModel> GetFieldQualifier()
-        {
-            return _fieldQualifier;
-        }
-
-        IFieldQualifier IQueryQualifier.GetFieldQualifier()
-        {
-            return _fieldQualifier;
+            return IQueryQualifier.GetQueryGroup(this, out queryGroup);
         }
 
         public bool SetPredicate(Expression<Func<TModel, object>> property, ReadOnlyLogbookPredicate<object> predicate, bool overrideEnabled = false)

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DbStatute.Interfaces.Querying.Statutes
+﻿namespace DbStatute.Interfaces.Querying.Statutes
 {
     public interface ISelectQuery : IStatuteQuery
     {
@@ -8,11 +6,10 @@ namespace DbStatute.Interfaces.Querying.Statutes
         public IOrderFieldQualifier OrderFieldQualifier { get; }
     }
 
-    public interface ISelectQuery<TId, TModel> : IStatuteQuery<TId, TModel>, ISelectQuery
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public interface ISelectQuery<TModel> : IStatuteQuery<TModel>, ISelectQuery
+        where TModel : class, IModel, new()
     {
-        new IOperationalQueryQualifier<TId, TModel> OperationalQueryQualifier { get; }
-        new IOrderFieldQualifier<TId, TModel> OrderFieldQualifier { get; }
+        new IOperationalQueryQualifier<TModel> OperationalQueryQualifier { get; }
+        new IOrderFieldQualifier<TModel> OrderFieldQualifier { get; }
     }
 }

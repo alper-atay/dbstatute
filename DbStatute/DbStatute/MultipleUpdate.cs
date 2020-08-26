@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class MultipleUpdate<TId, TModel, TUpdateQuery, TMultipleSelect> : Update, IMultipleUpdate<TId, TModel, TUpdateQuery, TMultipleSelect>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
-        where TUpdateQuery : IUpdateQuery<TId, TModel>
-        where TMultipleSelect : IMultipleSelect<TId, TModel>
+    public abstract class MultipleUpdate<TModel, TUpdateQuery, TMultipleSelect> : Update<TModel>, IMultipleUpdate<TModel, TUpdateQuery, TMultipleSelect>
+
+        where TModel : class, IModel, new()
+        where TUpdateQuery : IUpdateQuery<TModel>
+        where TMultipleSelect : IMultipleSelect<TModel>
     {
         private int _updatedCount;
 
@@ -73,6 +73,11 @@ namespace DbStatute
             return UpdatedCount;
         }
 
+        public Task<int> UpdateByActingAsync(IDbConnection dbConnection, Action action)
+        {
+            throw new NotImplementedException();
+        }
+
         protected virtual async IAsyncEnumerable<TModel> UpdateAsSinglyOperationAsync(IDbConnection dbConnection)
         {
             await foreach (TModel selectedModel in MultipleSelect.SelectAsSinglyAsync(dbConnection))
@@ -118,6 +123,11 @@ namespace DbStatute
             }
 
             return 0;
+        }
+
+        IAsyncEnumerable<object> IMultipleUpdate<TUpdateQuery, TMultipleSelect>.UpdateAsSinglyAsync(IDbConnection dbConnection)
+        {
+            throw new NotImplementedException();
         }
     }
 }

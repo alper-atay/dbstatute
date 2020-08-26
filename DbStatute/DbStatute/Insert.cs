@@ -6,4 +6,10 @@ namespace DbStatute
     {
         public abstract int InsertedCount { get; }
     }
+
+    public abstract class Insert<TModel> : Statute<TModel>, IInsert<TModel>
+        where TModel : class, IModel, new()
+    {
+        public abstract int InsertedCount { get; }
+    }
 }

@@ -1,16 +1,22 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Threading.Tasks;
 
 namespace DbStatute.Interfaces
 {
-    public interface ISingleMerge<TId, TModel> : IMerge
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public interface ISingleMerge : IMerge
     {
-        TModel MergedModel { get; }
-        TModel RawModel { get; }
+        object MergedModel { get; }
+        object RawModel { get; }
 
-        Task<TModel> MergeAsync(IDbConnection dbConnection);
+        Task<object> MergeAsync(IDbConnection dbConnection);
+    }
+
+    public interface ISingleMerge<TModel> : IMerge<TModel>, ISingleMerge
+        where TModel : class, IModel, new()
+    {
+        new TModel MergedModel { get; }
+        new TModel RawModel { get; }
+
+        new Task<TModel> MergeAsync(IDbConnection dbConnection);
     }
 }

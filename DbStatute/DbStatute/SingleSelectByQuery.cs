@@ -2,17 +2,16 @@
 using DbStatute.Interfaces.Querying.Statutes;
 using RepoDb;
 using RepoDb.Interfaces;
-using System;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class SingleSelectByQuery<TId, TModel, TSelectQuery> : SingleSelect<TId, TModel>, ISingleSelectByQuery<TId, TModel, TSelectQuery>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
-        where TSelectQuery : ISelectQuery<TId, TModel>
+    public abstract class SingleSelectByQuery<TModel, TSelectQuery> : SingleSelect<TModel>, ISingleSelectByQuery<TModel, TSelectQuery>
+
+        where TModel : class, IModel, new()
+        where TSelectQuery : ISelectQuery<TModel>
     {
         protected SingleSelectByQuery(TSelectQuery selectQuery)
         {
@@ -23,7 +22,7 @@ namespace DbStatute
 
         protected override Task<TModel> SelectOperationAsync(IDbConnection dbConnection)
         {
-            Logs.AddRange(SelectQuery.OperationalQueryQualifier.BuildQueryGroup(out QueryGroup queryGroup));
+            Logs.AddRange(SelectQuery.OperationalQueryQualifier.GetQueryGroup(out QueryGroup queryGroup));
 
             if (!ReadOnlyLogs.Safely)
             {

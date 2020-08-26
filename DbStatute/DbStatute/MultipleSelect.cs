@@ -2,19 +2,22 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class MultipleSelect<TId, TModel> : Select, IMultipleSelect<TId, TModel>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public abstract class MultipleSelect<TModel> : Select, IMultipleSelect<TModel>
+
+        where TModel : class, IModel, new()
     {
         private readonly List<TModel> _selectedModels = new List<TModel>();
 
         public int? MaxSelectCount { get; }
+        public Type ModelType => throw new NotImplementedException();
         public override int SelectedCount => _selectedModels.Count;
         public IEnumerable<TModel> SelectedModels => SelectedCount > 0 ? _selectedModels : null;
+        IEnumerable<object> IMultipleSelect.SelectedModels => SelectedModels;
 
         public async IAsyncEnumerable<TModel> SelectAsSinglyAsync(IDbConnection dbConnection)
         {
@@ -35,6 +38,11 @@ namespace DbStatute
             StatuteResult = SelectedModels is null ? StatuteResult.Failure : StatuteResult.Success;
         }
 
+        IAsyncEnumerable<object> IMultipleSelect.SelectAsSinglyAsync(IDbConnection dbConnection)
+        {
+            return SelectAsSignlyOperationAsync(dbConnection);
+        }
+
         public async Task<IEnumerable<TModel>> SelectAsync(IDbConnection dbConnection)
         {
             _selectedModels.Clear();
@@ -48,6 +56,11 @@ namespace DbStatute
             StatuteResult = SelectedModels is null ? StatuteResult.Failure : StatuteResult.Success;
 
             return SelectedModels;
+        }
+
+        Task<IEnumerable<object>> IMultipleSelect.SelectAsync(IDbConnection dbConnection)
+        {
+            return SelectAsync(dbConnection).ContinueWith(x => x.Result.Cast<object>());
         }
 
         public async Task<IEnumerable<TModel>> SelectByActingAsync(IDbConnection dbConnection, Action<TModel> action)
@@ -68,6 +81,11 @@ namespace DbStatute
             StatuteResult = SelectedModels is null ? StatuteResult.Failure : StatuteResult.Success;
 
             return SelectedModels;
+        }
+
+        public Task<IEnumerable<object>> SelectByActingAsync(IDbConnection dbConnection, Action<object> action)
+        {
+            return SelectByActingAsync(dbConnection, action).ContinueWith(x => x.Result.Cast<object>());
         }
 
         protected abstract IAsyncEnumerable<TModel> SelectAsSignlyOperationAsync(IDbConnection dbConnection);

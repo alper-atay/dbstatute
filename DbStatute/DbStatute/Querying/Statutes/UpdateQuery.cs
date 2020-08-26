@@ -1,20 +1,18 @@
 ﻿using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying;
 using DbStatute.Interfaces.Querying.Statutes;
-using System;
 
 namespace DbStatute.Querying.Statutes
 {
-    public class UpdateQuery<TId, TModel> : StatuteQuery, IUpdateQuery<TId, TModel>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public class UpdateQuery<TModel> : StatuteQuery, IUpdateQuery<TModel>
+        where TModel : class, IModel, new()
     {
-        protected UpdateQuery(IFieldQualifier<TId, TModel> fieldQualifier)
+        protected UpdateQuery(IFieldQualifier<TModel> fieldQualifier)
         {
             FieldQualifier = fieldQualifier;
         }
 
-        public IFieldQualifier<TId, TModel> FieldQualifier { get; };
+        public IFieldQualifier<TModel> FieldQualifier { get; }
         IFieldQualifier IUpdateQuery.FieldQualifier => FieldQualifier;
     }
 }

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class SingleMerge<TId, TModel> : Merge, ISingleMerge<TId, TModel>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public abstract class SingleMerge<TModel> : Merge<TModel>, ISingleMerge<TModel>
+
+        where TModel : class, IModel, new()
     {
         private TModel _mergedModel;
 
@@ -20,7 +20,9 @@ namespace DbStatute
 
         public override int MergedCount => _mergedModel is null ? 0 : 1;
         public TModel MergedModel => (TModel)_mergedModel?.Clone();
+        object ISingleMerge.MergedModel => MergedModel;
         public TModel RawModel { get; }
+        object ISingleMerge.RawModel => RawModel;
 
         public async Task<TModel> MergeAsync(IDbConnection dbConnection)
         {
@@ -28,7 +30,7 @@ namespace DbStatute
 
             if (ReadOnlyLogs.Safely)
             {
-                TId mergedModelId = await MergeOperationAsync(dbConnection);
+                object mergedModelId = await MergeOperationAsync(dbConnection);
                 _mergedModel = await dbConnection.QueryAsync<TModel>(mergedModelId)
                     .ContinueWith(x => x.Result.FirstOrDefault());
             }
@@ -38,9 +40,14 @@ namespace DbStatute
             return MergedModel;
         }
 
-        protected virtual async Task<TId> MergeOperationAsync(IDbConnection dbConnection)
+        Task<object> ISingleMerge.MergeAsync(IDbConnection dbConnection)
         {
-            return await dbConnection.MergeAsync<TModel, TId>(RawModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+            return MergeAsync(dbConnection).ContinueWith(x => (object)x.Result);
+        }
+
+        protected virtual async Task<object> MergeOperationAsync(IDbConnection dbConnection)
+        {
+            return await dbConnection.MergeAsync<TModel, object>(RawModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
         }
     }
 }

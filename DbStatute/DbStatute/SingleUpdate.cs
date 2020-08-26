@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class SingleUpdate<TId, TModel, TUpdateQuery, TSingleSelect> : Update, ISingleUpdate<TId, TModel, TUpdateQuery, TSingleSelect>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
-        where TUpdateQuery : IUpdateQuery<TId, TModel>
-        where TSingleSelect : ISingleSelect<TId, TModel>
+    public abstract class SingleUpdate<TModel, TUpdateQuery, TSingleSelect> : Update<TModel>, ISingleUpdate<TModel, TUpdateQuery, TSingleSelect>
+
+        where TModel : class, IModel, new()
+        where TUpdateQuery : IUpdateQuery<TModel>
+        where TSingleSelect : ISingleSelect<TModel>
     {
         private TModel _updatedModel;
 
@@ -25,6 +25,7 @@ namespace DbStatute
         public TSingleSelect SingleSelect { get; }
         public override int UpdatedCount => _updatedModel is null ? 0 : 1;
         public TModel UpdatedModel => (TModel)_updatedModel?.Clone();
+        object ISingleUpdate<TUpdateQuery, TSingleSelect>.UpdatedModel => UpdatedModel;
         public TUpdateQuery UpdateQuery { get; }
 
         public async Task<TModel> UpdateAsync(IDbConnection dbConnection)
@@ -34,6 +35,11 @@ namespace DbStatute
             StatuteResult = _updatedModel is null ? StatuteResult.Failure : StatuteResult.Success;
 
             return UpdatedModel;
+        }
+
+        Task<object> ISingleUpdate<TUpdateQuery, TSingleSelect>.UpdateAsync(IDbConnection dbConnection)
+        {
+            return UpdateAsync(dbConnection).ContinueWith(x => (object)x.Result);
         }
 
         protected virtual async Task<TModel> UpdateOperationAsync(IDbConnection dbConnection)

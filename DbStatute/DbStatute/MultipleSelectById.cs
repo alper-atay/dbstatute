@@ -10,16 +10,15 @@ using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class MultipleSelectById<TId, TModel> : MultipleSelect<TId, TModel>, IMultipleSelectById<TId, TModel>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public abstract class MultipleSelectById<TModel> : MultipleSelect<TModel>, IMultipleSelectById<TModel>
+        where TModel : class, IModel, new()
     {
-        protected MultipleSelectById(IEnumerable<TId> ids)
+        protected MultipleSelectById(IEnumerable<object> ids)
         {
             Ids = ids ?? throw new ArgumentNullException(nameof(ids));
         }
 
-        public IEnumerable<TId> Ids { get; }
+        public IEnumerable<object> Ids { get; }
 
         protected override async IAsyncEnumerable<TModel> SelectAsSignlyOperationAsync(IDbConnection dbConnection)
         {
@@ -39,7 +38,7 @@ namespace DbStatute
                 cacheKey = Cacheable.Key;
             }
 
-            foreach (TId id in Ids)
+            foreach (object id in Ids)
             {
                 yield return await dbConnection.QueryAsync<TModel>(id, null, 1, Hints, cacheKey, cacheItemExpiration, CommandTimeout, Transaction, cache, Trace, StatementBuilder)
                     .ContinueWith(x => x.Result.FirstOrDefault());
@@ -53,7 +52,7 @@ namespace DbStatute
                 return null;
             }
 
-            QueryField queryField = new QueryField(new Field(nameof(IModel<TId>.Id)), Operation.In, Ids);
+            QueryField queryField = new QueryField(new Field(nameof(IModel.Id)), Operation.In, Ids);
 
             ICache cache = null;
             int cacheItemExpiration = 180;

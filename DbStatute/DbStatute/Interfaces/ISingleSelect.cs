@@ -1,15 +1,20 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Threading.Tasks;
 
 namespace DbStatute.Interfaces
 {
-    public interface ISingleSelect<TId, TModel> : ISelect
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public interface ISingleSelect : ISelect
     {
-        TModel SelectedModel { get; }
+        object SelectedModel { get; }
 
-        Task<TModel> SelectAsync(IDbConnection dbConnection);
+        Task<object> SelectAsync(IDbConnection dbConnection);
+    }
+
+    public interface ISingleSelect<TModel> : ISelect<TModel>, ISingleSelect
+        where TModel : class, IModel, new()
+    {
+        new TModel SelectedModel { get; }
+
+        new Task<TModel> SelectAsync(IDbConnection dbConnection);
     }
 }

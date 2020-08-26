@@ -21,9 +21,8 @@ namespace DbStatute.Interfaces.Querying
         IEnumerable<Field> Fields { get; }
     }
 
-    public interface IFieldQualifier<TId, TModel> : IFieldQualifier
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public interface IFieldQualifier<TModel> : IFieldQualifier
+        where TModel : class, IModel, new()
     {
         bool IsFieldSetted(Expression<Func<TModel, object>> property);
 

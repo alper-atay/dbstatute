@@ -1,16 +1,13 @@
-﻿using System;
-
-namespace DbStatute.Interfaces.Querying.Statutes
+﻿namespace DbStatute.Interfaces.Querying.Statutes
 {
     public interface IDeleteQuery : IStatuteQuery
     {
         ISelectQuery SelectQuery { get; }
     }
 
-    public interface IDeleteQuery<TId, TModel> : IStatuteQuery<TId, TModel>, IDeleteQuery
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public interface IDeleteQuery<TModel> : IStatuteQuery<TModel>, IDeleteQuery
+        where TModel : class, IModel, new()
     {
-        new ISelectQuery<TId, TModel> SelectQuery { get; }
+        new ISelectQuery<TModel> SelectQuery { get; }
     }
 }

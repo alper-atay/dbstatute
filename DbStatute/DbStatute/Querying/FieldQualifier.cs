@@ -18,9 +18,8 @@ namespace DbStatute.Querying
         public IEnumerable<Field> Fields { get; }
     }
 
-    public class FieldQualifier<TId, TModel> : IFieldQualifier<TId, TModel>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public class FieldQualifier<TModel> : IFieldQualifier<TModel>
+        where TModel : class, IModel, new()
     {
         private readonly HashSet<Field> _fields = new HashSet<Field>();
 

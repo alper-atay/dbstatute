@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace DbStatute.Interfaces
 {
-    public interface IMultipleSelectById<TId, TModel> : IMultipleSelect<TId, TModel>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public interface IMultipleSelectById : IMultipleSelect
     {
-        IEnumerable<TId> Ids { get; }
-        ICacheable Cacheable { get; set; }
+        IEnumerable<object> Ids { get; }
+    }
+
+
+    public interface IMultipleSelectById<TModel> : IMultipleSelect<TModel>, IMultipleSelectById
+        where TModel : class, IModel, new()
+    {
     }
 }

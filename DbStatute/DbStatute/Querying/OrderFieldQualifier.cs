@@ -20,9 +20,8 @@ namespace DbStatute.Querying
         public IEnumerable<OrderField> OrderFields { get; }
     }
 
-    public class OrderFieldQualifier<TId, TModel> : IOrderFieldQualifier<TId, TModel>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public class OrderFieldQualifier<TModel> : IOrderFieldQualifier<TModel>
+        where TModel : class, IModel, new()
     {
         private readonly HashSet<OrderField> _orderFields = new HashSet<OrderField>();
 

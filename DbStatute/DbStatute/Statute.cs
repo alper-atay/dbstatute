@@ -65,4 +65,10 @@ namespace DbStatute
 
         protected abstract void OnSucceed();
     }
+
+    public abstract class Statute<TModel> : Statute, IStatute<TModel>
+        where TModel : class, IModel, new()
+    {
+        public Type ModelType => typeof(TModel);
+    }
 }

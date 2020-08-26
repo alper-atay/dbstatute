@@ -1,11 +1,12 @@
-﻿using System;
-
-namespace DbStatute.Interfaces
+﻿namespace DbStatute.Interfaces
 {
-    public interface ISingleSelectById<TId, TModel> : ISingleSelect<TId, TModel>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public interface ISingleSelectById : ISingleSelect
     {
-        TId Id { get; }
+        object Id { get; }
+    }
+
+    public interface ISingleSelectById<TModel> : ISingleSelect<TModel>, ISingleSelectById
+        where TModel : class, IModel, new()
+    {
     }
 }

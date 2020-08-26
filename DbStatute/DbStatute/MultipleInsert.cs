@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class MultipleInsert<TId, TModel> : Insert, IMultipleInsert<TId, TModel>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public abstract class MultipleInsert<TModel> : Insert, IMultipleInsert<TModel>
+
+        where TModel : class, IModel, new()
     {
         private readonly List<TModel> _insertedModels = new List<TModel>();
 
@@ -80,7 +80,7 @@ namespace DbStatute
 
             foreach (TModel rawModel in RawModels)
             {
-                TId insertedModelId = (TId)await dbConnection.InsertAsync(rawModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                object insertedModelId = await dbConnection.InsertAsync(rawModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
                 TModel insertedModel = await dbConnection.QueryAsync<TModel>(insertedModelId, null, 1, Hints, cacheKey, cacheItemExpiration, CommandTimeout, Transaction, cache, Trace, StatementBuilder)
                     .ContinueWith(x => x.Result.FirstOrDefault());
 

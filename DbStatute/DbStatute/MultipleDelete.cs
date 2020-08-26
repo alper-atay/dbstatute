@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class MultipleDelete<TId, TModel, TMultipleSelect> : Delete, IMultipleDelete<TId, TModel, TMultipleSelect>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
-        where TMultipleSelect : IMultipleSelect<TId, TModel>
+    public abstract class MultipleDelete<TModel, TMultipleSelect> : Delete<TModel>, IMultipleDelete<TModel, TMultipleSelect>
+        where TModel : class, IModel, new()
+        where TMultipleSelect : IMultipleSelect<TModel>
     {
         private int _deletedCount;
 

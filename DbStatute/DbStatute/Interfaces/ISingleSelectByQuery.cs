@@ -1,13 +1,17 @@
 ﻿using DbStatute.Interfaces.Querying.Statutes;
-using System;
 
 namespace DbStatute.Interfaces
 {
-    public interface ISingleSelectByQuery<TId, TModel, TSelectQuery> : ISingleSelect<TId, TModel>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
-        where TSelectQuery : ISelectQuery<TId, TModel>
+    public interface ISingleSelectByQuery<TSelectQuery> : ISingleSelect
+        where TSelectQuery : ISelectQuery
     {
         TSelectQuery SelectQuery { get; }
+    }
+
+    public interface ISingleSelectByQuery<TModel, TSelectQuery> : ISingleSelect<TModel>, ISingleSelectByQuery<TSelectQuery>
+        where TModel : class, IModel, new()
+        where TSelectQuery : ISelectQuery<TModel>
+    {
+        new TSelectQuery SelectQuery { get; }
     }
 }

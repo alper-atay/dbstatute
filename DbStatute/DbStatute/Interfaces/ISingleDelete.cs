@@ -1,16 +1,22 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Threading.Tasks;
 
 namespace DbStatute.Interfaces
 {
-    public interface ISingleDelete<TId, TModel, TSingleSelect> : IDelete
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
-        where TSingleSelect : ISingleSelect<TId, TModel>
+    public interface ISingleDelete<TSingleSelect> : IDelete
+        where TSingleSelect : ISingleSelect
     {
         TSingleSelect SingleSelect { get; }
 
         Task DeleteAsync(IDbConnection dbConnection);
+    }
+
+    public interface ISingleDelete<TModel, TSingleSelect> : IDelete<TModel>, ISingleDelete<TSingleSelect>
+        where TModel : class, IModel, new()
+        where TSingleSelect : ISingleSelect<TModel>
+    {
+        new TSingleSelect SingleSelect { get; }
+
+        new Task DeleteAsync(IDbConnection dbConnection);
     }
 }

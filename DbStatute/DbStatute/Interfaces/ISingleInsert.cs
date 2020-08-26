@@ -1,16 +1,22 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Threading.Tasks;
 
 namespace DbStatute.Interfaces
 {
-    public interface ISingleInsert<TId, TModel> : IInsert
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public interface ISingleInsert : IInsert
     {
-        TModel InsertedModel { get; }
-        TModel RawModel { get; }
+        object InsertedModel { get; }
+        object RawModel { get; }
 
-        Task<TModel> InsertAsync(IDbConnection dbConnection);
+        Task<object> InsertAsync(IDbConnection dbConnection);
+    }
+
+    public interface ISingleInsert<TModel> : IInsert<TModel>, ISingleInsert
+        where TModel : class, IModel, new()
+    {
+        new TModel InsertedModel { get; }
+        new TModel RawModel { get; }
+
+        new Task<TModel> InsertAsync(IDbConnection dbConnection);
     }
 }

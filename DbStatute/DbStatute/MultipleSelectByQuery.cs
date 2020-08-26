@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class MultipleSelectByQuery<TId, TModel, TSelectQuery> : MultipleSelect<TId, TModel>, IMultipleSelectByQuery<TId, TModel, TSelectQuery>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
-        where TSelectQuery : ISelectQuery<TId, TModel>
+    public abstract class MultipleSelectByQuery<TModel, TSelectQuery> : MultipleSelect<TModel>, IMultipleSelectByQuery<TModel, TSelectQuery>
+
+        where TModel : class, IModel, new()
+        where TSelectQuery : ISelectQuery<TModel>
     {
         protected MultipleSelectByQuery(TSelectQuery selectQuery)
         {
@@ -58,7 +58,7 @@ namespace DbStatute
                 cacheKey = Cacheable.Key;
             }
 
-            Logs.AddRange(SelectQuery.OperationalQueryQualifier.BuildQueryGroup(out QueryGroup queryGroup));
+            Logs.AddRange(SelectQuery.OperationalQueryQualifier.GetQueryGroup(out QueryGroup queryGroup));
 
             return await dbConnection.QueryAsync<TModel>(queryGroup, orderFields, MaxSelectCount, Hints, cacheKey, cacheItemExpiration, CommandTimeout, Transaction, cache, Trace, StatementBuilder);
         }

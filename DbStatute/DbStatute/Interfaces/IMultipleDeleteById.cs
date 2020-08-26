@@ -1,13 +1,11 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Threading.Tasks;
 
 namespace DbStatute.Interfaces
 {
-    public interface IMultipleDeleteById<TId, TModel, TMultipleSelectById>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
-        where TMultipleSelectById : IMultipleSelectById<TId, TModel>
+    public interface IMultipleDeleteById<TModel, TMultipleSelectById>
+        where TModel : class, IModel, new()
+        where TMultipleSelectById : IMultipleSelectById<TModel>
     {
         TMultipleSelectById MultipleSelectById { get; }
 

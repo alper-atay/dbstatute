@@ -22,9 +22,8 @@ namespace DbStatute.Interfaces.Querying
         IEnumerable<OrderField> OrderFields { get; }
     }
 
-    public interface IOrderFieldQualifier<TId, TModel> : IOrderFieldQualifier
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public interface IOrderFieldQualifier<TModel> : IOrderFieldQualifier
+        where TModel : class, IModel, new()
     {
         bool IsOrderFieldSetted(Expression<Func<TModel, object>> property);
 

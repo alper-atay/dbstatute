@@ -1,14 +1,13 @@
-﻿using System;
-
-namespace DbStatute.Interfaces.Querying.Statutes
+﻿namespace DbStatute.Interfaces.Querying.Statutes
 {
     public interface IMergeQuery : IStatuteQuery
     {
+        IQueryQualifier QueryQualifier { get; }
     }
 
-    public interface IMergerQuery<TId, TModel> : IStatuteQuery<TId, TModel>, IMergeQuery
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public interface IMergerQuery<TModel> : IStatuteQuery<TModel>, IMergeQuery
+        where TModel : class, IModel, new()
     {
+        new IQueryQualifier<TModel> QueryQualifier { get; }
     }
 }

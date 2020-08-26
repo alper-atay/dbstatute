@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class SingleInsert<TId, TModel> : Insert, ISingleInsert<TId, TModel>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public abstract class SingleInsert<TModel> : Insert<TModel>, ISingleInsert<TModel>
+        where TModel : class, IModel, new()
     {
         private TModel _insertedModel;
 
@@ -20,7 +19,9 @@ namespace DbStatute
 
         public override int InsertedCount => _insertedModel is null ? 0 : 1;
         public TModel InsertedModel => (TModel)_insertedModel?.Clone();
+        object ISingleInsert.InsertedModel => InsertedModel;
         public TModel RawModel { get; }
+        object ISingleInsert.RawModel => RawModel;
 
         public async Task<TModel> InsertAsync(IDbConnection dbConnection)
         {
@@ -28,7 +29,7 @@ namespace DbStatute
 
             if (ReadOnlyLogs.Safely)
             {
-                TId insertedModelId = await InsertOperationAsync(dbConnection);
+                object insertedModelId = await InsertOperationAsync(dbConnection);
                 _insertedModel = await dbConnection.QueryAsync<TModel>(insertedModelId, top: 1)
                     .ContinueWith(x => x.Result.FirstOrDefault());
             }
@@ -38,9 +39,14 @@ namespace DbStatute
             return InsertedModel;
         }
 
-        protected virtual async Task<TId> InsertOperationAsync(IDbConnection dbConnection)
+        Task<object> ISingleInsert.InsertAsync(IDbConnection dbConnection)
         {
-            return (TId)await dbConnection.InsertAsync(RawModel);
+            return InsertAsync(dbConnection).ContinueWith(x => (object)x.Result);
+        }
+
+        protected virtual async Task<object> InsertOperationAsync(IDbConnection dbConnection)
+        {
+            return (object)await dbConnection.InsertAsync(RawModel);
         }
     }
 }

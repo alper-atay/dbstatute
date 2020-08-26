@@ -1,13 +1,17 @@
 ﻿using DbStatute.Interfaces.Querying.Statutes;
-using System;
 
 namespace DbStatute.Interfaces
 {
-    public interface IMultipleSelectByQuery<TId, TModel, TSelectQuery> : IMultipleSelect<TId, TModel>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
-        where TSelectQuery : ISelectQuery<TId, TModel>
+    public interface IMultipleSelectByQuery<TSelectQuery> : IMultipleSelect
+        where TSelectQuery : ISelectQuery
     {
         TSelectQuery SelectQuery { get; }
+    }
+
+    public interface IMultipleSelectByQuery<TModel, TSelectQuery> : IMultipleSelect<TModel>, IMultipleSelectByQuery<TSelectQuery>
+        where TModel : class, IModel, new()
+        where TSelectQuery : ISelectQuery<TModel>
+    {
+        new TSelectQuery SelectQuery { get; }
     }
 }

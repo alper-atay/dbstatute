@@ -1,12 +1,11 @@
 ﻿using DbStatute.Interfaces;
-using System;
 
 namespace DbStatute
 {
-    public abstract class MultipleDeleteById<TId, TModel, TMultipleSelectById> : MultipleDelete<TId, TModel, TMultipleSelectById>, IMultipleDeleteById<TId, TModel, TMultipleSelectById>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
-        where TMultipleSelectById : IMultipleSelectById<TId, TModel>
+    public abstract class MultipleDeleteById<TModel, TMultipleSelectById> : MultipleDelete<TModel, TMultipleSelectById>, IMultipleDeleteById<TModel, TMultipleSelectById>
+
+        where TModel : class, IModel, new()
+        where TMultipleSelectById : IMultipleSelectById<TModel>
     {
         protected MultipleDeleteById(TMultipleSelectById multipleSelectById) : base(multipleSelectById)
         {

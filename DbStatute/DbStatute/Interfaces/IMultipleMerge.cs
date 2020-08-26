@@ -1,10 +1,7 @@
-﻿using System;
-
-namespace DbStatute.Interfaces
+﻿namespace DbStatute.Interfaces
 {
-    public interface IMultipleMerge<TId, TModel> : IMerge
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
+    public interface IMultipleMerge<TModel> : IMerge
+        where TModel : class, IModel, new()
     {
     }
 }

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace DbStatute
 {
-    public abstract class SingleDelete<TId, TModel, TSingleSelect> : Delete, ISingleDelete<TId, TModel, TSingleSelect>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
-        where TSingleSelect : ISingleSelect<TId, TModel>
+    public abstract class SingleDelete<TModel, TSingleSelect> : Delete<TModel>, ISingleDelete<TModel, TSingleSelect>
+
+        where TModel : class, IModel, new()
+        where TSingleSelect : ISingleSelect<TModel>
     {
         private int _deletedCount;
 

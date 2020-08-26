@@ -11,12 +11,18 @@ namespace DbStatute.Interfaces
 
         event Action Succeed;
 
-        public IReadOnlyLogbook ReadOnlyLogs { get; }
         int? CommandTimeout { get; set; }
         string Hints { get; set; }
+        public IReadOnlyLogbook ReadOnlyLogs { get; }
         IStatementBuilder StatementBuilder { get; set; }
         StatuteResult StatuteResult { get; set; }
         ITrace Trace { get; set; }
         IDbTransaction Transaction { get; set; }
+    }
+
+    public interface IStatute<TModel> : IStatute
+        where TModel : class, IModel, new()
+    {
+        Type ModelType { get; }
     }
 }

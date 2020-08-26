@@ -1,15 +1,13 @@
 ﻿using DbStatute.Interfaces.Querying.Statutes;
-using System;
 using System.Data;
 using System.Threading.Tasks;
 
 namespace DbStatute.Interfaces
 {
-    public interface IMultipleDeleteByQuery<TId, TModel, TSelectQuery, TMultipleSelectByQuery>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
-        where TSelectQuery : ISelectQuery<TId, TModel>
-        where TMultipleSelectByQuery : IMultipleSelectByQuery<TId, TModel, TSelectQuery>
+    public interface IMultipleDeleteByQuery<TModel, TSelectQuery, TMultipleSelectByQuery>
+        where TModel : class, IModel, new()
+        where TSelectQuery : ISelectQuery<TModel>
+        where TMultipleSelectByQuery : IMultipleSelectByQuery<TModel, TSelectQuery>
     {
         TMultipleSelectByQuery MultipleSelectByQuery { get; }
 

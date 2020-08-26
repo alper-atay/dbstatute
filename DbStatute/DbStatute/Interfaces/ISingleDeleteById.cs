@@ -1,12 +1,17 @@
-﻿using System;
-
-namespace DbStatute.Interfaces
+﻿namespace DbStatute.Interfaces
 {
-    public interface ISingleDeleteById<TId, TModel, TSingleSelectById> : ISingleDelete<TId, TModel, TSingleSelectById>
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
-        where TSingleSelectById : ISingleSelectById<TId, TModel>
+    public interface ISingleDeleteById<TSingleSelectById> : ISingleDelete<TSingleSelectById>
+        where TSingleSelectById : ISingleSelectById
     {
         TSingleSelectById SingleSelectById { get; }
+    }
+
+
+
+    public interface ISingleDeleteById<TModel, TSingleSelectById> : ISingleDelete<TModel, TSingleSelectById>, ISingleDeleteById<TSingleSelectById>
+        where TModel : class, IModel, new()
+        where TSingleSelectById : ISingleSelectById<TModel>
+    {
+        new TSingleSelectById SingleSelectById { get; }
     }
 }

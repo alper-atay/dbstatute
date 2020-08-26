@@ -1,20 +1,29 @@
 ﻿using DbStatute.Interfaces.Querying.Statutes;
-using System;
 using System.Data;
 using System.Threading.Tasks;
 
 namespace DbStatute.Interfaces
 {
-    public interface ISingleUpdate<TId, TModel, TUpdateQuery, TSingleSelect> : IUpdate
-        where TId : notnull, IConvertible
-        where TModel : class, IModel<TId>, new()
-        where TUpdateQuery : IUpdateQuery<TId, TModel>
-        where TSingleSelect : ISingleSelect<TId, TModel>
+    public interface ISingleUpdate<TUpdateQuery, TSingleSelect> : IUpdate
+        where TUpdateQuery : IUpdateQuery
+        where TSingleSelect : ISingleSelect
     {
         TSingleSelect SingleSelect { get; }
-        TModel UpdatedModel { get; }
+        object UpdatedModel { get; }
         TUpdateQuery UpdateQuery { get; }
 
-        Task<TModel> UpdateAsync(IDbConnection dbConnection);
+        Task<object> UpdateAsync(IDbConnection dbConnection);
+    }
+
+    public interface ISingleUpdate<TModel, TUpdateQuery, TSingleSelect> : IUpdate<TModel>, ISingleUpdate<TUpdateQuery, TSingleSelect>
+        where TModel : class, IModel, new()
+        where TUpdateQuery : IUpdateQuery<TModel>
+        where TSingleSelect : ISingleSelect<TModel>
+    {
+        new TSingleSelect SingleSelect { get; }
+        new TModel UpdatedModel { get; }
+        new TUpdateQuery UpdateQuery { get; }
+
+        new Task<TModel> UpdateAsync(IDbConnection dbConnection);
     }
 }
