@@ -1,18 +1,35 @@
 ﻿using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying;
 using DbStatute.Interfaces.Querying.Qualifiers;
+using DbStatute.Querying.Qualifiers;
+using System;
 
 namespace DbStatute.Querying
 {
-    public class UpdateQuery<TModel> : StatuteQuery, IUpdateQuery<TModel>
-        where TModel : class, IModel, new()
+    public class UpdateQuery : StatuteQueryBase, IUpdateQuery
     {
-        protected UpdateQuery(IFieldQualifier<TModel> fieldQualifier)
+        public UpdateQuery(IModelQueryQualifier modelQueryQualifier)
         {
-            FieldQualifier = fieldQualifier;
+            ModelQueryQualifier = modelQueryQualifier ?? throw new ArgumentNullException(nameof(modelQueryQualifier));
         }
 
-        public IFieldQualifier<TModel> FieldQualifier { get; }
-        IFieldQualifier IUpdateQuery.FieldQualifier => FieldQualifier;
+        public IModelQueryQualifier ModelQueryQualifier { get; }
+    }
+
+    public class UpdateQuery<TModel> : StatuteQueryBase<TModel>, IUpdateQuery<TModel>
+        where TModel : class, IModel, new()
+    {
+        public UpdateQuery()
+        {
+            ModelQueryQualifier = new ModelQueryQualifier<TModel>();
+        }
+
+        public UpdateQuery(IModelQueryQualifier<TModel> modelQueryQualifier)
+        {
+            ModelQueryQualifier = modelQueryQualifier ?? throw new ArgumentNullException(nameof(modelQueryQualifier));
+        }
+
+        public IModelQueryQualifier<TModel> ModelQueryQualifier { get; }
+        IModelQueryQualifier IUpdateQuery.ModelQueryQualifier => ModelQueryQualifier;
     }
 }

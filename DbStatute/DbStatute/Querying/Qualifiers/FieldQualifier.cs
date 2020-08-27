@@ -16,6 +16,7 @@ namespace DbStatute.Querying.Qualifiers
         }
 
         public IEnumerable<Field> Fields { get; }
+        public bool HasField => Fields.Count() > 0;
     }
 
     public class FieldQualifier<TModel> : IFieldQualifier<TModel>
@@ -24,6 +25,7 @@ namespace DbStatute.Querying.Qualifiers
         private readonly HashSet<Field> _fields = new HashSet<Field>();
 
         public IEnumerable<Field> Fields => _fields;
+        public bool HasField => Fields.Count() > 0;
 
         public bool IsFieldSetted(Expression<Func<TModel, object>> property)
         {

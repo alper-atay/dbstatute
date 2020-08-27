@@ -1,15 +1,16 @@
-﻿using DbStatute.Interfaces.Querying.Qualifiers;
+﻿using DbStatute.Interfaces.Querying.Fundamentals;
+using DbStatute.Interfaces.Querying.Qualifiers;
 
 namespace DbStatute.Interfaces.Querying
 {
-    public interface IUpdateQuery : IStatuteQuery
+    public interface IUpdateQuery : IStatuteQueryBase
     {
-        IFieldQualifier FieldQualifier { get; }
+        IModelQueryQualifier ModelQueryQualifier { get; }
     }
 
-    public interface IUpdateQuery<TModel> : IStatuteQuery<TModel>, IUpdateQuery
+    public interface IUpdateQuery<TModel> : IStatuteQueryBase<TModel>, IUpdateQuery
         where TModel : class, IModel, new()
     {
-        new IFieldQualifier<TModel> FieldQualifier { get; }
+        new IModelQueryQualifier<TModel> ModelQueryQualifier { get; }
     }
 }

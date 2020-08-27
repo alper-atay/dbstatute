@@ -10,7 +10,7 @@ namespace DbStatute.Interfaces
 
     public interface ISingleMergeByQuery<TModel, TMergeQuery> : ISingleMerge<TModel>, ISingleMergeByQuery<TMergeQuery>
         where TModel : class, IModel, new()
-        where TMergeQuery : IMergerQuery<TModel>
+        where TMergeQuery : IMergeQuery<TModel>
     {
         new TMergeQuery MergeQuery { get; }
     }

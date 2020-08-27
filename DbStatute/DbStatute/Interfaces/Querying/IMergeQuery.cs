@@ -1,15 +1,16 @@
-﻿using DbStatute.Interfaces.Querying.Qualifiers;
+﻿using DbStatute.Interfaces.Querying.Fundamentals;
+using DbStatute.Interfaces.Querying.Qualifiers;
 
 namespace DbStatute.Interfaces.Querying
 {
-    public interface IMergeQuery : IStatuteQuery
+    public interface IMergeQuery : IStatuteQueryBase
     {
-        IQueryQualifier QueryQualifier { get; }
+        IModelQueryQualifier ModelQueryQualifier { get; }
     }
 
-    public interface IMergerQuery<TModel> : IStatuteQuery<TModel>, IMergeQuery
+    public interface IMergeQuery<TModel> : IStatuteQueryBase<TModel>, IMergeQuery
         where TModel : class, IModel, new()
     {
-        new IQueryQualifier<TModel> QueryQualifier { get; }
+        new IModelQueryQualifier<TModel> ModelQueryQualifier { get; }
     }
 }

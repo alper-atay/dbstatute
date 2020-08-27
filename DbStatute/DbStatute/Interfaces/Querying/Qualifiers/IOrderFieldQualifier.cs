@@ -18,7 +18,7 @@ namespace DbStatute.Interfaces.Querying.Qualifiers
         }
 
         static IOrderFieldQualifier Empty => _empty;
-
+        bool HasOrderField { get; }
         IEnumerable<OrderField> OrderFields { get; }
     }
 

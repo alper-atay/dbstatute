@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace DbStatute.Interfaces.Querying.Qualifiers
 {
-    public interface IQueryQualifier
+    public interface IQueryQualifier : IReadOnlyLogbookTestable
     {
         IFieldQualifier FieldQualifier { get; }
         IReadOnlyDictionary<string, ReadOnlyLogbookPredicate<object>> PredicateMap { get; }
@@ -52,6 +52,28 @@ namespace DbStatute.Interfaces.Querying.Qualifiers
 
             return logs;
         }
+
+        protected static IReadOnlyLogbook Test(IQueryQualifier @this)
+        {
+            ILogbook logs = Logger.NewLogbook();
+
+            IFieldQualifier fieldQualifier = @this.FieldQualifier;
+            IEnumerable<Field> fields = fieldQualifier.Fields;
+
+            foreach (Field field in fields)
+            {
+                string name = field.Name;
+                bool valueFound = @this.ValueMap.TryGetValue(name, out object value);
+                bool predicateFound = @this.PredicateMap.TryGetValue(name, out ReadOnlyLogbookPredicate<object> predicate);
+
+                if (valueFound && predicateFound)
+                {
+                    logs.AddRange(predicate.Invoke(value));
+                }
+            }
+
+            return logs;
+        }
     }
 
     public interface IQueryQualifier<TModel> : IQueryQualifier
@@ -59,20 +81,28 @@ namespace DbStatute.Interfaces.Querying.Qualifiers
     {
         new IFieldQualifier<TModel> FieldQualifier { get; }
 
-        bool SetPredicate(Expression<Func<TModel, object>> property, ReadOnlyLogbookPredicate<object> predicate, bool overrideEnabled = false);
+        ReadOnlyLogbookPredicate<object> GetPredicateOrDefault(Expression<Func<TModel, object>> expression);
 
-        bool SetPredicate(string propertyName, ReadOnlyLogbookPredicate<object> predicate, bool overrideEnabled = false);
+        ReadOnlyLogbookPredicate<object> GetPredicateOrDefault(string name);
 
-        bool SetValue(Expression<Func<TModel, object>> property, object value);
+        object GetValueOrDefault(Expression<Func<TModel, object>> expression);
 
-        bool SetValue(string propertyName, object value);
+        object GetValueOrDefault(string name);
 
-        bool UnsetPredicate(Expression<Func<TModel, object>> property);
+        bool SetPredicate(Expression<Func<TModel, object>> expression, ReadOnlyLogbookPredicate<object> predicate, bool overrideEnabled = false);
 
-        bool UnsetPredicate(string propertyName);
+        bool SetPredicate(string name, ReadOnlyLogbookPredicate<object> predicate, bool overrideEnabled = false);
 
-        bool UnsetValue(Expression<Func<TModel, object>> property);
+        bool SetValue(Expression<Func<TModel, object>> expression, object value);
 
-        bool UnsetValue(string propertyName, object value);
+        bool SetValue(string name, object value);
+
+        bool UnsetPredicate(Expression<Func<TModel, object>> expression);
+
+        bool UnsetPredicate(string name);
+
+        bool UnsetValue(Expression<Func<TModel, object>> expression);
+
+        bool UnsetValue(string name, object value);
     }
 }

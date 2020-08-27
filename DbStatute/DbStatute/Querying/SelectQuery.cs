@@ -6,7 +6,7 @@ using System;
 
 namespace DbStatute.Querying
 {
-    public class SelectQuery : StatuteQuery, ISelectQuery
+    public class SelectQuery : StatuteQueryBase, ISelectQuery
     {
         public SelectQuery()
         {
@@ -23,7 +23,7 @@ namespace DbStatute.Querying
         public IOrderFieldQualifier OrderFieldQualifier { get; }
     }
 
-    public class SelectQuery<TModel> : StatuteQuery<TModel>, ISelectQuery<TModel>
+    public class SelectQuery<TModel> : StatuteQueryBase<TModel>, ISelectQuery<TModel>
         where TModel : class, IModel, new()
     {
         public SelectQuery()

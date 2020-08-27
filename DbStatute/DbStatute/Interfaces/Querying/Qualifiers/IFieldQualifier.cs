@@ -18,6 +18,7 @@ namespace DbStatute.Interfaces.Querying.Qualifiers
 
         static IFieldQualifier Empty => _empty;
 
+        bool HasField { get; }
         IEnumerable<Field> Fields { get; }
     }
 

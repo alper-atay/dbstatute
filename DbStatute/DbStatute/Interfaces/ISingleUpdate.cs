@@ -1,10 +1,11 @@
-﻿using DbStatute.Interfaces.Querying;
+﻿using DbStatute.Interfaces.Fundamentals;
+using DbStatute.Interfaces.Querying;
 using System.Data;
 using System.Threading.Tasks;
 
 namespace DbStatute.Interfaces
 {
-    public interface ISingleUpdate<TUpdateQuery, TSingleSelect> : IUpdate
+    public interface ISingleUpdate<TUpdateQuery, TSingleSelect> : IUpdateBase
         where TUpdateQuery : IUpdateQuery
         where TSingleSelect : ISingleSelect
     {
@@ -15,7 +16,7 @@ namespace DbStatute.Interfaces
         Task<object> UpdateAsync(IDbConnection dbConnection);
     }
 
-    public interface ISingleUpdate<TModel, TUpdateQuery, TSingleSelect> : IUpdate<TModel>, ISingleUpdate<TUpdateQuery, TSingleSelect>
+    public interface ISingleUpdate<TModel, TUpdateQuery, TSingleSelect> : IUpdateBase<TModel>, ISingleUpdate<TUpdateQuery, TSingleSelect>
         where TModel : class, IModel, new()
         where TUpdateQuery : IUpdateQuery<TModel>
         where TSingleSelect : ISingleSelect<TModel>

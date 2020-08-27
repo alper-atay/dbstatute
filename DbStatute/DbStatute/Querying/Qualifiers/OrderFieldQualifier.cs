@@ -17,6 +17,7 @@ namespace DbStatute.Querying.Qualifiers
             OrderFields = orderFields ?? throw new ArgumentNullException(nameof(orderFields));
         }
 
+        public bool HasOrderField => OrderFields.Count() > 0;
         public IEnumerable<OrderField> OrderFields { get; }
     }
 
@@ -25,6 +26,7 @@ namespace DbStatute.Querying.Qualifiers
     {
         private readonly HashSet<OrderField> _orderFields = new HashSet<OrderField>();
 
+        public bool HasOrderField => _orderFields.Count > 0;
         public IEnumerable<OrderField> OrderFields => _orderFields.Count > 0 ? _orderFields : null;
 
         public bool IsOrderFieldSetted(Expression<Func<TModel, object>> property)

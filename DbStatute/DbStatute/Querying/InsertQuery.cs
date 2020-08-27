@@ -2,16 +2,18 @@
 using DbStatute.Interfaces.Querying;
 using DbStatute.Interfaces.Querying.Qualifiers;
 using DbStatute.Querying.Qualifiers;
+using System;
 
 namespace DbStatute.Querying
 {
     public class InsertQuery : IInsertQuery
     {
-        public InsertQuery()
+        public InsertQuery(IModelQueryQualifier modelQueryQualifier)
         {
+            ModelQueryQualifier = modelQueryQualifier ?? throw new ArgumentNullException(nameof(modelQueryQualifier));
         }
 
-        public IFieldQualifier FieldQualifier { get; }
+        public IModelQueryQualifier ModelQueryQualifier { get; }
     }
 
     public class InsertQuery<TModel> : IInsertQuery<TModel>
@@ -19,15 +21,15 @@ namespace DbStatute.Querying
     {
         public InsertQuery()
         {
-            FieldQualifier = new FieldQualifier<TModel>();
+            ModelQueryQualifier = new ModelQueryQualifier<TModel>();
         }
 
-        public InsertQuery(IFieldQualifier<TModel> fieldQualifier)
+        public InsertQuery(IModelQueryQualifier<TModel> modelQueryQualifier)
         {
-            FieldQualifier = fieldQualifier;
+            ModelQueryQualifier = modelQueryQualifier ?? throw new ArgumentNullException(nameof(modelQueryQualifier));
         }
 
-        public IFieldQualifier<TModel> FieldQualifier { get; }
-        IFieldQualifier IInsertQuery.FieldQualifier => FieldQualifier;
+        public IModelQueryQualifier<TModel> ModelQueryQualifier { get; }
+        IModelQueryQualifier IInsertQuery.ModelQueryQualifier => ModelQueryQualifier;
     }
 }

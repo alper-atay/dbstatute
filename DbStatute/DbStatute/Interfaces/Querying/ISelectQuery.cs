@@ -1,14 +1,15 @@
-﻿using DbStatute.Interfaces.Querying.Qualifiers;
+﻿using DbStatute.Interfaces.Querying.Fundamentals;
+using DbStatute.Interfaces.Querying.Qualifiers;
 
 namespace DbStatute.Interfaces.Querying
 {
-    public interface ISelectQuery : IStatuteQuery
+    public interface ISelectQuery : IStatuteQueryBase
     {
         public IOperationalQueryQualifier OperationalQueryQualifier { get; }
         public IOrderFieldQualifier OrderFieldQualifier { get; }
     }
 
-    public interface ISelectQuery<TModel> : IStatuteQuery<TModel>, ISelectQuery
+    public interface ISelectQuery<TModel> : IStatuteQueryBase<TModel>, ISelectQuery
         where TModel : class, IModel, new()
     {
         new IOperationalQueryQualifier<TModel> OperationalQueryQualifier { get; }

@@ -3,7 +3,7 @@ using DbStatute.Interfaces.Querying;
 
 namespace DbStatute.Querying
 {
-    public class DeleteQuery : IDeleteQuery
+    public class DeleteQuery : StatuteQueryBase, IDeleteQuery
     {
         public DeleteQuery()
         {
@@ -18,7 +18,7 @@ namespace DbStatute.Querying
         public ISelectQuery SelectQuery { get; }
     }
 
-    public class DeleteQuery<TModel> : StatuteQuery, IDeleteQuery<TModel>
+    public class DeleteQuery<TModel> : StatuteQueryBase<TModel>, IDeleteQuery<TModel>
         where TModel : class, IModel, new()
     {
         public DeleteQuery()
@@ -27,7 +27,6 @@ namespace DbStatute.Querying
         }
 
         public ISelectQuery<TModel> SelectQuery { get; }
-
         ISelectQuery IDeleteQuery.SelectQuery => SelectQuery;
     }
 }
