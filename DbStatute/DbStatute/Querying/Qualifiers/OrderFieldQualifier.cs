@@ -29,25 +29,25 @@ namespace DbStatute.Querying.Qualifiers
         public bool HasOrderField => _orderFields.Count > 0;
         public IEnumerable<OrderField> OrderFields => _orderFields.Count > 0 ? _orderFields : null;
 
-        public bool IsOrderFieldSetted(Expression<Func<TModel, object>> property)
+        public bool IsOrderFieldSetted(Expression<Func<TModel, object>> expression)
         {
-            string propertyName = property.ToMember().GetName();
+            string propertyName = expression.ToMember().GetName();
 
             return _orderFields.Count(x => x.Name == propertyName) > 0;
         }
 
-        public bool IsOrderFieldSetted(string propertyName)
+        public bool IsOrderFieldSetted(string name)
         {
-            return _orderFields.Count(x => x.Name == propertyName) > 0;
+            return _orderFields.Count(x => x.Name == name) > 0;
         }
 
-        public bool SetOrderField(Expression<Func<TModel, object>> property, Order order, bool overrideEnabled = false)
+        public bool SetOrderField(Expression<Func<TModel, object>> expression, Order order, bool overrideEnabled = false)
         {
-            if (IsOrderFieldSetted(property))
+            if (IsOrderFieldSetted(expression))
             {
                 if (overrideEnabled)
                 {
-                    UnsetOrderField(property);
+                    UnsetOrderField(expression);
                 }
                 else
                 {
@@ -55,18 +55,18 @@ namespace DbStatute.Querying.Qualifiers
                 }
             }
 
-            OrderField orderField = OrderField.Parse(property, order);
+            OrderField orderField = OrderField.Parse(expression, order);
 
             return _orderFields.Add(orderField);
         }
 
-        public bool SetOrderField(string propertyName, Order order, bool overrideEnabled = false)
+        public bool SetOrderField(string name, Order order, bool overrideEnabled = false)
         {
-            if (IsOrderFieldSetted(propertyName))
+            if (IsOrderFieldSetted(name))
             {
                 if (overrideEnabled)
                 {
-                    UnsetOrderField(propertyName);
+                    UnsetOrderField(name);
                 }
                 else
                 {
@@ -74,21 +74,21 @@ namespace DbStatute.Querying.Qualifiers
                 }
             }
 
-            OrderField orderField = new OrderField(propertyName, order);
+            OrderField orderField = new OrderField(name, order);
 
             return _orderFields.Add(orderField);
         }
 
-        public bool UnsetOrderField(Expression<Func<TModel, object>> property)
+        public bool UnsetOrderField(Expression<Func<TModel, object>> expression)
         {
-            string propertyName = property.ToMember().GetName();
+            string propertyName = expression.ToMember().GetName();
 
             return _orderFields.RemoveWhere(x => x.Name == propertyName) > 0;
         }
 
-        public bool UnsetOrderField(string propertyName)
+        public bool UnsetOrderField(string name)
         {
-            return _orderFields.RemoveWhere(x => x.Name == propertyName) > 0;
+            return _orderFields.RemoveWhere(x => x.Name == name) > 0;
         }
     }
 }

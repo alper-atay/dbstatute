@@ -1,7 +1,7 @@
 ﻿using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Singles;
-using System;
+using RepoDb;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -14,9 +14,9 @@ namespace DbStatute.Singles
 
         object IRawModel.RawModel => RawModel;
 
-        protected override Task<TModel> InsertOperationAsync(IDbConnection dbConnection)
+        protected override async Task<TModel> InsertOperationAsync(IDbConnection dbConnection)
         {
-            throw new NotImplementedException();
+            return await dbConnection.InsertAsync<TModel, TModel>(RawModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
         }
     }
 }

@@ -25,16 +25,16 @@ namespace DbStatute.Interfaces.Querying.Qualifiers
     public interface IOrderFieldQualifier<TModel> : IOrderFieldQualifier
         where TModel : class, IModel, new()
     {
-        bool IsOrderFieldSetted(Expression<Func<TModel, object>> property);
+        bool IsOrderFieldSetted(Expression<Func<TModel, object>> expression);
 
-        bool IsOrderFieldSetted(string propertyName);
+        bool IsOrderFieldSetted(string name);
 
-        bool SetOrderField(Expression<Func<TModel, object>> property, Order order, bool overrideEnabled = false);
+        bool SetOrderField(Expression<Func<TModel, object>> expression, Order order, bool overrideEnabled = false);
 
-        bool SetOrderField(string propertyName, Order order, bool overrideEnabled = false);
+        bool SetOrderField(string name, Order order, bool overrideEnabled = false);
 
-        bool UnsetOrderField(Expression<Func<TModel, object>> property);
+        bool UnsetOrderField(Expression<Func<TModel, object>> expression);
 
-        bool UnsetOrderField(string propertyName);
+        bool UnsetOrderField(string name);
     }
 }

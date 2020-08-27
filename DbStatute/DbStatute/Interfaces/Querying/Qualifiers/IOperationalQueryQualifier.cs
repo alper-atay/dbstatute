@@ -63,8 +63,8 @@ namespace DbStatute.Interfaces.Querying.Qualifiers
     public interface IOperationalQueryQualifier<TModel> : IOperationalQueryQualifier, IQueryQualifier<TModel>
         where TModel : class, IModel, new()
     {
-        bool SetOperation(Expression<Func<TModel, object>> property, Operation operation);
+        bool SetOperation(Expression<Func<TModel, object>> expression, Operation operation);
 
-        bool SetOperation(string propertyName, Operation operation);
+        bool SetOperation(string name, Operation operation);
     }
 }

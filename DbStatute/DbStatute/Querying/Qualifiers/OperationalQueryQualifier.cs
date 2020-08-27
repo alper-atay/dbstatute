@@ -41,25 +41,25 @@ namespace DbStatute.Querying.Qualifiers
             return IOperationalQueryQualifier.GetQueryGroup(this, out queryGroup);
         }
 
-        public bool SetOperation(Expression<Func<TModel, object>> property, Operation operation)
+        public bool SetOperation(Expression<Func<TModel, object>> expression, Operation operation)
         {
-            string propertyName = property.ToMember()?.GetName();
-            if (string.IsNullOrWhiteSpace(propertyName))
+            string name = expression.ToMember()?.GetName();
+            if (string.IsNullOrWhiteSpace(name))
             {
                 throw new PropertyNotFoundException($"{typeof(TModel).FullName} has not property");
             }
 
-            return _operationMap.TryAdd(propertyName, operation);
+            return _operationMap.TryAdd(name, operation);
         }
 
-        public bool SetOperation(string propertyName, Operation operation)
+        public bool SetOperation(string name, Operation operation)
         {
-            if (string.IsNullOrWhiteSpace(propertyName))
+            if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentException($"'{nameof(propertyName)}' cannot be null or white space", nameof(propertyName));
+                throw new ArgumentException($"'{nameof(name)}' cannot be null or white space", nameof(name));
             }
 
-            return _operationMap.TryAdd(propertyName, operation);
+            return _operationMap.TryAdd(name, operation);
         }
     }
 }
