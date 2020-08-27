@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Interfaces.Fundamentals.Multiples
 {
-    public interface IMultipleInsert : IInsertBase
+    public interface IMultipleInsertBase : IInsertBase
     {
         IEnumerable<object> InsertedModels { get; }
 
@@ -13,13 +13,13 @@ namespace DbStatute.Interfaces.Fundamentals.Multiples
         Task<IEnumerable<object>> InsertAsync(IDbConnection dbConnection);
     }
 
-    public interface IMultipleInsertBase<TModel> : IInsertBase<TModel>
+    public interface IMultipleInsertBase<TModel> : IInsertBase<TModel>, IMultipleInsertBase
         where TModel : class, IModel, new()
     {
-        IEnumerable<TModel> InsertedModels { get; }
+        new IEnumerable<TModel> InsertedModels { get; }
 
-        IAsyncEnumerable<TModel> InsertAsSingleAsync(IDbConnection dbConnection);
+        new IAsyncEnumerable<TModel> InsertAsSingleAsync(IDbConnection dbConnection);
 
-        Task<IEnumerable<TModel>> InsertAsync(IDbConnection dbConnection);
+        new Task<IEnumerable<TModel>> InsertAsync(IDbConnection dbConnection);
     }
 }

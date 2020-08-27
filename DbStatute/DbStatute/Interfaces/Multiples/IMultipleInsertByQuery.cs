@@ -3,9 +3,16 @@ using DbStatute.Interfaces.Querying;
 
 namespace DbStatute.Interfaces.Multiples
 {
-    public interface IMultipleInsertByQuery<TModel, TInsertQoery> : IMultipleInsertBase<TModel>
-        where TModel : class, IModel, new()
+    public interface IMultipleInsertByQuery<TInsertQuery> : IMultipleInsertBase
+        where TInsertQuery : IInsertQuery
     {
-        IInsertQuery<TModel> InsertQuery { get; }
+        TInsertQuery InsertQuery { get; }
+    }
+
+    public interface IMultipleInsertByQuery<TModel, TInsertQuery> : IMultipleInsertBase<TModel>, IMultipleInsertByQuery<TInsertQuery>
+        where TModel : class, IModel, new()
+        where TInsertQuery : IInsertQuery<TModel>
+    {
+        new TInsertQuery InsertQuery { get; }
     }
 }

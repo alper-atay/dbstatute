@@ -1,11 +1,13 @@
 ﻿using DbStatute.Interfaces.Fundamentals.Multiples;
-using System.Collections.Generic;
 
 namespace DbStatute.Interfaces.Multiples
 {
-    public interface IMultipleInsertByRawModels<TModel> : IMultipleInsertBase<TModel>
+    public interface IMultipleInsertByRawModels : IMultipleInsertBase, IRawModels
+    {
+    }
+
+    public interface IMultipleInsertByRawModels<TModel> : IMultipleInsertBase<TModel>, IRawModels<TModel>, IMultipleInsertByRawModels
         where TModel : class, IModel, new()
     {
-        IEnumerable<TModel> RawModels { get; }
     }
 }

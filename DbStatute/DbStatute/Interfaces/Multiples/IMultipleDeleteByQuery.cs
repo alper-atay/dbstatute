@@ -1,16 +1,18 @@
-﻿using DbStatute.Interfaces.Querying;
-using System.Data;
-using System.Threading.Tasks;
+﻿using DbStatute.Interfaces.Fundamentals;
+using DbStatute.Interfaces.Querying;
 
 namespace DbStatute.Interfaces.Multiples
 {
-    public interface IMultipleDeleteByQuery<TModel, TSelectQuery, TMultipleSelectByQuery>
-        where TModel : class, IModel, new()
-        where TSelectQuery : ISelectQuery<TModel>
-        where TMultipleSelectByQuery : IMultipleSelectByQuery<TModel, TSelectQuery>
+    public interface IMultipleDeleteByQuery<TDeleteQuery> : IMultipleDeleteBase
+        where TDeleteQuery : IDeleteQuery
     {
-        TMultipleSelectByQuery MultipleSelectByQuery { get; }
+        TDeleteQuery DeleteQuery { get; }
+    }
 
-        Task<int> DeleteAsync(IDbConnection dbConnection);
+    public interface IMultipleDeleteByQuery<TModel, TDeleteQuery> : IMultipleDeleteBase<TModel>, IMultipleDeleteByQuery<TDeleteQuery>
+        where TModel : class, IModel, new()
+        where TDeleteQuery : IDeleteQuery<TModel>
+    {
+        new TDeleteQuery DeleteQuery { get; }
     }
 }

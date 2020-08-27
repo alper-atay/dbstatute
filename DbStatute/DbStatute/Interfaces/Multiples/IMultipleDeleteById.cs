@@ -1,14 +1,13 @@
-﻿using System.Data;
-using System.Threading.Tasks;
+﻿using DbStatute.Interfaces.Fundamentals;
 
 namespace DbStatute.Interfaces.Multiples
 {
-    public interface IMultipleDeleteById<TModel, TMultipleSelectById>
-        where TModel : class, IModel, new()
-        where TMultipleSelectById : IMultipleSelectById<TModel>
+    public interface IMultipleDeleteById : IMultipleDeleteBase, IIds
     {
-        TMultipleSelectById MultipleSelectById { get; }
+    }
 
-        Task<int> DeleteAsync(IDbConnection dbConnection);
+    public interface IMultipleDeleteById<TModel> : IMultipleDeleteBase<TModel>, IMultipleDeleteById
+        where TModel : class, IModel, new()
+    {
     }
 }
