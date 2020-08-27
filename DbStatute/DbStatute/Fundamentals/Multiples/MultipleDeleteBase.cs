@@ -13,7 +13,6 @@ namespace DbStatute.Fundamentals.Multiples
         private readonly List<TModel> _deletedModels = new List<TModel>();
 
         public override int DeletedCount => _deletedModels.Count;
-
         public IEnumerable<TModel> DeletedModels => DeletedCount > 0 ? _deletedModels : null;
         IEnumerable<object> IMultipleDeleteBase.DeletedModels => DeletedModels;
 
@@ -26,9 +25,9 @@ namespace DbStatute.Fundamentals.Multiples
                     continue;
                 }
 
-                yield return deletedModel;
-
                 _deletedModels.Add(deletedModel);
+
+                yield return deletedModel;
             }
 
             StatuteResult = DeletedModels is null ? StatuteResult.Failure : StatuteResult.Success;
@@ -42,7 +41,14 @@ namespace DbStatute.Fundamentals.Multiples
         public async Task<IEnumerable<TModel>> DeleteAsync(IDbConnection dbConnection)
         {
             _deletedModels.Clear();
-            _deletedModels.AddRange(await DeleteOperationAsync(dbConnection));
+
+            IEnumerable<TModel> deletedModels = await DeleteOperationAsync(dbConnection);
+
+            if (deletedModels != null)
+            {
+                _deletedModels.AddRange(await DeleteOperationAsync(dbConnection));
+            }
+
             StatuteResult = DeletedModels is null ? StatuteResult.Failure : StatuteResult.Success;
             return DeletedModels;
         }

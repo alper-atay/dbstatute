@@ -27,9 +27,9 @@ namespace DbStatute.Fundamentals.Multiples
                     continue;
                 }
 
-                yield return insertedModel;
-
                 _insertedModels.Add(insertedModel);
+
+                yield return insertedModel;
             }
 
             StatuteResult = InsertedModels is null ? StatuteResult.Failure : StatuteResult.Success;
@@ -40,6 +40,7 @@ namespace DbStatute.Fundamentals.Multiples
             _insertedModels.Clear();
 
             IEnumerable<TModel> insertedModels = await InsertOperationAsync(dbConnection);
+
             if (insertedModels != null)
             {
                 _insertedModels.AddRange(insertedModels);

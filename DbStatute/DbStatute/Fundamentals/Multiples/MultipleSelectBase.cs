@@ -29,9 +29,9 @@ namespace DbStatute.Fundamentals.Multiples
                     continue;
                 }
 
-                yield return selectedModel;
-
                 _selectedModels.Add(selectedModel);
+
+                yield return selectedModel;
             }
 
             StatuteResult = SelectedModels is null ? StatuteResult.Failure : StatuteResult.Success;
@@ -47,6 +47,7 @@ namespace DbStatute.Fundamentals.Multiples
             _selectedModels.Clear();
 
             IEnumerable<TModel> selectedModels = await SelectOperationAsync(dbConnection);
+
             if (selectedModels != null)
             {
                 _selectedModels.AddRange(selectedModels);
@@ -60,31 +61,6 @@ namespace DbStatute.Fundamentals.Multiples
         Task<IEnumerable<object>> IMultipleSelectBase.SelectAsync(IDbConnection dbConnection)
         {
             return SelectAsync(dbConnection).ContinueWith(x => x.Result.Cast<object>());
-        }
-
-        public async Task<IEnumerable<TModel>> SelectByActingAsync(IDbConnection dbConnection, Action<TModel> action)
-        {
-            _selectedModels.Clear();
-
-            IEnumerable<TModel> selectedModels = await SelectOperationAsync(dbConnection);
-            if (selectedModels != null)
-            {
-                _selectedModels.AddRange(selectedModels);
-
-                foreach (TModel selectedModel in selectedModels)
-                {
-                    action.Invoke(selectedModel);
-                }
-            }
-
-            StatuteResult = SelectedModels is null ? StatuteResult.Failure : StatuteResult.Success;
-
-            return SelectedModels;
-        }
-
-        public Task<IEnumerable<object>> SelectByActingAsync(IDbConnection dbConnection, Action<object> action)
-        {
-            return SelectByActingAsync(dbConnection, action).ContinueWith(x => x.Result.Cast<object>());
         }
 
         protected abstract IAsyncEnumerable<TModel> SelectAsSignlyOperationAsync(IDbConnection dbConnection);

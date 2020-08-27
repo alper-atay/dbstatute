@@ -12,6 +12,7 @@ namespace DbStatute.Fundamentals.Multiples
         where TModel : class, IModel, new()
     {
         private readonly List<TModel> _updatedModels = new List<TModel>();
+
         public int BatchSize { get; set; } = 10;
         public override int UpdatedCount => _updatedModels.Count;
         public IEnumerable<TModel> UpdatedModels => _updatedModels.Count > 0 ? _updatedModels : null;
@@ -21,11 +22,6 @@ namespace DbStatute.Fundamentals.Multiples
         {
             _updatedModels.Clear();
 
-            if (!ReadOnlyLogs.Safely)
-            {
-                yield break;
-            }
-
             await foreach (TModel updatedModel in UpdateAsSinglyOperationAsync(dbConnection))
             {
                 yield return updatedModel;
@@ -33,7 +29,7 @@ namespace DbStatute.Fundamentals.Multiples
                 _updatedModels.Add(updatedModel);
             }
 
-            StatuteResult = UpdatedCount == 0 ? StatuteResult.Failure : StatuteResult.Success;
+            StatuteResult = UpdatedModels is null ? StatuteResult.Failure : StatuteResult.Success;
         }
 
         IAsyncEnumerable<object> IMultipleUpdateBase.UpdateAsSinglyAsync(IDbConnection dbConnection)
@@ -45,9 +41,11 @@ namespace DbStatute.Fundamentals.Multiples
         {
             _updatedModels.Clear();
 
-            if (ReadOnlyLogs.Safely)
+            IEnumerable<TModel> updatedModels = await UpdateOperationAsync(dbConnection);
+
+            if (updatedModels != null)
             {
-                _updatedModels.AddRange(await UpdateOperationAsync(dbConnection));
+                _updatedModels.AddRange(updatedModels);
             }
 
             StatuteResult = UpdatedCount == 0 ? StatuteResult.Failure : StatuteResult.Success;
@@ -60,28 +58,12 @@ namespace DbStatute.Fundamentals.Multiples
             return UpdateAsync(dbConnection).ContinueWith(x => x.Result.Cast<object>());
         }
 
-        public async Task<IEnumerable<TModel>> UpdateByActingAsync(IDbConnection dbConnection, Action<TModel> action)
-        {
-            _updatedModels.Clear();
-
-            if (ReadOnlyLogs.Safely)
-            {
-                _updatedModels.AddRange(await UpdateByActingOperationAsync(dbConnection, action));
-            }
-
-            StatuteResult = UpdatedCount == 0 ? StatuteResult.Failure : StatuteResult.Success;
-
-            return UpdatedModels;
-        }
-
         public Task<IEnumerable<object>> UpdateByActingAsync(IDbConnection dbConnection, Action<object> action)
         {
             return UpdateByActingAsync(dbConnection, action);
         }
 
         protected abstract IAsyncEnumerable<TModel> UpdateAsSinglyOperationAsync(IDbConnection dbConnection);
-
-        protected abstract Task<IEnumerable<TModel>> UpdateByActingOperationAsync(IDbConnection dbConnection, Action<TModel> action);
 
         protected abstract Task<IEnumerable<TModel>> UpdateOperationAsync(IDbConnection dbConnection);
     }

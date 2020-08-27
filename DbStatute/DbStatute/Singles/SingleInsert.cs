@@ -47,7 +47,7 @@ namespace DbStatute
 
         protected virtual async Task<object> InsertOperationAsync(IDbConnection dbConnection)
         {
-            return (object)await dbConnection.InsertAsync(RawModel);
+            return await dbConnection.InsertAsync(RawModel);
         }
     }
 }
