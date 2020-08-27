@@ -1,15 +1,13 @@
-﻿namespace DbStatute.Interfaces
+﻿using DbStatute.Interfaces.Fundamentals.Singles;
+
+namespace DbStatute.Interfaces.Singles
 {
-    public interface ISingleDeleteById<TSingleSelectById> : ISingleDelete<TSingleSelectById>
-        where TSingleSelectById : ISingleSelectById
+    public interface ISingleDeleteById : ISingleDeleteBase, IId
     {
-        TSingleSelectById SingleSelectById { get; }
     }
 
-    public interface ISingleDeleteById<TModel, TSingleSelectById> : ISingleDelete<TModel, TSingleSelectById>, ISingleDeleteById<TSingleSelectById>
+    public interface ISingleDeleteById<TModel> : ISingleDeleteBase<TModel>, ISingleDeleteById
         where TModel : class, IModel, new()
-        where TSingleSelectById : ISingleSelectById<TModel>
     {
-        new TSingleSelectById SingleSelectById { get; }
     }
 }

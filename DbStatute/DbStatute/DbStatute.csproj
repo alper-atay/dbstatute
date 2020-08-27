@@ -12,9 +12,4 @@
     <PackageReference Include="RepoDb" Version="1.11.6" />
     <PackageReference Include="System.Linq.Async" Version="4.1.1" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Fundamentals\Singles\" />
-    <Folder Include="Interfaces\Fundamentals\Singles\" />
-    <Folder Include="Interfaces\Singles\" />
-  </ItemGroup>
 </Project>

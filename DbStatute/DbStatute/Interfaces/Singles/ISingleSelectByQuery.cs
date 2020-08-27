@@ -1,17 +1,16 @@
-﻿using DbStatute.Interfaces.Querying;
+﻿using DbStatute.Interfaces.Fundamentals.Singles;
+using DbStatute.Interfaces.Querying;
 
-namespace DbStatute.Interfaces
+namespace DbStatute.Interfaces.Singles
 {
-    public interface ISingleSelectByQuery<TSelectQuery> : ISingleSelect
+    public interface ISingleSelectByQuery<TSelectQuery> : ISingleSelectBase
         where TSelectQuery : ISelectQuery
     {
-        TSelectQuery SelectQuery { get; }
     }
 
-    public interface ISingleSelectByQuery<TModel, TSelectQuery> : ISingleSelect<TModel>, ISingleSelectByQuery<TSelectQuery>
+    public interface ISingleSelectByQuery<TModel, TSelectQuery> : ISingleSelectBase<TModel>, ISingleSelectByQuery<TSelectQuery>
         where TModel : class, IModel, new()
         where TSelectQuery : ISelectQuery<TModel>
     {
-        new TSelectQuery SelectQuery { get; }
     }
 }

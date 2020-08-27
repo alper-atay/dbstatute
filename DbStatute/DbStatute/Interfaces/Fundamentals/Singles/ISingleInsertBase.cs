@@ -1,22 +1,19 @@
-﻿using DbStatute.Interfaces.Fundamentals;
-using System.Data;
+﻿using System.Data;
 using System.Threading.Tasks;
 
-namespace DbStatute.Interfaces
+namespace DbStatute.Interfaces.Fundamentals.Singles
 {
-    public interface ISingleInsert : IInsertBase
+    public interface ISingleInsertBase : IInsertBase
     {
         object InsertedModel { get; }
-        object RawModel { get; }
 
         Task<object> InsertAsync(IDbConnection dbConnection);
     }
 
-    public interface ISingleInsert<TModel> : IInsertBase<TModel>, ISingleInsert
+    public interface ISingleInsertBase<TModel> : IInsertBase<TModel>, ISingleInsertBase
         where TModel : class, IModel, new()
     {
         new TModel InsertedModel { get; }
-        new TModel RawModel { get; }
 
         new Task<TModel> InsertAsync(IDbConnection dbConnection);
     }

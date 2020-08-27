@@ -1,35 +1,29 @@
-﻿using DbStatute.Fundamentals;
-using DbStatute.Interfaces;
+﻿using DbStatute.Interfaces;
+using DbStatute.Interfaces.Fundamentals.Singles;
 using System.Data;
 using System.Threading.Tasks;
 
-namespace DbStatute
+namespace DbStatute.Fundamentals.Singles
 {
-    public abstract class SingleSelect<TModel> : SelectBase<TModel>, ISingleSelect<TModel>
-
+    public abstract class SingleSelectBase<TModel> : SelectBase<TModel>, ISingleSelectBase<TModel>
         where TModel : class, IModel, new()
     {
         private TModel _selectedModel;
 
         public override int SelectedCount => SelectedModel is null ? 0 : 1;
-        public TModel SelectedModel => (TModel)_selectedModel?.Clone();
-        object ISingleSelect.SelectedModel => SelectedModel;
+        public TModel SelectedModel => _selectedModel;
+        object ISingleSelectBase.SelectedModel => SelectedModel;
 
         public async Task<TModel> SelectAsync(IDbConnection dbConnection)
         {
-            _selectedModel = null;
-
-            if (ReadOnlyLogs.Safely)
-            {
-                _selectedModel = await SelectOperationAsync(dbConnection);
-            }
+            _selectedModel = await SelectOperationAsync(dbConnection);
 
             StatuteResult = _selectedModel is null ? StatuteResult.Failure : StatuteResult.Success;
 
             return SelectedModel;
         }
 
-        Task<object> ISingleSelect.SelectAsync(IDbConnection dbConnection)
+        Task<object> ISingleSelectBase.SelectAsync(IDbConnection dbConnection)
         {
             return SelectAsync(dbConnection).ContinueWith(x => (object)x.Result);
         }

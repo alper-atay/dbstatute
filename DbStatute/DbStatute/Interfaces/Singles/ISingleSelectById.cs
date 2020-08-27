@@ -1,11 +1,12 @@
-﻿namespace DbStatute.Interfaces
+﻿using DbStatute.Interfaces.Fundamentals.Singles;
+
+namespace DbStatute.Interfaces.Singles
 {
-    public interface ISingleSelectById : ISingleSelect
+    public interface ISingleSelectById : ISingleSelectBase, IId
     {
-        object Id { get; }
     }
 
-    public interface ISingleSelectById<TModel> : ISingleSelect<TModel>, ISingleSelectById
+    public interface ISingleSelectById<TModel> : ISingleSelectBase<TModel>, ISingleSelectById
         where TModel : class, IModel, new()
     {
     }
