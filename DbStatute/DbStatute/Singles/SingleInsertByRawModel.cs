@@ -10,8 +10,12 @@ namespace DbStatute.Singles
     public class SingleInsertByRawModel<TModel> : SingleInsertBase<TModel>, ISingleInsertByRawModel<TModel>
         where TModel : class, IModel, new()
     {
-        public TModel RawModel { get; }
+        public SingleInsertByRawModel(TModel rawModel)
+        {
+            RawModel = rawModel;
+        }
 
+        public TModel RawModel { get; }
         object IRawModel.RawModel => RawModel;
 
         protected override async Task<TModel> InsertOperationAsync(IDbConnection dbConnection)

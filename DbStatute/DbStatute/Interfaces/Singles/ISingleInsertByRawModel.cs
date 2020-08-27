@@ -6,7 +6,7 @@ namespace DbStatute.Interfaces.Singles
     {
     }
 
-    public interface ISingleInsertByRawModel<TModel> : ISingleInsertBase<TModel>, IRawModel<TModel>
+    public interface ISingleInsertByRawModel<TModel> : ISingleInsertBase<TModel>, IRawModel<TModel>, ISingleInsertByRawModel
         where TModel : class, IModel, new()
     {
     }
