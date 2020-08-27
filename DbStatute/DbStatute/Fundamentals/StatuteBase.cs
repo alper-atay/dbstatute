@@ -20,6 +20,7 @@ namespace DbStatute.Fundamentals
 
         public event Action Succeed;
 
+        public ICacheable Cacheable { get; set; }
         public int? CommandTimeout { get; set; } = null;
         public string Hints { get; set; } = null;
         public IStatementBuilder StatementBuilder { get; set; } = null;
