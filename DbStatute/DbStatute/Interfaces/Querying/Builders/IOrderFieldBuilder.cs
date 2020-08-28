@@ -1,4 +1,4 @@
-﻿using DbStatute.Interfaces.Querying.Qualifiers;
+﻿using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using RepoDb;
 using System.Collections.Generic;
 
@@ -8,12 +8,12 @@ namespace DbStatute.Interfaces.Querying.Builders
     {
         IOrderFieldQualifier OrderFieldQualifier { get; }
 
-        bool BuildOrderFields(out IEnumerable<OrderField> orderFields);
+        bool Build(out IEnumerable<OrderField> orderFields);
     }
 
     public interface IOrderFieldBuilder<TModel> : IOrderFieldBuilder
         where TModel : class, IModel, new()
     {
-
+        new IOrderFieldQualifier<TModel> OrderFieldQualifier { get; }
     }
 }

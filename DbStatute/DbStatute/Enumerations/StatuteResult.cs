@@ -1,4 +1,4 @@
-﻿namespace DbStatute
+﻿namespace DbStatute.Enumerations
 {
     public enum StatuteResult
     {

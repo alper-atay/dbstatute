@@ -1,4 +1,5 @@
-﻿using DbStatute.Interfaces;
+﻿using DbStatute.Enumerations;
+using DbStatute.Interfaces;
 using DbStatute.Interfaces.Fundamentals.Multiples;
 using System.Collections.Generic;
 using System.Data;

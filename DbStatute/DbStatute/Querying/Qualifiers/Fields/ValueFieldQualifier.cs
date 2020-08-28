@@ -1,5 +1,6 @@
 ﻿using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying.Qualifiers;
+using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using RepoDb;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,8 @@ namespace DbStatute.Querying.Qualifiers.Fields
                 if (overrideEnabled)
                 {
                     _valueMap.Remove(field);
-                    _valueMap.Add(field, value);
+                    
+                    return _valueMap.TryAdd(field, value);
                 }
                 else
                 {
@@ -44,7 +46,8 @@ namespace DbStatute.Querying.Qualifiers.Fields
                 if (overrideEnabled)
                 {
                     _valueMap.Remove(field);
-                    _valueMap.Add(field, default);
+                    
+                    return _valueMap.TryAdd(field, default);
                 }
                 else
                 {
@@ -61,23 +64,11 @@ namespace DbStatute.Querying.Qualifiers.Fields
         }
     }
 
-    public class FieldValueQualifier<TModel> : IValueFieldQualifier<TModel>
+    public class ValueFieldQualifier<TModel> : IValueFieldQualifier<TModel>
         where TModel : class, IModel, new()
     {
         private readonly Dictionary<Field, object> _valueMap = new Dictionary<Field, object>();
 
-        public FieldValueQualifier()
-        {
-            FieldQualifier = new FieldQualifier<TModel>();
-        }
-
-        public FieldValueQualifier(IFieldQualifier<TModel> fieldQualifier)
-        {
-            FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
-        }
-
-        public IFieldQualifier<TModel> FieldQualifier { get; }
-        IFieldQualifier IValueFieldQualifier.FieldQualifier => FieldQualifier;
         public IReadOnlyDictionary<Field, object> FieldValueMap => _valueMap;
 
         public bool IsSetted(Expression<Func<TModel, object>> expression)
@@ -103,7 +94,8 @@ namespace DbStatute.Querying.Qualifiers.Fields
                     if (overrideEnabled)
                     {
                         _valueMap.Remove(field);
-                        _valueMap.Add(field, value);
+
+                        return _valueMap.TryAdd(field, value);
                     }
                     {
                         continue;
@@ -129,7 +121,8 @@ namespace DbStatute.Querying.Qualifiers.Fields
                     if (overrideEnabled)
                     {
                         _valueMap.Remove(field);
-                        _valueMap.Add(field, default);
+
+                        return _valueMap.TryAdd(field, default);
                     }
                     {
                         continue;
@@ -149,7 +142,8 @@ namespace DbStatute.Querying.Qualifiers.Fields
                 if (overrideEnabled)
                 {
                     _valueMap.Remove(field);
-                    _valueMap.Add(field, value);
+                    
+                    return _valueMap.TryAdd(field, value);
                 }
                 else
                 {
@@ -167,7 +161,8 @@ namespace DbStatute.Querying.Qualifiers.Fields
                 if (overrideEnabled)
                 {
                     _valueMap.Remove(field);
-                    _valueMap.Add(field, default);
+
+                    return _valueMap.TryAdd(field, default);
                 }
                 else
                 {

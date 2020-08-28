@@ -4,7 +4,7 @@ using RepoDb;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DbStatute.Interfaces.Querying.Qualifiers
+namespace DbStatute.Interfaces.Querying.Qualifiers.Fields
 {
     public interface IOrderFieldQualifier : ISettableOrderField
     {

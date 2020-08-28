@@ -8,7 +8,7 @@ namespace DbStatute.Interfaces.Querying.Builders
     {
         IFieldQualifier FieldQualifier { get; }
 
-        bool BuildFields(out IEnumerable<Field> fields);
+        bool Build(out IEnumerable<Field> builtFields);
     }
 
     public interface IFieldBuilder<TModel> : IFieldBuilder

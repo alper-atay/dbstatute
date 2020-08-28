@@ -1,5 +1,5 @@
 ﻿using DbStatute.Interfaces;
-using DbStatute.Interfaces.Querying.Qualifiers;
+using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using RepoDb;
 using RepoDb.Enumerations;
 using RepoDb.Extensions;
@@ -44,7 +44,8 @@ namespace DbStatute.Querying.Qualifiers.Fields
                 if (overrideEnabled)
                 {
                     _orderFields.Remove(orderField);
-                    _orderFields.Add(orderField);
+
+                    return _orderFields.Add(orderField);
                 }
                 else
                 {
@@ -64,8 +65,6 @@ namespace DbStatute.Querying.Qualifiers.Fields
     public class OrderFieldQualifier<TModel> : IOrderFieldQualifier<TModel>
         where TModel : class, IModel, new()
     {
-        private static readonly EqualityComparer _EqualityComparer = new EqualityComparer();
-
         private readonly HashSet<OrderField> _orderFields = new HashSet<OrderField>();
 
         public OrderFieldQualifier()
@@ -113,7 +112,8 @@ namespace DbStatute.Querying.Qualifiers.Fields
                 if (overrideEnabled)
                 {
                     _orderFields.Remove(orderField);
-                    _orderFields.Add(orderField);
+
+                    return _orderFields.Add(orderField);
                 }
                 else
                 {
@@ -130,8 +130,9 @@ namespace DbStatute.Querying.Qualifiers.Fields
             {
                 if (overrideEnabled)
                 {
-                    _orderFields.Remove(orderField); //Remove on hash code
-                    _orderFields.Add(orderField); //Add with reference. Reference changed
+                    _orderFields.Remove(orderField);
+
+                    return _orderFields.Add(orderField);
                 }
                 else
                 {
@@ -158,19 +159,6 @@ namespace DbStatute.Querying.Qualifiers.Fields
         public bool Unset(OrderField orderField)
         {
             return _orderFields.RemoveWhere(x => x.Name == orderField.Name) > 0;
-        }
-
-        private sealed class EqualityComparer : IEqualityComparer<OrderField>
-        {
-            public bool Equals(OrderField x, OrderField y)
-            {
-                return x.Name == y.Name && x.Order == y.Order;
-            }
-
-            public int GetHashCode(OrderField obj)
-            {
-                return obj.GetHashCode();
-            }
         }
     }
 }

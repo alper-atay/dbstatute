@@ -1,4 +1,5 @@
 ﻿using Basiclog;
+using DbStatute.Enumerations;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Fundamentals;
 using RepoDb.Interfaces;

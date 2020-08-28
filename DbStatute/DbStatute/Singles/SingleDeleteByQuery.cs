@@ -1,7 +1,7 @@
 ﻿using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying;
-using DbStatute.Interfaces.Querying.Qualifiers;
+using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using DbStatute.Interfaces.Singles;
 using RepoDb;
 using System;

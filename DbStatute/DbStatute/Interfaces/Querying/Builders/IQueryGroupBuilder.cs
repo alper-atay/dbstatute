@@ -1,51 +1,31 @@
 ﻿using Basiclog;
-using DbStatute.Interfaces.Querying.Qualifiers;
+using DbStatute.Enumerations;
+using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using RepoDb;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace DbStatute.Interfaces.Querying.Builders
 {
-    public interface IQueryGroupBuilder : IQueryQualifier
+    public interface IQueryGroupBuilder
     {
-        IReadOnlyLogbook BuildQuery(out QueryGroup queryGroup);
+        QueryGroupUsage Usage { get; }
 
-        protected static IReadOnlyLogbook BuildQuery(IQueryQualifier @this, out QueryGroup queryGroup)
-        {
-            queryGroup = null;
-            ILogbook logs = Logger.NewLogbook();
+        #region Qualifiers
 
-            IFieldQualifier fieldQualifier = @this.FieldQualifier;
-            IEnumerable<Field> fields = fieldQualifier.Fields;
+        IFieldBuilder FieldBuilder { get; }
+        IPredicateFieldQualifier PredicateFieldQualifier { get; }
+        IValueFieldQualifier ValueFieldQualifier { get; }
 
-            ICollection<QueryField> queryFields = new Collection<QueryField>();
+        #endregion Qualifiers
 
-            foreach (Field field in fields)
-            {
-                string name = field.Name;
-                bool valueFound = @this.FieldValueMap.TryGetValue(name, out object value);
-                bool predicateFound = @this.FieldPredicateMap.TryGetValue(name, out ReadOnlyLogbookPredicate<object> predicate);
+        IReadOnlyLogbook Build(out QueryGroup queryGroup);
 
-                if (valueFound)
-                {
-                    QueryField queryField = new QueryField(field, value);
-                    queryFields.Add(queryField);
-                }
 
-                if (valueFound && predicateFound)
-                {
-                    logs.AddRange(predicate.Invoke(value));
-                }
-            }
+    }
 
-            int queryFieldCount = queryFields.Count;
-
-            if (queryFieldCount > 0)
-            {
-                queryGroup = new QueryGroup(queryFields);
-            }
-
-            return logs;
-        }
+    public interface IQueryGroupBuilder<TModel> : IQueryGroupBuilder
+        where TModel : class, IModel, new()
+    {
+        new IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
+        new IValueFieldQualifier<TModel> ValueFieldQualifier { get; }
     }
 }

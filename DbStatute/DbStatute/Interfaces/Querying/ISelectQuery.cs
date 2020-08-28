@@ -1,5 +1,5 @@
 ﻿using DbStatute.Interfaces.Querying.Fundamentals;
-using DbStatute.Interfaces.Querying.Qualifiers;
+using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 
 namespace DbStatute.Interfaces.Querying
 {

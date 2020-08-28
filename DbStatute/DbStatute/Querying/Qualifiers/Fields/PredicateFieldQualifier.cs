@@ -1,6 +1,6 @@
 ﻿using Basiclog;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Querying.Qualifiers;
+using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using RepoDb;
 using System;
 using System.Collections.Generic;
@@ -9,24 +9,66 @@ using System.Linq.Expressions;
 
 namespace DbStatute.Querying.Qualifiers.Fields
 {
+    public class PredicateFieldQualifier : IPredicateFieldQualifier
+    {
+        private readonly Dictionary<Field, ReadOnlyLogbookPredicate<object>> _predicateMap = new Dictionary<Field, ReadOnlyLogbookPredicate<object>>();
+
+        public IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> FieldPredicateMap => _predicateMap;
+
+        public bool IsSetted(Field field)
+        {
+            return _predicateMap.ContainsKey(field);
+        }
+
+        public bool Set(Field field, ReadOnlyLogbookPredicate<object> value, bool overrideEnabled = false)
+        {
+            if (!_predicateMap.TryAdd(field, value))
+            {
+                if (overrideEnabled)
+                {
+                    _predicateMap.Remove(field);
+
+                    return _predicateMap.TryAdd(field, value);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool Set(Field field, bool overrideEnabled = false)
+        {
+            if (!_predicateMap.TryAdd(field, default))
+            {
+                if (overrideEnabled)
+                {
+                    _predicateMap.Remove(field);
+                    return _predicateMap.TryAdd(field, default);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool Unset(Field field)
+        {
+            return _predicateMap.Remove(field);
+        }
+    }
+
     public class PredicateFieldQualifier<TModel> : IPredicateFieldQualifier<TModel>
         where TModel : class, IModel, new()
     {
-        private Dictionary<Field, ReadOnlyLogbookPredicate<object>> _predicateMap;
-
-        public PredicateFieldQualifier()
-        {
-            FieldQualifier = new FieldQualifier<TModel>();
-        }
-
-        public PredicateFieldQualifier(IFieldQualifier<TModel> fieldQualifier)
-        {
-            FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
-        }
+        private readonly Dictionary<Field, ReadOnlyLogbookPredicate<object>> _predicateMap;
 
         public IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> FieldPredicateMap => _predicateMap;
-        public IFieldQualifier<TModel> FieldQualifier { get; }
-        IFieldQualifier IPredicateFieldQualifier.FieldQualifier => FieldQualifier;
 
         public bool IsSetted(Expression<Func<TModel, object>> expression)
         {
@@ -60,7 +102,8 @@ namespace DbStatute.Querying.Qualifiers.Fields
                     if (overrideEnabled)
                     {
                         _predicateMap.Remove(field);
-                        _predicateMap.Add(field, predicate);
+
+                        return _predicateMap.TryAdd(field, predicate);
                     }
                     else
                     {
@@ -81,7 +124,8 @@ namespace DbStatute.Querying.Qualifiers.Fields
                 if (overrideEnabled)
                 {
                     _predicateMap.Remove(field);
-                    _predicateMap.Add(field, predicate);
+
+                    return _predicateMap.TryAdd(field, predicate);
                 }
                 else
                 {
@@ -105,7 +149,8 @@ namespace DbStatute.Querying.Qualifiers.Fields
                     if (overrideEnabled)
                     {
                         _predicateMap.Remove(field);
-                        _predicateMap.Add(field, default);
+
+                        return _predicateMap.TryAdd(field, default);
                     }
                     else
                     {
@@ -121,12 +166,12 @@ namespace DbStatute.Querying.Qualifiers.Fields
 
         public bool Set(Field field, bool overrideEnabled = false)
         {
-            if (!_predicateMap.TryAdd(field, predicate))
+            if (!_predicateMap.TryAdd(field, default))
             {
                 if (overrideEnabled)
                 {
                     _predicateMap.Remove(field);
-                    _predicateMap.Add(field, predicate);
+                    return _predicateMap.TryAdd(field, default);
                 }
                 else
                 {
