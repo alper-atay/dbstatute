@@ -1,6 +1,6 @@
 ﻿using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Querying.Qualifiers;
+using DbStatute.Interfaces.Querying.Builders;
 using DbStatute.Interfaces.Singles;
 using DbStatute.Querying.Qualifiers;
 using System;
@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Singles
 {
-    public class SingleInsertByRawModelWithFieldQualifier<TModel, TFieldQualifier> : SingleInsertBase<TModel>, ISingleInsertByRawModelWithFieldQualifier<TModel, TFieldQualifier>
+    public class SingleInsertByRawModelQuery<TModel, TFieldQualifier> : SingleInsertBase<TModel>, ISingleInsertByRawModelQuery<TModel, TFieldQualifier>
         where TModel : class, IModel, new()
-        where TFieldQualifier : FieldQualifier<TModel>, new()
+        where TFieldQualifier : class, IFieldBuilder<TModel>
     {
-        public SingleInsertByRawModelWithFieldQualifier(TModel rawModel)
+        public SingleInsertByRawModelQuery(TModel rawModel)
         {
             RawModel = rawModel;
             FieldQualifier = new FieldQualifier<TModel>() as TFieldQualifier;
         }
 
-        public SingleInsertByRawModelWithFieldQualifier(TModel rawModel, TFieldQualifier fieldQualifier)
+        public SingleInsertByRawModelQuery(TModel rawModel, TFieldQualifier fieldQualifier)
         {
             RawModel = rawModel;
             FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));

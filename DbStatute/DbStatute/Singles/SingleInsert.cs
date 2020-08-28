@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Singles
 {
-    public class SingleInsertByRawModel<TModel> : SingleInsertBase<TModel>, ISingleInsertByRawModel<TModel>
+    public class SingleInsert<TModel> : SingleInsertBase<TModel>, ISingleInsert<TModel>
         where TModel : class, IModel, new()
     {
-        public SingleInsertByRawModel(TModel rawModel)
+        public SingleInsert(TModel rawModel)
         {
             RawModel = rawModel;
         }

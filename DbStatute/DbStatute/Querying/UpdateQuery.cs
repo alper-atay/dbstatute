@@ -1,6 +1,6 @@
 ﻿using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying;
-using DbStatute.Interfaces.Querying.Qualifiers;
+using DbStatute.Interfaces.Querying.Builders;
 using DbStatute.Querying.Qualifiers;
 using System;
 
@@ -8,12 +8,12 @@ namespace DbStatute.Querying
 {
     public class UpdateQuery : StatuteQueryBase, IUpdateQuery
     {
-        public UpdateQuery(IModelQueryQualifier modelQueryQualifier)
+        public UpdateQuery(IModelBuilder modelQueryQualifier)
         {
             ModelQueryQualifier = modelQueryQualifier ?? throw new ArgumentNullException(nameof(modelQueryQualifier));
         }
 
-        public IModelQueryQualifier ModelQueryQualifier { get; }
+        public IModelBuilder ModelQueryQualifier { get; }
     }
 
     public class UpdateQuery<TModel> : StatuteQueryBase<TModel>, IUpdateQuery<TModel>
@@ -24,12 +24,12 @@ namespace DbStatute.Querying
             ModelQueryQualifier = new ModelQueryQualifier<TModel>();
         }
 
-        public UpdateQuery(IModelQueryQualifier<TModel> modelQueryQualifier)
+        public UpdateQuery(IModelBuilder<TModel> modelQueryQualifier)
         {
             ModelQueryQualifier = modelQueryQualifier ?? throw new ArgumentNullException(nameof(modelQueryQualifier));
         }
 
-        public IModelQueryQualifier<TModel> ModelQueryQualifier { get; }
-        IModelQueryQualifier IUpdateQuery.ModelQueryQualifier => ModelQueryQualifier;
+        public IModelBuilder<TModel> ModelQueryQualifier { get; }
+        IModelBuilder IUpdateQuery.ModelQueryQualifier => ModelQueryQualifier;
     }
 }

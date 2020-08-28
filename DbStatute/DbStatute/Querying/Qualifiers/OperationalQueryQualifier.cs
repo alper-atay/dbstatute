@@ -21,11 +21,6 @@ namespace DbStatute.Querying.Qualifiers
         public Conjunction Conjunction { get; set; }
 
         public IReadOnlyDictionary<string, Operation> OperationMap { get; }
-
-        public override IReadOnlyLogbook GetQueryGroup(out QueryGroup queryGroup)
-        {
-            return IOperationalQueryQualifier.GetQueryGroup(this, out queryGroup);
-        }
     }
 
     public class OperationalQueryQualifier<TModel> : QueryQualifier<TModel>, IOperationalQueryQualifier<TModel>
@@ -35,11 +30,6 @@ namespace DbStatute.Querying.Qualifiers
 
         public Conjunction Conjunction { get; set; }
         public IReadOnlyDictionary<string, Operation> OperationMap => _operationMap;
-
-        public override IReadOnlyLogbook GetQueryGroup(out QueryGroup queryGroup)
-        {
-            return IOperationalQueryQualifier.GetQueryGroup(this, out queryGroup);
-        }
 
         public bool SetOperation(Expression<Func<TModel, object>> expression, Operation operation)
         {

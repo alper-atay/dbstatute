@@ -1,4 +1,5 @@
 ﻿using DbStatute.Interfaces;
+using RepoDb;
 using RepoDb.Interfaces;
 
 namespace DbStatute
@@ -8,5 +9,6 @@ namespace DbStatute
         public ICache Cache { get; set; } = null;
         public int? ItemExpiration { get; set; } = null;
         public string Key { get; set; } = null;
+
     }
 }

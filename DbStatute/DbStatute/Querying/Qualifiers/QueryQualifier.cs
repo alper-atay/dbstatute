@@ -44,11 +44,6 @@ namespace DbStatute.Querying.Qualifiers
         public IReadOnlyDictionary<string, ReadOnlyLogbookPredicate<object>> PredicateMap { get; }
         public IReadOnlyDictionary<string, object> ValueMap { get; }
 
-        public virtual IReadOnlyLogbook GetQueryGroup(out QueryGroup queryGroup)
-        {
-            return IQueryQualifier.GetQueryGroup(this, out queryGroup);
-        }
-
         public IReadOnlyLogbook Test()
         {
             return IQueryQualifier.Test(this);
@@ -95,11 +90,6 @@ namespace DbStatute.Querying.Qualifiers
         public ReadOnlyLogbookPredicate<object> GetPredicateOrDefault(string name)
         {
             return _predicateMap.GetValueOrDefault(name);
-        }
-
-        public virtual IReadOnlyLogbook GetQueryGroup(out QueryGroup queryGroup)
-        {
-            return IQueryQualifier.GetQueryGroup(this, out queryGroup);
         }
 
         public object GetValueOrDefault(Expression<Func<TModel, object>> expression)

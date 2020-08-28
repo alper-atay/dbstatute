@@ -1,6 +1,6 @@
 ﻿using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying;
-using DbStatute.Interfaces.Querying.Qualifiers;
+using DbStatute.Interfaces.Querying.Builders;
 using DbStatute.Querying.Qualifiers;
 using System;
 
@@ -8,12 +8,12 @@ namespace DbStatute.Querying
 {
     public class MergeQuery : StatuteQueryBase, IMergeQuery
     {
-        public MergeQuery(IModelQueryQualifier modelQueryQualifier)
+        public MergeQuery(IModelBuilder modelQueryQualifier)
         {
             ModelQueryQualifier = modelQueryQualifier ?? throw new ArgumentNullException(nameof(modelQueryQualifier));
         }
 
-        public IModelQueryQualifier ModelQueryQualifier { get; }
+        public IModelBuilder ModelQueryQualifier { get; }
     }
 
     public class MergeQuery<TModel> : StatuteQueryBase<TModel>, IMergeQuery<TModel>
@@ -24,12 +24,12 @@ namespace DbStatute.Querying
             ModelQueryQualifier = new ModelQueryQualifier<TModel>();
         }
 
-        public MergeQuery(IModelQueryQualifier<TModel> modelQueryQualifier)
+        public MergeQuery(IModelBuilder<TModel> modelQueryQualifier)
         {
             ModelQueryQualifier = modelQueryQualifier ?? throw new ArgumentNullException(nameof(modelQueryQualifier));
         }
 
-        public IModelQueryQualifier<TModel> ModelQueryQualifier { get; }
-        IModelQueryQualifier IMergeQuery.ModelQueryQualifier => ModelQueryQualifier;
+        public IModelBuilder<TModel> ModelQueryQualifier { get; }
+        IModelBuilder IMergeQuery.ModelQueryQualifier => ModelQueryQualifier;
     }
 }

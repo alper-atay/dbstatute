@@ -1,4 +1,6 @@
 ﻿using Basiclog;
+using DbStatute.Interfaces.Querying.Builders;
+using DbStatute.Interfaces.Querying.Fundamentals.Qualifiers;
 using RepoDb;
 using RepoDb.Enumerations;
 using System;
@@ -8,10 +10,9 @@ using System.Linq.Expressions;
 
 namespace DbStatute.Interfaces.Querying.Qualifiers
 {
-    public interface IOperationalQueryQualifier : IQueryQualifier
+    public interface IOperationalQueryQualifier : IQueryQualifier, IFieldOperationMap
     {
         Conjunction Conjunction { get; set; }
-        IReadOnlyDictionary<string, Operation> OperationMap { get; }
 
         protected static IReadOnlyLogbook GetQueryGroup(IOperationalQueryQualifier @this, out QueryGroup queryGroup)
         {
@@ -19,7 +20,7 @@ namespace DbStatute.Interfaces.Querying.Qualifiers
 
             ILogbook logs = Logger.NewLogbook();
 
-            IFieldQualifier fieldQualifier = @this.FieldQualifier;
+            IFieldBuilder fieldQualifier = @this.FieldQualifier;
             IEnumerable<Field> fields = fieldQualifier.Fields;
 
             ICollection<QueryField> queryFields = new Collection<QueryField>();
@@ -27,9 +28,9 @@ namespace DbStatute.Interfaces.Querying.Qualifiers
             foreach (Field field in fields)
             {
                 string name = field.Name;
-                bool valueFound = @this.ValueMap.TryGetValue(name, out object value);
-                bool predicateFound = @this.PredicateMap.TryGetValue(name, out ReadOnlyLogbookPredicate<object> predicate);
-                bool operationFound = @this.OperationMap.TryGetValue(name, out Operation operation);
+                bool valueFound = @this.FieldValueMap.TryGetValue(name, out object value);
+                bool predicateFound = @this.FieldPredicateMap.TryGetValue(name, out ReadOnlyLogbookPredicate<object> predicate);
+                bool operationFound = @this.FieldOperationMap.TryGetValue(name, out Operation operation);
 
                 if (valueFound)
                 {

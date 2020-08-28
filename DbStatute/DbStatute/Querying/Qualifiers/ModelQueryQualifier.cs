@@ -1,6 +1,6 @@
 ﻿using Basiclog;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Querying.Qualifiers;
+using DbStatute.Interfaces.Querying.Builders;
 using RepoDb;
 using RepoDb.Exceptions;
 using System;
@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace DbStatute.Querying.Qualifiers
 {
-    public class ModelQueryQualifier<TModel> : QueryQualifier<TModel>, IModelQueryQualifier<TModel>
+    public class ModelQueryQualifier<TModel> : QueryQualifier<TModel>, IModelBuilder<TModel>
         where TModel : class, IModel, new()
     {
         public IReadOnlyLogbook GetModel(out TModel model)
@@ -47,9 +47,9 @@ namespace DbStatute.Querying.Qualifiers
             return logs;
         }
 
-        public IReadOnlyLogbook GetModel(out object model)
+        public IReadOnlyLogbook BuildModel(out object model)
         {
-            return GetModel(out model);
+            return BuildModel(out model);
         }
     }
 }

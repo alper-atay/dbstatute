@@ -3,11 +3,11 @@ using DbStatute.Interfaces.Querying;
 
 namespace DbStatute.Interfaces.Singles
 {
-    public interface ISingleMergeByRawModel : ISingleMergeBase, IRawModel
+    public interface ISingleMerge : ISingleMergeBase, IRawModel
     {
     }
 
-    public interface ISingleMergeByRawModel<TModel> : ISingleMergeBase<TModel>, IRawModel<TModel>, ISingleMergeByRawModel
+    public interface ISingleMerge<TModel> : ISingleMergeBase<TModel>, IRawModel<TModel>, ISingleMerge
         where TModel : class, IModel, new()
     {
     }

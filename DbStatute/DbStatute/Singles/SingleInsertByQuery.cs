@@ -1,7 +1,7 @@
 ﻿using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying;
-using DbStatute.Interfaces.Querying.Qualifiers;
+using DbStatute.Interfaces.Querying.Builders;
 using DbStatute.Interfaces.Singles;
 using RepoDb;
 using System;
@@ -24,7 +24,7 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> InsertOperationAsync(IDbConnection dbConnection)
         {
-            IModelQueryQualifier<TModel> modelQueryQualifier = InsertQuery.ModelQueryQualifier;
+            IModelBuilder<TModel> modelQueryQualifier = InsertQuery.ModelQueryQualifier;
             Logs.AddRange(modelQueryQualifier.GetQueryGroup(out QueryGroup queryGroup));
 
             if (!ReadOnlyLogs.Safely)
@@ -32,9 +32,9 @@ namespace DbStatute.Singles
                 return null;
             }
 
-            Logs.AddRange(modelQueryQualifier.GetModel(out object insertModel));
+            Logs.AddRange(modelQueryQualifier.BuildModel(out object insertModel));
 
-            IFieldQualifier<TModel> fieldQualifier = modelQueryQualifier.FieldQualifier;
+            IFieldBuilder<TModel> fieldQualifier = modelQueryQualifier.FieldQualifier;
             IEnumerable<Field> fields = null;
 
             if (fieldQualifier.HasField)

@@ -2,6 +2,7 @@
 using DbStatute.Interfaces.Querying;
 using DbStatute.Interfaces.Querying.Qualifiers;
 using DbStatute.Querying.Qualifiers;
+using DbStatute.Querying.Qualifiers.Fields;
 using System;
 
 namespace DbStatute.Querying

@@ -1,14 +1,12 @@
-﻿using DbStatute.Querying.Qualifiers;
+﻿using DbStatute.Interfaces.Utilities;
+using DbStatute.Querying.Qualifiers.Fields;
 using RepoDb;
-using RepoDb.Enumerations;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace DbStatute.Interfaces.Querying.Qualifiers
 {
-    public interface IOrderFieldQualifier
+    public interface IOrderFieldQualifier : ISettableOrderField
     {
         private static readonly IOrderFieldQualifier _empty;
 
@@ -18,23 +16,13 @@ namespace DbStatute.Interfaces.Querying.Qualifiers
         }
 
         static IOrderFieldQualifier Empty => _empty;
+
         bool HasOrderField { get; }
         IEnumerable<OrderField> OrderFields { get; }
     }
 
-    public interface IOrderFieldQualifier<TModel> : IOrderFieldQualifier
+    public interface IOrderFieldQualifier<TModel> : ISettableOrderField<TModel>, IOrderFieldQualifier
         where TModel : class, IModel, new()
     {
-        bool IsOrderFieldSetted(Expression<Func<TModel, object>> expression);
-
-        bool IsOrderFieldSetted(string name);
-
-        bool SetOrderField(Expression<Func<TModel, object>> expression, Order order, bool overrideEnabled = false);
-
-        bool SetOrderField(string name, Order order, bool overrideEnabled = false);
-
-        bool UnsetOrderField(Expression<Func<TModel, object>> expression);
-
-        bool UnsetOrderField(string name);
     }
 }
