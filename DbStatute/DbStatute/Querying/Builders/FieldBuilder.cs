@@ -1,6 +1,6 @@
 ﻿using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying.Builders;
-using DbStatute.Interfaces.Querying.Qualifiers;
+using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using RepoDb;
 using System;
 using System.Collections.Generic;

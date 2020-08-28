@@ -49,7 +49,7 @@ namespace DbStatute.Fundamentals.Multiples
                 _updatedModels.AddRange(updatedModels);
             }
 
-            StatuteResult = UpdatedCount == 0 ? StatuteResult.Failure : StatuteResult.Success;
+            StatuteResult = UpdatedModels is null ? StatuteResult.Failure : StatuteResult.Success;
 
             return UpdatedModels;
         }

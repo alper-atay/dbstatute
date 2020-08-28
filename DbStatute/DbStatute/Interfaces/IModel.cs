@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DbStatute.Interfaces
+﻿namespace DbStatute.Interfaces
 {
     public interface IModel
     {

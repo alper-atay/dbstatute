@@ -88,9 +88,9 @@ namespace DbStatute.Querying.Qualifiers.Fields
         public bool IsSetted(Expression<Func<TModel, object>> expression)
         {
             Field field = expression?.ToMember().GetField();
-            var fieldName = field?.Name;
+            string name = field?.Name;
 
-            if (string.IsNullOrWhiteSpace(fieldName))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 throw new NullReferenceException();
             }
@@ -146,14 +146,14 @@ namespace DbStatute.Querying.Qualifiers.Fields
         public bool Unset(Expression<Func<TModel, object>> expression)
         {
             Field field = expression?.ToMember().GetField();
-            var fieldName = field?.Name;
+            string name = field?.Name;
 
-            if (string.IsNullOrWhiteSpace(fieldName))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 throw new NullReferenceException();
             }
 
-            return _orderFields.RemoveWhere(x => x.Name == fieldName) > 0;
+            return _orderFields.RemoveWhere(x => x.Name == name) > 0;
         }
 
         public bool Unset(OrderField orderField)

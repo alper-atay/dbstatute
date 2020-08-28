@@ -18,13 +18,12 @@ namespace DbStatute.Interfaces.Querying.Builders
         #endregion Qualifiers
 
         IReadOnlyLogbook Build(out QueryGroup queryGroup);
-
-
     }
 
     public interface IQueryGroupBuilder<TModel> : IQueryGroupBuilder
         where TModel : class, IModel, new()
     {
+        new IFieldBuilder<TModel> FieldBuilder { get; }
         new IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
         new IValueFieldQualifier<TModel> ValueFieldQualifier { get; }
     }

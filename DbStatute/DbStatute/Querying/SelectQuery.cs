@@ -1,7 +1,6 @@
 ﻿using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying;
 using DbStatute.Interfaces.Querying.Qualifiers.Fields;
-using DbStatute.Querying.Qualifiers;
 using DbStatute.Querying.Qualifiers.Fields;
 using System;
 

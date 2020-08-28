@@ -69,6 +69,11 @@ namespace DbStatute.Querying.Builders
                         queryFields.Add(new QueryField(field, operation, value));
                     }
                 }
+
+                if (logs.Safely)
+                {
+                    queryGroup = new QueryGroup(queryFields, Conjunction);
+                }
             }
 
             return logs;
@@ -78,12 +83,12 @@ namespace DbStatute.Querying.Builders
     public class SelectQueryGroupBuilder<TModel> : QueryGroupBuilder<TModel>, ISelectQueryGroupBuilder<TModel>
         where TModel : class, IModel, new()
     {
-        public SelectQueryGroupBuilder(IFieldBuilder fieldBuilder) : base(QueryGroupUsage.Select, fieldBuilder)
+        public SelectQueryGroupBuilder(IFieldBuilder<TModel> fieldBuilder) : base(QueryGroupUsage.Select, fieldBuilder)
         {
             OperationFieldQualifier = new OperationFieldQualifier<TModel>();
         }
 
-        public SelectQueryGroupBuilder(IFieldBuilder fieldBuilder, IValueFieldQualifier<TModel> valueFieldQualifier, IPredicateFieldQualifier<TModel> predicateFieldQualifier, IOperationFieldQualifier<TModel> operationFieldQualifier) : base(QueryGroupUsage.Select, fieldBuilder, valueFieldQualifier, predicateFieldQualifier)
+        public SelectQueryGroupBuilder(IFieldBuilder<TModel> fieldBuilder, IValueFieldQualifier<TModel> valueFieldQualifier, IPredicateFieldQualifier<TModel> predicateFieldQualifier, IOperationFieldQualifier<TModel> operationFieldQualifier) : base(QueryGroupUsage.Select, fieldBuilder, valueFieldQualifier, predicateFieldQualifier)
         {
             OperationFieldQualifier = operationFieldQualifier ?? throw new ArgumentNullException(nameof(operationFieldQualifier));
         }
@@ -92,9 +97,58 @@ namespace DbStatute.Querying.Builders
         public IOperationFieldQualifier<TModel> OperationFieldQualifier { get; }
         IOperationFieldQualifier ISelectQueryGroupBuilder.OperationFieldQualifier => OperationFieldQualifier;
 
+        // TODO
+        // Superset test for qualifiers
+        // Need for model
         public override IReadOnlyLogbook Build(out QueryGroup queryGroup)
         {
-            throw new NotImplementedException();
+            queryGroup = null;
+            ILogbook logs = Logger.NewLogbook();
+
+            IFieldBuilder<TModel> fieldBuilder = FieldBuilder;
+
+            if (fieldBuilder.Build(out IEnumerable<Field> fields))
+            {
+                IValueFieldQualifier<TModel> valueFieldQualifier = ValueFieldQualifier;
+                IReadOnlyDictionary<Field, object> valueMap = valueFieldQualifier.FieldValueMap;
+
+                IPredicateFieldQualifier<TModel> predicateFieldQualifier = PredicateFieldQualifier;
+                IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> predicateMap = predicateFieldQualifier.FieldPredicateMap;
+
+                IOperationFieldQualifier<TModel> operationFieldQualifier = OperationFieldQualifier;
+                IReadOnlyDictionary<Field, Operation> operationMap = operationFieldQualifier.FieldOperationMap;
+
+                ICollection<QueryField> queryFields = new Collection<QueryField>();
+
+                foreach (Field field in fields)
+                {
+                    bool valueFound = valueMap.TryGetValue(field, out object value);
+                    bool predicateFound = predicateMap.TryGetValue(field, out ReadOnlyLogbookPredicate<object> predicate);
+                    bool operationFound = operationMap.TryGetValue(field, out Operation operation);
+
+                    if (valueFound && predicateFound && predicate != null)
+                    {
+                        logs.AddRange(predicate.Invoke(value));
+                    }
+
+                    if (!logs.Safely)
+                    {
+                        break;
+                    }
+
+                    if (valueFound && operationFound)
+                    {
+                        queryFields.Add(new QueryField(field, operation, value));
+                    }
+                }
+
+                if (logs.Safely)
+                {
+                    queryGroup = new QueryGroup(queryFields, Conjunction);
+                }
+            }
+
+            return logs;
         }
     }
 }

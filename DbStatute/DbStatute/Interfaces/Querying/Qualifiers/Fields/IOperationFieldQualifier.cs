@@ -1,4 +1,5 @@
-﻿using DbStatute.Interfaces.Querying.Fundamentals.Qualifiers;
+﻿using DbStatute.Interfaces.Querying.Fundamentals.Maps;
+using DbStatute.Interfaces.Querying.Fundamentals.Qualifiers;
 using RepoDb.Enumerations;
 
 namespace DbStatute.Interfaces.Querying.Qualifiers.Fields

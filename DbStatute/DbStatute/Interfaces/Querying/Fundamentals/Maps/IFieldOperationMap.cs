@@ -2,7 +2,7 @@
 using RepoDb.Enumerations;
 using System.Collections.Generic;
 
-namespace DbStatute.Interfaces.Querying.Fundamentals.Qualifiers
+namespace DbStatute.Interfaces.Querying.Fundamentals.Maps
 {
     public interface IFieldOperationMap
     {

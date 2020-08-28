@@ -1,4 +1,4 @@
-﻿using DbStatute.Interfaces.Querying.Qualifiers;
+﻿using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using RepoDb;
 using System.Collections.Generic;
 

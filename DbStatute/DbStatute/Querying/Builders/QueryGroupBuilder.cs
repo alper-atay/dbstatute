@@ -37,7 +37,7 @@ namespace DbStatute.Querying.Builders
     public abstract class QueryGroupBuilder<TModel> : IQueryGroupBuilder<TModel>
         where TModel : class, IModel, new()
     {
-        protected QueryGroupBuilder(QueryGroupUsage usage, IFieldBuilder fieldBuilder)
+        protected QueryGroupBuilder(QueryGroupUsage usage, IFieldBuilder<TModel> fieldBuilder)
         {
             Usage = usage;
             FieldBuilder = fieldBuilder;
@@ -45,7 +45,7 @@ namespace DbStatute.Querying.Builders
             PredicateFieldQualifier = new PredicateFieldQualifier<TModel>();
         }
 
-        protected QueryGroupBuilder(QueryGroupUsage usage, IFieldBuilder fieldBuilder, IValueFieldQualifier<TModel> valueFieldQualifier, IPredicateFieldQualifier<TModel> predicateFieldQualifier)
+        protected QueryGroupBuilder(QueryGroupUsage usage, IFieldBuilder<TModel> fieldBuilder, IValueFieldQualifier<TModel> valueFieldQualifier, IPredicateFieldQualifier<TModel> predicateFieldQualifier)
         {
             Usage = usage;
             FieldBuilder = fieldBuilder;
@@ -53,7 +53,8 @@ namespace DbStatute.Querying.Builders
             PredicateFieldQualifier = predicateFieldQualifier;
         }
 
-        public IFieldBuilder FieldBuilder { get; }
+        public IFieldBuilder<TModel> FieldBuilder { get; }
+        IFieldBuilder IQueryGroupBuilder.FieldBuilder => FieldBuilder;
         public IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
         IPredicateFieldQualifier IQueryGroupBuilder.PredicateFieldQualifier => PredicateFieldQualifier;
         public QueryGroupUsage Usage { get; }

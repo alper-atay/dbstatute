@@ -96,7 +96,7 @@ namespace DbStatute.Querying.Qualifiers.Fields
         {
             IEnumerable<Field> fields = Field.Parse(expression);
 
-            int setCount = 0;
+            int settedCount = 0;
 
             foreach (Field field in fields)
             {
@@ -117,10 +117,10 @@ namespace DbStatute.Querying.Qualifiers.Fields
                     }
                 }
 
-                setCount += 1;
+                settedCount += 1;
             }
 
-            return setCount > 0;
+            return settedCount > 0;
         }
 
         public bool Set(Field field, Operation value, bool overrideEnabled = false)
@@ -148,7 +148,7 @@ namespace DbStatute.Querying.Qualifiers.Fields
 
             IEnumerable<Field> fields = Field.Parse(expression);
 
-            int setCount = 0;
+            int settedCount = 0;
 
             foreach (Field field in fields)
             {
@@ -169,10 +169,10 @@ namespace DbStatute.Querying.Qualifiers.Fields
                     }
                 }
 
-                setCount += 1;
+                settedCount += 1;
             }
 
-            return setCount > 0;
+            return settedCount > 0;
         }
 
         public bool Set(Field field, bool overrideEnabled = false)
@@ -200,17 +200,17 @@ namespace DbStatute.Querying.Qualifiers.Fields
         {
             IEnumerable<Field> fields = Field.Parse(expression);
 
-            int unsetCount = 0;
+            int unsettedCount = 0;
 
             foreach (Field field in fields)
             {
                 if (_fieldOperationMap.Remove(field))
                 {
-                    unsetCount += 1;
+                    unsettedCount += 1;
                 }
             }
 
-            return unsetCount > 0;
+            return unsettedCount > 0;
         }
 
         public bool Unset(Field field)

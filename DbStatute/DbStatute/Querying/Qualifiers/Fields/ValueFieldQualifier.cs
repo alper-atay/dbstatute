@@ -1,5 +1,4 @@
 ﻿using DbStatute.Interfaces;
-using DbStatute.Interfaces.Querying.Qualifiers;
 using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using RepoDb;
 using System;
@@ -27,7 +26,7 @@ namespace DbStatute.Querying.Qualifiers.Fields
                 if (overrideEnabled)
                 {
                     _valueMap.Remove(field);
-                    
+
                     return _valueMap.TryAdd(field, value);
                 }
                 else
@@ -46,7 +45,7 @@ namespace DbStatute.Querying.Qualifiers.Fields
                 if (overrideEnabled)
                 {
                     _valueMap.Remove(field);
-                    
+
                     return _valueMap.TryAdd(field, default);
                 }
                 else
@@ -87,7 +86,7 @@ namespace DbStatute.Querying.Qualifiers.Fields
 
             int settedCount = 0;
 
-            foreach (var field in fields)
+            foreach (Field field in fields)
             {
                 if (!_valueMap.TryAdd(field, value))
                 {
@@ -114,7 +113,7 @@ namespace DbStatute.Querying.Qualifiers.Fields
 
             int settedCount = 0;
 
-            foreach (var field in fields)
+            foreach (Field field in fields)
             {
                 if (!_valueMap.TryAdd(field, default))
                 {
@@ -142,7 +141,7 @@ namespace DbStatute.Querying.Qualifiers.Fields
                 if (overrideEnabled)
                 {
                     _valueMap.Remove(field);
-                    
+
                     return _valueMap.TryAdd(field, value);
                 }
                 else
@@ -175,11 +174,11 @@ namespace DbStatute.Querying.Qualifiers.Fields
 
         public bool Unset(Expression<Func<TModel, object>> expression)
         {
-            var fields = Field.Parse(expression);
+            IEnumerable<Field> fields = Field.Parse(expression);
 
             int unsettedCount = 0;
 
-            foreach (var field in fields)
+            foreach (Field field in fields)
             {
                 if (_valueMap.Remove(field))
                 {
