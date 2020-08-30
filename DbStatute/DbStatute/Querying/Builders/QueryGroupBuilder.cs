@@ -3,6 +3,7 @@ using DbStatute.Enumerations;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying.Builders;
 using DbStatute.Interfaces.Querying.Qualifiers.Fields;
+using DbStatute.Querying.Qualifiers;
 using DbStatute.Querying.Qualifiers.Fields;
 using RepoDb;
 
@@ -10,6 +11,15 @@ namespace DbStatute.Querying.Builders
 {
     public abstract class QueryGroupBuilder : IQueryGroupBuilder
     {
+
+        protected QueryGroupBuilder(QueryGroupUsage usage)
+        {
+            Usage = usage;
+            FieldBuilder = new FieldBuilder();
+            ValueFieldQualifier = new ValueFieldQualifier();
+            PredicateFieldQualifier = new PredicateFieldQualifier();
+        }
+
         protected QueryGroupBuilder(QueryGroupUsage usage, IFieldBuilder fieldBuilder)
         {
             Usage = usage;
@@ -37,6 +47,14 @@ namespace DbStatute.Querying.Builders
     public abstract class QueryGroupBuilder<TModel> : IQueryGroupBuilder<TModel>
         where TModel : class, IModel, new()
     {
+        protected QueryGroupBuilder(QueryGroupUsage usage)
+        {
+            Usage = usage;
+            FieldBuilder = new FieldBuilder<TModel>();
+            ValueFieldQualifier = new ValueFieldQualifier<TModel>();
+            PredicateFieldQualifier = new PredicateFieldQualifier<TModel>();
+        }
+
         protected QueryGroupBuilder(QueryGroupUsage usage, IFieldBuilder<TModel> fieldBuilder)
         {
             Usage = usage;

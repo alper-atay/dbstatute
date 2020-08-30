@@ -1,6 +1,7 @@
 ﻿using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying;
+using DbStatute.Interfaces.Querying.Builders;
 using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using DbStatute.Interfaces.Singles;
 using RepoDb;
@@ -27,9 +28,9 @@ namespace DbStatute.Singles
         {
             ISelectQuery<TModel> selectQuery = DeleteQuery.SelectQuery;
             IOrderFieldQualifier<TModel> orderFieldQualifier = selectQuery.OrderFieldQualifier;
-            IOperationalQueryQualifier<TModel> operationalQueryQualifier = selectQuery.OperationalQueryQualifier;
+            ISelectQueryGroupBuilder<TModel> selectQueryGroupBuilder = selectQuery.SelectQueryGroupBuilder;
 
-            Logs.AddRange(operationalQueryQualifier.GetQueryGroup(out QueryGroup queryGroup));
+            Logs.AddRange(selectQueryGroupBuilder.Build(out QueryGroup queryGroup));
             if (!ReadOnlyLogs.Safely)
             {
                 return null;
@@ -41,7 +42,7 @@ namespace DbStatute.Singles
                 orderFields = orderFieldQualifier.OrderFields;
             }
 
-            TModel deleteModel = await dbConnection.QueryAsync<TModel>(queryGroup, orderFields, 1, Hints, Cacheable?.Key, Cacheable.ItemExpiration ?? 180, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder).ContinueWith(x => x.Result.FirstOrDefault());
+            TModel deleteModel = await dbConnection.QueryAsync<TModel>(queryGroup, null, orderFields, 1, Hints, Cacheable?.Key, Cacheable.ItemExpiration ?? 180, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder).ContinueWith(x => x.Result.FirstOrDefault());
 
             if (deleteModel != null)
             {

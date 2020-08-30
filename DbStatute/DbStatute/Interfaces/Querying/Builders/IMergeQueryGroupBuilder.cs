@@ -4,8 +4,9 @@
     {
     }
 
-    public interface IMergeQueryGroupBuilder<TModel> : IQueryGroupBuilder
+    public interface IMergeQueryGroupBuilder<TModel> : IQueryGroupBuilder<TModel>, IMergeQueryGroupBuilder
         where TModel : class, IModel, new()
     {
+        
     }
 }

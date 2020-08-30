@@ -1,18 +1,24 @@
 ﻿using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying;
 using DbStatute.Interfaces.Querying.Builders;
+using DbStatute.Querying.Builders;
 using System;
 
 namespace DbStatute.Querying
 {
     public class MergeQuery : StatuteQueryBase, IMergeQuery
     {
-        public MergeQuery(IModelBuilder modelQueryQualifier)
+        public MergeQuery()
         {
-            ModelQueryQualifier = modelQueryQualifier ?? throw new ArgumentNullException(nameof(modelQueryQualifier));
+            MergeQueryGroupBuilder = new MergeQueryGroupBuilder();
         }
 
-        public IModelBuilder ModelQueryQualifier { get; }
+        public MergeQuery(IMergeQueryGroupBuilder mergeQueryGroupBuilder)
+        {
+            MergeQueryGroupBuilder = mergeQueryGroupBuilder ?? throw new ArgumentNullException(nameof(mergeQueryGroupBuilder));
+        }
+
+        public IMergeQueryGroupBuilder MergeQueryGroupBuilder { get; }
     }
 
     public class MergeQuery<TModel> : StatuteQueryBase<TModel>, IMergeQuery<TModel>
@@ -20,15 +26,15 @@ namespace DbStatute.Querying
     {
         public MergeQuery()
         {
-            ModelQueryQualifier = new ModelQueryQualifier<TModel>();
+            MergeQueryGroupBuilder = new MergeQueryGroupBuilder<TModel>();
         }
 
-        public MergeQuery(IModelBuilder<TModel> modelQueryQualifier)
+        public MergeQuery(IMergeQueryGroupBuilder<TModel> mergeQueryGroupBuilder)
         {
-            ModelQueryQualifier = modelQueryQualifier ?? throw new ArgumentNullException(nameof(modelQueryQualifier));
+            MergeQueryGroupBuilder = mergeQueryGroupBuilder ?? throw new ArgumentNullException(nameof(mergeQueryGroupBuilder));
         }
 
-        public IModelBuilder<TModel> ModelQueryQualifier { get; }
-        IModelBuilder IMergeQuery.ModelQueryQualifier => ModelQueryQualifier;
+        public IMergeQueryGroupBuilder<TModel> MergeQueryGroupBuilder { get; }
+        IMergeQueryGroupBuilder IMergeQuery.MergeQueryGroupBuilder => MergeQueryGroupBuilder;
     }
 }

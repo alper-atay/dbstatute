@@ -1,18 +1,24 @@
 ﻿using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying;
 using DbStatute.Interfaces.Querying.Builders;
+using DbStatute.Querying.Builders;
 using System;
 
 namespace DbStatute.Querying
 {
     public class UpdateQuery : StatuteQueryBase, IUpdateQuery
     {
-        public UpdateQuery(IModelBuilder modelQueryQualifier)
+        public UpdateQuery(IMergeQueryGroupBuilder mergeQueryGroupBuilder)
         {
-            ModelQueryQualifier = modelQueryQualifier ?? throw new ArgumentNullException(nameof(modelQueryQualifier));
+            MergeQueryGroupBuilder = mergeQueryGroupBuilder ?? throw new ArgumentNullException(nameof(mergeQueryGroupBuilder));
         }
 
-        public IModelBuilder ModelQueryQualifier { get; }
+        public UpdateQuery()
+        {
+            MergeQueryGroupBuilder = new MergeQueryGroupBuilder();
+        }
+
+        public IMergeQueryGroupBuilder MergeQueryGroupBuilder { get; }
     }
 
     public class UpdateQuery<TModel> : StatuteQueryBase<TModel>, IUpdateQuery<TModel>
@@ -20,15 +26,15 @@ namespace DbStatute.Querying
     {
         public UpdateQuery()
         {
-            ModelQueryQualifier = new ModelQueryQualifier<TModel>();
+            MergeQueryGroupBuilder = new MergeQueryGroupBuilder<TModel>();
         }
 
-        public UpdateQuery(IModelBuilder<TModel> modelQueryQualifier)
+        public UpdateQuery(IMergeQueryGroupBuilder<TModel> mergeQueryGroupBuilder)
         {
-            ModelQueryQualifier = modelQueryQualifier ?? throw new ArgumentNullException(nameof(modelQueryQualifier));
+            MergeQueryGroupBuilder = mergeQueryGroupBuilder ?? throw new ArgumentNullException(nameof(mergeQueryGroupBuilder));
         }
 
-        public IModelBuilder<TModel> ModelQueryQualifier { get; }
-        IModelBuilder IUpdateQuery.ModelQueryQualifier => ModelQueryQualifier;
+        public IMergeQueryGroupBuilder<TModel> MergeQueryGroupBuilder { get; }
+        IMergeQueryGroupBuilder IUpdateQuery.MergeQueryGroupBuilder => throw new NotImplementedException();
     }
 }

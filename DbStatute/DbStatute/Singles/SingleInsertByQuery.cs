@@ -24,25 +24,21 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> InsertOperationAsync(IDbConnection dbConnection)
         {
-            IModelBuilder<TModel> modelQueryQualifier = InsertQuery.ModelQueryQualifier;
-            Logs.AddRange(modelQueryQualifier.GetQueryGroup(out QueryGroup queryGroup));
+
+            IMergeQueryGroupBuilder<TModel> mergeQueryGroupBuilder = InsertQuery.MergeQueryGroupBuilder;
+
+            Logs.AddRange(mergeQueryGroupBuilder.Build(out QueryGroup queryGroup));
 
             if (!ReadOnlyLogs.Safely)
             {
                 return null;
             }
 
-            Logs.AddRange(modelQueryQualifier.BuildModel(out object insertModel));
+            IFieldBuilder<TModel> fieldBuilder = mergeQueryGroupBuilder.FieldBuilder;
+            fieldBuilder.Build(out IEnumerable<Field> fields);
 
-            IFieldBuilder<TModel> fieldQualifier = modelQueryQualifier.FieldQualifier;
-            IEnumerable<Field> fields = null;
 
-            if (fieldQualifier.HasField)
-            {
-                fields = fieldQualifier.Fields;
-            }
-
-            return await dbConnection.InsertAsync<TModel, TModel>((TModel)insertModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+            return await dbConnection.InsertAsync<TModel, TModel>((TModel)insertModel, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
         }
     }
 }

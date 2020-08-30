@@ -14,6 +14,11 @@ namespace DbStatute.Querying.Builders
 {
     public class SelectQueryGroupBuilder : QueryGroupBuilder, ISelectQueryGroupBuilder
     {
+        public SelectQueryGroupBuilder() : base(QueryGroupUsage.Select)
+        {
+            OperationFieldQualifier = new OperationFieldQualifier();
+        }
+
         public SelectQueryGroupBuilder(IFieldBuilder fieldBuilder) : base(QueryGroupUsage.Select, fieldBuilder)
         {
             OperationFieldQualifier = new OperationFieldQualifier();
@@ -83,6 +88,11 @@ namespace DbStatute.Querying.Builders
     public class SelectQueryGroupBuilder<TModel> : QueryGroupBuilder<TModel>, ISelectQueryGroupBuilder<TModel>
         where TModel : class, IModel, new()
     {
+        public SelectQueryGroupBuilder() : base(QueryGroupUsage.Select)
+        {
+            OperationFieldQualifier = new OperationFieldQualifier<TModel>();
+        }
+
         public SelectQueryGroupBuilder(IFieldBuilder<TModel> fieldBuilder) : base(QueryGroupUsage.Select, fieldBuilder)
         {
             OperationFieldQualifier = new OperationFieldQualifier<TModel>();

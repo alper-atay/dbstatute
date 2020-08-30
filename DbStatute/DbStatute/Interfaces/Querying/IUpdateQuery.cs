@@ -5,12 +5,12 @@ namespace DbStatute.Interfaces.Querying
 {
     public interface IUpdateQuery : IStatuteQueryBase
     {
-        IModelBuilder ModelQueryQualifier { get; }
+        IMergeQueryGroupBuilder MergeQueryGroupBuilder { get; }
     }
 
     public interface IUpdateQuery<TModel> : IStatuteQueryBase<TModel>, IUpdateQuery
         where TModel : class, IModel, new()
     {
-        new IModelBuilder<TModel> ModelQueryQualifier { get; }
+        new IMergeQueryGroupBuilder<TModel> MergeQueryGroupBuilder { get; }
     }
 }
