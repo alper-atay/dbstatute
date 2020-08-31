@@ -1,16 +1,16 @@
 ﻿using DbStatute.Interfaces.Fundamentals.Singles;
-using DbStatute.Interfaces.Querying;
+using DbStatute.Interfaces.Proxies;
 
 namespace DbStatute.Interfaces.Singles
 {
     public interface ISingleSelectByQuery<TSelectQuery> : ISingleSelectBase
-        where TSelectQuery : ISelectQuery
+        where TSelectQuery : ISelectProxy
     {
     }
 
     public interface ISingleSelectByQuery<TModel, TSelectQuery> : ISingleSelectBase<TModel>, ISingleSelectByQuery<TSelectQuery>
         where TModel : class, IModel, new()
-        where TSelectQuery : ISelectQuery<TModel>
+        where TSelectQuery : ISelectProxy<TModel>
     {
     }
 }

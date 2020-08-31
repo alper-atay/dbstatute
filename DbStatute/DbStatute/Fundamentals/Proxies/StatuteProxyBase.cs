@@ -1,17 +1,17 @@
 ﻿using Basiclog;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Querying.Fundamentals;
+using DbStatute.Interfaces.Fundamentals.Proxies;
 using System;
 
-namespace DbStatute.Querying
+namespace DbStatute.Fundamentals.Proxies
 {
-    public abstract class StatuteQueryBase : IStatuteQueryBase
+    public abstract class StatuteProxyBase : IStatuteProxyBase
     {
         public IReadOnlyLogbook ReadOnlyLogs => Logs;
         protected ILogbook Logs { get; } = Logger.NewLogbook();
     }
 
-    public abstract class StatuteQueryBase<TModel> : IStatuteQueryBase<TModel>
+    public abstract class StatuteProxyBase<TModel> : IStatuteProxyBase<TModel>
         where TModel : class, IModel, new()
     {
         public Type ModelType => typeof(TModel);

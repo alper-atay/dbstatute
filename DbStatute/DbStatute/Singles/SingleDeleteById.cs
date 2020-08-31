@@ -20,7 +20,7 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> DeleteOperationAsync(IDbConnection dbConnection)
         {
-            TModel deleteModel = await dbConnection.QueryAsync<TModel>(Id, null, 1, Hints, Cacheable?.Key, Cacheable.ItemExpiration ?? 180, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder).ContinueWith(x => x.Result.FirstOrDefault());
+            TModel deleteModel = await dbConnection.QueryAsync<TModel>(Id, null, null, 1, Hints, Cacheable?.Key, Cacheable.ItemExpiration ?? 180, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder).ContinueWith(x => x.Result.FirstOrDefault());
 
             if (deleteModel != null)
             {

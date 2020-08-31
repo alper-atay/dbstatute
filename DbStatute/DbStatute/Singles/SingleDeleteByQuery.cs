@@ -1,7 +1,6 @@
 ﻿using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Querying;
-using DbStatute.Interfaces.Querying.Builders;
+using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using DbStatute.Interfaces.Singles;
 using RepoDb;
@@ -15,7 +14,7 @@ namespace DbStatute.Singles
 {
     public class SingleDeleteByQuery<TModel, TDeleteQuery> : SingleDeleteBase<TModel>, ISingleDeleteByQuery<TModel, TDeleteQuery>
         where TModel : class, IModel, new()
-        where TDeleteQuery : IDeleteQuery<TModel>
+        where TDeleteQuery : IDeleteProxy<TModel>
     {
         public SingleDeleteByQuery(TDeleteQuery deleteQuery)
         {
@@ -26,15 +25,8 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> DeleteOperationAsync(IDbConnection dbConnection)
         {
-            ISelectQuery<TModel> selectQuery = DeleteQuery.SelectQuery;
+            ISelectProxy<TModel> selectQuery = null;
             IOrderFieldQualifier<TModel> orderFieldQualifier = selectQuery.OrderFieldQualifier;
-            ISelectQueryGroupBuilder<TModel> selectQueryGroupBuilder = selectQuery.SelectQueryGroupBuilder;
-
-            Logs.AddRange(selectQueryGroupBuilder.Build(out QueryGroup queryGroup));
-            if (!ReadOnlyLogs.Safely)
-            {
-                return null;
-            }
 
             IEnumerable<OrderField> orderFields = null;
             if (orderFieldQualifier.HasOrderField)
@@ -42,7 +34,8 @@ namespace DbStatute.Singles
                 orderFields = orderFieldQualifier.OrderFields;
             }
 
-            TModel deleteModel = await dbConnection.QueryAsync<TModel>(queryGroup, null, orderFields, 1, Hints, Cacheable?.Key, Cacheable.ItemExpiration ?? 180, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder).ContinueWith(x => x.Result.FirstOrDefault());
+            // TODO
+            TModel deleteModel = await dbConnection.QueryAsync<TModel>((QueryGroup)null/*queryGroup*/, null, orderFields, 1, Hints, Cacheable?.Key, Cacheable.ItemExpiration ?? 180, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder).ContinueWith(x => x.Result.FirstOrDefault());
 
             if (deleteModel != null)
             {

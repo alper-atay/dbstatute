@@ -15,6 +15,8 @@ namespace DbStatute.Fundamentals.Singles
         public TModel SelectedModel => _selectedModel;
         object ISingleSelectBase.SelectedModel => SelectedModel;
 
+        public override int? MaxSelectCount => new int?(1);
+
         public async Task<TModel> SelectAsync(IDbConnection dbConnection)
         {
             _selectedModel = await SelectOperationAsync(dbConnection);

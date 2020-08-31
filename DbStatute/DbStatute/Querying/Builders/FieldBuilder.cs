@@ -1,43 +1,15 @@
 ﻿using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying.Builders;
 using DbStatute.Interfaces.Querying.Qualifiers.Fields;
+using DbStatute.Querying.Qualifiers;
 using RepoDb;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DbStatute.Querying.Qualifiers
+namespace DbStatute.Querying.Builders
 {
-    public class FieldBuilder : IFieldBuilder
-    {
-        public IFieldQualifier FieldQualifier { get; }
-
-        public bool Build(out IEnumerable<Field> fields)
-        {
-            fields = null;
-
-            IFieldQualifier fieldQualifier = FieldQualifier;
-
-            if (fieldQualifier.HasField)
-            {
-                HashSet<Field> builtFields = new HashSet<Field>();
-
-                foreach (Field field in fieldQualifier.Fields)
-                {
-                    builtFields.Add(field);
-                }
-
-                if (builtFields.Count > 0)
-                {
-                    fields = builtFields;
-                }
-            }
-
-            return !(fields is null);
-        }
-    }
-
-    public class FieldBuilder<TModel> : IFieldBuilder<TModel>
+    public class FieldBuilder<TModel> : Builder<IEnumerable<Field>>, IFieldBuilder<TModel>
         where TModel : class, IModel, new()
     {
         public FieldBuilder()
@@ -53,9 +25,9 @@ namespace DbStatute.Querying.Qualifiers
         public IFieldQualifier<TModel> FieldQualifier { get; }
         IFieldQualifier IFieldBuilder.FieldQualifier => FieldQualifier;
 
-        public bool Build(out IEnumerable<Field> fields)
+        protected override bool BuildOperation(out IEnumerable<Field> built)
         {
-            fields = null;
+            built = null;
 
             IFieldQualifier<TModel> fieldQualifier = FieldQualifier;
 
@@ -76,11 +48,11 @@ namespace DbStatute.Querying.Qualifiers
 
                 if (builtFields.Count > 0)
                 {
-                    fields = builtFields;
+                    built = builtFields;
                 }
             }
 
-            return !(fields is null);
+            return !(built is null);
         }
     }
 }

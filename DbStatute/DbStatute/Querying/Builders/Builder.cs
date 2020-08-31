@@ -8,7 +8,7 @@ namespace DbStatute.Querying.Builders
     {
         private object _built;
 
-        public object Built { get; }
+        public object Built => _built;
 
         public IReadOnlyLogbook ReadOnlyLogs => throw new NotImplementedException();
         protected ILogbook Logs { get; } = Logger.NewLogbook();
@@ -27,20 +27,34 @@ namespace DbStatute.Querying.Builders
 
     public abstract class Builder<T> : IBuilder<T>
     {
-        public T Built => throw new NotImplementedException();
+        private T _built;
 
-        public IReadOnlyLogbook ReadOnlyLogs => throw new NotImplementedException();
+        public T Built => _built;
 
-        object IBuilder.Built => throw new NotImplementedException();
+        object IBuilder.Built => Built;
+        public IReadOnlyLogbook ReadOnlyLogs => Logs;
+
+        protected ILogbook Logs { get; } = Logger.NewLogbook();
 
         public bool Build(out T built)
         {
-            throw new NotImplementedException();
+            bool isBuilt = BuildOperation(out built);
+
+            _built = built;
+
+            return isBuilt;
         }
 
         public bool Build(out object built)
         {
-            throw new NotImplementedException();
+            bool isBuilt = BuildOperation(out T typedBuilt);
+
+            _built = typedBuilt;
+            built = _built;
+
+            return isBuilt;
         }
+
+        protected abstract bool BuildOperation(out T built);
     }
 }

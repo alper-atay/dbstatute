@@ -13,7 +13,6 @@ namespace DbStatute.Fundamentals.Multiples
     {
         private readonly List<TModel> _selectedModels = new List<TModel>();
 
-        public int? MaxSelectCount { get; }
         public override int SelectedCount => _selectedModels.Count;
         public IEnumerable<TModel> SelectedModels => SelectedCount > 0 ? _selectedModels : null;
         IEnumerable<object> IMultipleSelectBase.SelectedModels => SelectedModels;

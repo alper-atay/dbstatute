@@ -4,6 +4,7 @@
     {
         public ICacheable Cacheable { get; set; }
         int SelectedCount { get; }
+        int? MaxSelectCount { get; }
     }
 
     public interface ISelectBase<TModel> : IStatuteBase<TModel>, ISelectBase

@@ -20,7 +20,7 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> InsertOperationAsync(IDbConnection dbConnection)
         {
-            return await dbConnection.InsertAsync<TModel, TModel>(RawModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+            return await dbConnection.InsertAsync<TModel, TModel>(RawModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
         }
     }
 }

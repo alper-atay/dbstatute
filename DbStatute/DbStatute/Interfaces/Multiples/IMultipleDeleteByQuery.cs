@@ -1,17 +1,17 @@
 ﻿using DbStatute.Interfaces.Fundamentals;
-using DbStatute.Interfaces.Querying;
+using DbStatute.Interfaces.Proxies;
 
 namespace DbStatute.Interfaces.Multiples
 {
     public interface IMultipleDeleteByQuery<TDeleteQuery> : IMultipleDeleteBase
-        where TDeleteQuery : IDeleteQuery
+        where TDeleteQuery : IDeleteProxy
     {
         TDeleteQuery DeleteQuery { get; }
     }
 
     public interface IMultipleDeleteByQuery<TModel, TDeleteQuery> : IMultipleDeleteBase<TModel>, IMultipleDeleteByQuery<TDeleteQuery>
         where TModel : class, IModel, new()
-        where TDeleteQuery : IDeleteQuery<TModel>
+        where TDeleteQuery : IDeleteProxy<TModel>
     {
         new TDeleteQuery DeleteQuery { get; }
     }
