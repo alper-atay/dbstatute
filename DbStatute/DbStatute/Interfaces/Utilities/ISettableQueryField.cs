@@ -33,12 +33,12 @@ namespace DbStatute.Interfaces.Utilities
     {
         int IsSetted(Expression<Func<TModel, object>> expression);
 
-        bool Set(Expression<Func<TModel, object>> expression, object value, bool overrideEnabled = false);
+        int Set(Expression<Func<TModel, object>> expression, object value, bool overrideEnabled = false);
 
-        bool Set(Expression<Func<TModel, object>> expression, Operation operation, bool overrideEnabled = false);
+        int Set(Expression<Func<TModel, object>> expression, Operation operation, bool overrideEnabled = false);
 
-        bool Set(Expression<Func<TModel, object>> expression, Operation operation, object value, bool overrideEnabled = false);
+        int Set(Expression<Func<TModel, object>> expression, Operation operation, object value, bool overrideEnabled = false);
 
-        bool Unset(Expression<Func<TModel, object>> expression);
+        int Unset(Expression<Func<TModel, object>> expression);
     }
 }

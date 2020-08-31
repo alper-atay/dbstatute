@@ -31,7 +31,7 @@ namespace DbStatute.Singles
             IEnumerable<OrderField> orderFields = null;
             if (orderFieldQualifier.HasOrderField)
             {
-                orderFields = orderFieldQualifier.OrderFields;
+                orderFields = orderFieldQualifier.ReadOnlyOrderFields;
             }
 
             // TODO

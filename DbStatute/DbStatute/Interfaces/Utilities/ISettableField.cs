@@ -25,7 +25,7 @@ namespace DbStatute.Interfaces.Utilities
     public interface ISettableField<TModel> : ISettableField
         where TModel : class, IModel, new()
     {
-        bool IsSetted(Expression<Func<TModel, object>> expression);
+        int IsSetted(Expression<Func<TModel, object>> expression);
 
         int Set(Expression<Func<TModel, object>> expression, bool overrideEnabled = false);
 

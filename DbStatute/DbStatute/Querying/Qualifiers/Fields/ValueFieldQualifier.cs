@@ -94,31 +94,23 @@ namespace DbStatute.Querying.Qualifiers.Fields
     public class ValueFieldQualifier<TModel> : ValueFieldQualifier, IValueFieldQualifier<TModel>
         where TModel : class, IModel, new()
     {
-        public bool IsSetted(Expression<Func<TModel, object>> expression)
+        public int IsSetted(Expression<Func<TModel, object>> expression)
         {
             IEnumerable<Field> fields = Field.Parse(expression);
-            int fieldCount = fields.Count();
-            bool settedAll = fieldCount > 0;
+            int settedCount = 0;
 
-            if (!settedAll)
+            foreach (var field in fields)
             {
-                return false;
-            }
-
-            foreach (Field field in fields)
-            {
-                settedAll = settedAll && IsSetted(field);
-
-                if (!settedAll)
+                if (IsSetted(field))
                 {
-                    return false;
+                    settedCount += 1;
                 }
             }
 
-            return settedAll;
+            return settedCount;
         }
 
-        public bool Set(Expression<Func<TModel, object>> expression, object value, bool overrideEnabled = false)
+        public int Set(Expression<Func<TModel, object>> expression, object value, bool overrideEnabled = false)
         {
             IEnumerable<Field> fields = Field.Parse(expression);
 
@@ -126,26 +118,16 @@ namespace DbStatute.Querying.Qualifiers.Fields
 
             foreach (Field field in fields)
             {
-                if (!FieldValueMap.TryAdd(field, value))
+                if (Set(field, value, overrideEnabled))
                 {
-                    if (overrideEnabled)
-                    {
-                        FieldValueMap.Remove(field);
-
-                        return FieldValueMap.TryAdd(field, value);
-                    }
-                    {
-                        continue;
-                    }
+                    settedCount += 1;
                 }
-
-                settedCount += 1;
             }
 
-            return settedCount > 0;
+            return settedCount;
         }
 
-        public bool Set(Expression<Func<TModel, object>> expression, bool overrideEnabled = false)
+        public int Set(Expression<Func<TModel, object>> expression, bool overrideEnabled = false)
         {
             IEnumerable<Field> fields = Field.Parse(expression);
 
@@ -153,26 +135,16 @@ namespace DbStatute.Querying.Qualifiers.Fields
 
             foreach (Field field in fields)
             {
-                if (!FieldValueMap.TryAdd(field, default))
+                if (Set(field, overrideEnabled))
                 {
-                    if (overrideEnabled)
-                    {
-                        FieldValueMap.Remove(field);
-
-                        return FieldValueMap.TryAdd(field, default);
-                    }
-                    {
-                        continue;
-                    }
+                    settedCount += 1;
                 }
-
-                settedCount += 1;
             }
 
-            return settedCount > 0;
+            return settedCount;
         }
 
-        public bool Unset(Expression<Func<TModel, object>> expression)
+        public int Unset(Expression<Func<TModel, object>> expression)
         {
             IEnumerable<Field> fields = Field.Parse(expression);
 
@@ -186,7 +158,7 @@ namespace DbStatute.Querying.Qualifiers.Fields
                 }
             }
 
-            return unsettedCount > 0;
+            return unsettedCount;
         }
     }
 }

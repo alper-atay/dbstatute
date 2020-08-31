@@ -11,11 +11,11 @@ namespace DbStatute.Querying.Qualifiers.Fields
 {
     public class QueryFieldQualifier : IQueryFieldQualifier
     {
-        protected readonly HashSet<QueryField> _queryFields = new HashSet<QueryField>();
+        private readonly HashSet<QueryField> _queryFields = new HashSet<QueryField>();
 
         public bool HasQueryField => _queryFields.Count > 0;
 
-        public IEnumerable<QueryField> QueryFields => HasQueryField ? _queryFields : null;
+        public IEnumerable<QueryField> ReadOnlyQueryFields => HasQueryField ? _queryFields : null;
 
         public int IsSetted(Field field)
         {
@@ -157,54 +157,65 @@ namespace DbStatute.Querying.Qualifiers.Fields
             return settedCount;
         }
 
-        public bool Set(Expression<Func<TModel, object>> expression, object value, bool overrideEnabled = false)
-        {
-            Field field = Field.Parse(expression).FirstOrDefault();
-
-            if (field is null)
-            {
-                return false;
-            }
-
-            return Set(field, value, overrideEnabled);
-        }
-
-        public bool Set(Expression<Func<TModel, object>> expression, Operation operation, bool overrideEnabled = false)
-        {
-            Field field = Field.Parse(expression).FirstOrDefault();
-
-            if (field is null)
-            {
-                return false;
-            }
-
-            return Set(field, operation, overrideEnabled);
-        }
-
-        public bool Set(Expression<Func<TModel, object>> expression, Operation operation, object value, bool overrideEnabled = false)
-        {
-            Field field = Field.Parse(expression).FirstOrDefault();
-
-            if (field is null)
-            {
-                return false;
-            }
-
-            return Set(field, operation, value, overrideEnabled);
-        }
-
-        public bool Unset(Expression<Func<TModel, object>> expression)
+        public int Set(Expression<Func<TModel, object>> expression, object value, bool overrideEnabled = false)
         {
             IEnumerable<Field> fields = Field.Parse(expression);
-
-            bool allUnsetted = true;
+            int settedCount = 0;
 
             foreach (Field field in fields)
             {
-                allUnsetted = allUnsetted && (Unset(field) > 0);
+                if (Set(field, value, overrideEnabled))
+                {
+                    settedCount += 1;
+                }
             }
 
-            return true;
+            return settedCount;
+        }
+
+        public int Set(Expression<Func<TModel, object>> expression, Operation operation, bool overrideEnabled = false)
+        {
+            IEnumerable<Field> fields = Field.Parse(expression);
+            int settedCount = 0;
+
+            foreach (Field field in fields)
+            {
+                if (Set(field, operation, overrideEnabled))
+                {
+                    settedCount += 1;
+                }
+            }
+
+            return settedCount;
+        }
+
+        public int Set(Expression<Func<TModel, object>> expression, Operation operation, object value, bool overrideEnabled = false)
+        {
+            IEnumerable<Field> fields = Field.Parse(expression);
+            int settedCount = 0;
+
+            foreach (Field field in fields)
+            {
+                if (Set(field, operation, value, overrideEnabled))
+                {
+                    settedCount += 1;
+                }
+            }
+
+            return settedCount;
+        }
+
+        public int Unset(Expression<Func<TModel, object>> expression)
+        {
+            IEnumerable<Field> fields = Field.Parse(expression);
+            int unsettedCount = 0;
+
+            foreach (Field field in fields)
+            {
+                unsettedCount += Unset(field);
+            }
+
+            return unsettedCount;
         }
     }
 }

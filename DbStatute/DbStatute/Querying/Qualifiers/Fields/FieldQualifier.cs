@@ -70,8 +70,10 @@ namespace DbStatute.Querying.Qualifiers
                     return false;
                 }
             }
-
-            return true;
+            else
+            {
+                return true;
+            }
         }
 
         public bool Unset(Field field)
@@ -83,25 +85,20 @@ namespace DbStatute.Querying.Qualifiers
     public class FieldQualifier<TModel> : FieldQualifier, IFieldQualifier<TModel>
         where TModel : class, IModel, new()
     {
-        public bool IsSetted(Expression<Func<TModel, object>> expression)
+        public int IsSetted(Expression<Func<TModel, object>> expression)
         {
             IEnumerable<Field> fields = Field.Parse(expression);
-            int fieldCount = fields.Count();
-
-            if (fieldCount.Equals(0))
-            {
-                return false;
-            }
+            int settedCount = 0;
 
             foreach (Field field in fields)
             {
-                if (!IsSetted(field))
+                if (IsSetted(field))
                 {
-                    return false;
+                    settedCount += 1;
                 }
             }
 
-            return true;
+            return settedCount;
         }
 
         public int Set(Expression<Func<TModel, object>> expression, bool overrideEnabled = false)
@@ -112,20 +109,10 @@ namespace DbStatute.Querying.Qualifiers
 
             foreach (Field field in fields)
             {
-                if (!Fields.Add(field))
+                if (Set(field, overrideEnabled))
                 {
-                    if (overrideEnabled)
-                    {
-                        Fields.Remove(field);
-                        Fields.Add(field);
-                    }
-                    else
-                    {
-                        continue;
-                    }
+                    settedCount += 1;
                 }
-
-                settedCount += 1;
             }
 
             return settedCount;
@@ -139,7 +126,7 @@ namespace DbStatute.Querying.Qualifiers
 
             foreach (Field field in fields)
             {
-                if (Fields.Remove(field))
+                if (Unset(field))
                 {
                     unsettedCount += 1;
                 }

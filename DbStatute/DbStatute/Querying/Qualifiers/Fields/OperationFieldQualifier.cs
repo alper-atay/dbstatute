@@ -98,18 +98,20 @@ namespace DbStatute.Querying.Qualifiers.Fields
     public class OperationFieldQualifier<TModel> : OperationFieldQualifier, IOperationFieldQualifier<TModel>
         where TModel : class, IModel, new()
     {
-        public bool IsSetted(Expression<Func<TModel, object>> expression)
+        public int IsSetted(Expression<Func<TModel, object>> expression)
         {
             IEnumerable<Field> fields = Field.Parse(expression);
-
-            bool isSetted = fields.Count() > 0;
+            int settedCount = 0;
 
             foreach (Field field in fields)
             {
-                isSetted = isSetted && FieldOperationMap.ContainsKey(field);
+                if (IsSetted(field))
+                {
+                    settedCount += 1;
+                }
             }
 
-            return isSetted;
+            return settedCount;
         }
 
         public int Set(Expression<Func<TModel, object>> expression, Operation value, bool overrideEnabled = false)
@@ -120,24 +122,10 @@ namespace DbStatute.Querying.Qualifiers.Fields
 
             foreach (Field field in fields)
             {
-                if (!FieldOperationMap.TryAdd(field, value))
+                if (Set(field, value, overrideEnabled))
                 {
-                    if (overrideEnabled)
-                    {
-                        FieldOperationMap.Remove(field);
-
-                        if (!FieldOperationMap.TryAdd(field, default))
-                        {
-                            continue;
-                        }
-                    }
-                    else
-                    {
-                        continue;
-                    }
+                    settedCount += 1;
                 }
-
-                settedCount += 1;
             }
 
             return settedCount;
@@ -153,24 +141,10 @@ namespace DbStatute.Querying.Qualifiers.Fields
 
             foreach (Field field in fields)
             {
-                if (!FieldOperationMap.TryAdd(field, value))
+                if (Set(field, value, overrideEnabled))
                 {
-                    if (overrideEnabled)
-                    {
-                        FieldOperationMap.Remove(field);
-
-                        if (!FieldOperationMap.TryAdd(field, value))
-                        {
-                            continue;
-                        }
-                    }
-                    else
-                    {
-                        continue;
-                    }
+                    settedCount += 1;
                 }
-
-                settedCount += 1;
             }
 
             return settedCount;
@@ -184,7 +158,7 @@ namespace DbStatute.Querying.Qualifiers.Fields
 
             foreach (Field field in fields)
             {
-                if (FieldOperationMap.Remove(field))
+                if (Unset(field))
                 {
                     unsettedCount += 1;
                 }

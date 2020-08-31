@@ -9,6 +9,7 @@ namespace DbStatute.Interfaces.Utilities
     public interface ISettableOrderField
     {
         IEnumerable<OrderField> GetAllByField(Field field);
+
         IEnumerable<OrderField> GetAllByName(string name);
 
         IEnumerable<OrderField> GetAllByOrder(Order order);
@@ -18,6 +19,8 @@ namespace DbStatute.Interfaces.Utilities
         bool IsSetted(OrderField orderField);
 
         bool Set(OrderField orderField, bool overrideEnabled = false);
+
+        bool Set(Field field, Order order, bool overrideEnabled = false);
 
         int Unset(Field field);
 

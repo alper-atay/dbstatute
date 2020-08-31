@@ -7,7 +7,7 @@ namespace DbStatute.Interfaces.Querying.Qualifiers.Fields
     public interface IQueryFieldQualifier : ISettableQueryField
     {
         bool HasQueryField { get; }
-        IEnumerable<QueryField> QueryFields { get; }
+        IEnumerable<QueryField> ReadOnlyQueryFields { get; }
     }
 
     public interface IQueryFieldQualifier<TModel> : ISettableQueryField<TModel>
