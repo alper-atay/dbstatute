@@ -1,4 +1,5 @@
 ﻿using DbStatute.Interfaces.Querying.Qualifiers.Fields;
+using RepoDb;
 using RepoDb.Enumerations;
 
 namespace DbStatute.Interfaces.Querying.Builders
@@ -9,7 +10,7 @@ namespace DbStatute.Interfaces.Querying.Builders
         IOperationFieldQualifier OperationFieldQualifier { get; }
     }
 
-    public interface ISelectQueryGroupBuilder<TModel> : ISelectQueryGroupBuilder
+    public interface ISelectQueryGroupBuilder<TModel> : IQueryGroupBuilder<TModel>, ISelectQueryGroupBuilder
         where TModel : class, IModel, new()
     {
         new IOperationFieldQualifier<TModel> OperationFieldQualifier { get; }

@@ -2,25 +2,37 @@
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying.Builders;
 using DbStatute.Interfaces.Querying.Qualifiers.Fields;
+using DbStatute.Querying.Qualifiers;
+using DbStatute.Querying.Qualifiers.Fields;
 using RepoDb;
-using RepoDb.Enumerations;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace DbStatute.Querying.Builders
 {
-    public class SelectQueryGroupBuilder<TModel> : Builder<QueryGroup>, ISelectQueryGroupBuilder<TModel>
+    public class QueryGroupBuilder<TModel> : Builder<QueryGroup>, IQueryGroupBuilder<TModel>
         where TModel : class, IModel, new()
     {
-        public Conjunction Conjunction { get; set; } = Conjunction.And;
         public IFieldQualifier<TModel> FieldQualifier { get; }
-        IFieldQualifier IQueryGroupBuilder.FieldQualifier => FieldQualifier;
-        public IOperationFieldQualifier<TModel> OperationFieldQualifier { get; }
-        IOperationFieldQualifier ISelectQueryGroupBuilder.OperationFieldQualifier => OperationFieldQualifier;
         public IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
-        IPredicateFieldQualifier IQueryGroupBuilder.PredicateFieldQualifier => PredicateFieldQualifier;
         public IValueFieldQualifier<TModel> ValueFieldQualifier { get; }
+        IFieldQualifier IQueryGroupBuilder.FieldQualifier => FieldQualifier;
+        IPredicateFieldQualifier IQueryGroupBuilder.PredicateFieldQualifier => PredicateFieldQualifier;
         IValueFieldQualifier IQueryGroupBuilder.ValueFieldQualifier => ValueFieldQualifier;
+
+        public QueryGroupBuilder()
+        {
+            FieldQualifier = new FieldQualifier<TModel>();
+            ValueFieldQualifier = new ValueFieldQualifier<TModel>();
+            PredicateFieldQualifier = new PredicateFieldQualifier<TModel>();
+        }
+
+        public QueryGroupBuilder(IFieldQualifier<TModel> fieldQualifier, IValueFieldQualifier<TModel> valueFieldQualifier, IPredicateFieldQualifier<TModel> predicateFieldQualifier)
+        {
+            FieldQualifier = fieldQualifier;
+            ValueFieldQualifier = valueFieldQualifier;
+            PredicateFieldQualifier = predicateFieldQualifier;
+        }
 
         protected override bool BuildOperation(out QueryGroup built)
         {
@@ -30,9 +42,10 @@ namespace DbStatute.Querying.Builders
 
             if (fieldBuilder.Build(out IEnumerable<Field> fields))
             {
+                Logs.AddRange(fieldBuilder.ReadOnlyLogs);
+
                 IReadOnlyDictionary<Field, object> valueMap = ValueFieldQualifier.ReadOnlyFieldValueMap;
                 IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> predicateMap = PredicateFieldQualifier.ReadOnlyFieldPredicateMap;
-                IReadOnlyDictionary<Field, Operation> operationMap = OperationFieldQualifier.ReadOnlyFieldOperationMap;
 
                 ICollection<QueryField> queryFields = new Collection<QueryField>();
 
@@ -40,31 +53,27 @@ namespace DbStatute.Querying.Builders
                 {
                     bool valueFound = valueMap.TryGetValue(field, out object value);
                     bool predicateFound = predicateMap.TryGetValue(field, out ReadOnlyLogbookPredicate<object> predicate);
-                    bool operationFound = operationMap.TryGetValue(field, out Operation operation);
 
                     if (valueFound && predicateFound && predicate != null)
                     {
                         Logs.AddRange(predicate.Invoke(value));
                     }
 
-                    if (!ReadOnlyLogs.Safely)
+                    if (valueFound)
                     {
-                        break;
-                    }
-
-                    if (valueFound && operationFound)
-                    {
-                        queryFields.Add(new QueryField(field, operation, value));
+                        queryFields.Add(new QueryField(field, value));
                     }
                 }
 
                 if (ReadOnlyLogs.Safely)
                 {
-                    built = new QueryGroup(queryFields, Conjunction);
+                    built = new QueryGroup(queryFields);
+
+                    return true;
                 }
             }
 
-            return !(built is null);
+            return false;
         }
     }
 }

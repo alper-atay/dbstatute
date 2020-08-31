@@ -29,7 +29,9 @@ namespace DbStatute.Querying.Builders
         {
             built = null;
 
-            if (OrderFieldQualifier.HasOrderField)
+            IOrderFieldQualifier<TModel> orderFieldQualifier = OrderFieldQualifier;
+
+            if (orderFieldQualifier.HasOrderField)
             {
                 HashSet<Field> modelFields = Field.Parse<TModel>().ToHashSet();
 

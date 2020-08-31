@@ -10,6 +10,7 @@ using RepoDb;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DbStatute.Singles
@@ -30,31 +31,34 @@ namespace DbStatute.Singles
         public ISelectProxy<TModel> SelectProxy { get; }
         ISelectProxy ISingleSelectByProxy.SelectProxy => SelectProxy;
 
-        protected override Task<TModel> SelectOperationAsync(IDbConnection dbConnection)
+        protected override async Task<TModel> SelectOperationAsync(IDbConnection dbConnection)
         {
-            bool fieldQualifierEnabled = SelectProxy.SelectedFieldQualifierEnabled;
-            bool orderFieldQualifierEnabled = SelectProxy.OrderFieldQualifierEnabled;
+            ISelectQueryGroupBuilder<TModel> selectQueryGroupBuilder = SelectProxy.SelectQueryGroupBuilder;
 
-            IFieldQualifier<TModel> selectedFieldQualifier = SelectProxy.SelectedFieldQualifier;
-            IOrderFieldQualifier<TModel> orderFieldQualifier = SelectProxy.OrderFieldQualifier;
-            IQueryGroupBuilder<TModel> selectQueryGroupBuilder = SelectProxy.QueryGroupBuilder;
-
-            IEnumerable<Field> fields = null;
-            if (fieldQualifierEnabled)
+            if (selectQueryGroupBuilder.Build(out QueryGroup queryGroup))
             {
+                Logs.AddRange(selectQueryGroupBuilder.ReadOnlyLogs);
+
+                IFieldQualifier<TModel> selectedFieldQualifier = SelectProxy.SelectedFieldQualifier;
+                IOrderFieldQualifier<TModel> orderFieldQualifier = SelectProxy.OrderFieldQualifier;
+
+                IEnumerable<Field> fields = null;
                 FieldBuilder<TModel> fieldBuilder = new FieldBuilder<TModel>(selectedFieldQualifier);
                 fieldBuilder.Build(out fields);
-            }
+                Logs.AddRange(fieldBuilder.ReadOnlyLogs);
 
-            IEnumerable<OrderField> orderFields = null;
-            if (orderFieldQualifierEnabled)
-            {
+                IEnumerable<OrderField> orderFields = null;
                 OrderFieldBuilder<TModel> orderFieldBuilder = new OrderFieldBuilder<TModel>(orderFieldQualifier);
                 orderFieldBuilder.Build(out orderFields);
+                Logs.AddRange(orderFieldBuilder.ReadOnlyLogs);
+
+                if (!ReadOnlyLogs.Safely)
+                {
+                    return null;
+                }
+
+                return await dbConnection.QueryAsync<TModel>(queryGroup, fields, orderFields, MaxSelectCount, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder).ContinueWith(x => x.Result.FirstOrDefault());
             }
-
-
-
 
             return default;
         }
