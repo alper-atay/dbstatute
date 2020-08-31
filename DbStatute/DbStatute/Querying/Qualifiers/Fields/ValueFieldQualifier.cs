@@ -99,7 +99,7 @@ namespace DbStatute.Querying.Qualifiers.Fields
             IEnumerable<Field> fields = Field.Parse(expression);
             int settedCount = 0;
 
-            foreach (var field in fields)
+            foreach (Field field in fields)
             {
                 if (IsSetted(field))
                 {

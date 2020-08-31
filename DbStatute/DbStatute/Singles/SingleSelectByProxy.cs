@@ -42,14 +42,12 @@ namespace DbStatute.Singles
                 IFieldQualifier<TModel> selectedFieldQualifier = SelectProxy.SelectedFieldQualifier;
                 IOrderFieldQualifier<TModel> orderFieldQualifier = SelectProxy.OrderFieldQualifier;
 
-                IEnumerable<Field> fields = null;
                 FieldBuilder<TModel> fieldBuilder = new FieldBuilder<TModel>(selectedFieldQualifier);
-                fieldBuilder.Build(out fields);
+                fieldBuilder.Build(out IEnumerable<Field> fields);
                 Logs.AddRange(fieldBuilder.ReadOnlyLogs);
 
-                IEnumerable<OrderField> orderFields = null;
                 OrderFieldBuilder<TModel> orderFieldBuilder = new OrderFieldBuilder<TModel>(orderFieldQualifier);
-                orderFieldBuilder.Build(out orderFields);
+                orderFieldBuilder.Build(out IEnumerable<OrderField> orderFields);
                 Logs.AddRange(orderFieldBuilder.ReadOnlyLogs);
 
                 if (!ReadOnlyLogs.Safely)

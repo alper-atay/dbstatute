@@ -1,12 +1,11 @@
 ﻿using Basiclog;
 using DbStatute.Interfaces.Querying.Builders;
-using System;
 
 namespace DbStatute.Querying.Builders
 {
     public abstract class Builder : IBuilder
     {
-        private object _built;
+        private readonly object _built;
 
         public object Built => _built;
 
