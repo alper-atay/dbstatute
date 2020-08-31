@@ -34,14 +34,14 @@ namespace DbStatute.Querying.Builders
             if (fieldQualifier.HasField)
             {
                 HashSet<Field> modelFields = Field.Parse<TModel>().ToHashSet();
-                if (!modelFields.IsSupersetOf(fieldQualifier.Fields))
+                if (!modelFields.IsSupersetOf(fieldQualifier.ReadOnlyFields))
                 {
                     throw new InvalidOperationException("Model fields must be superset of qualifier fields");
                 }
 
                 HashSet<Field> builtFields = new HashSet<Field>();
 
-                foreach (Field field in fieldQualifier.Fields)
+                foreach (Field field in fieldQualifier.ReadOnlyFields)
                 {
                     builtFields.Add(field);
                 }

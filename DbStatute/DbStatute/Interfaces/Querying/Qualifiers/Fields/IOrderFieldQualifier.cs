@@ -8,15 +8,6 @@ namespace DbStatute.Interfaces.Querying.Qualifiers.Fields
 {
     public interface IOrderFieldQualifier : ISettableOrderField
     {
-        private static readonly IOrderFieldQualifier _empty;
-
-        static IOrderFieldQualifier()
-        {
-            _empty = new OrderFieldQualifier(Enumerable.Empty<OrderField>());
-        }
-
-        static IOrderFieldQualifier Empty => _empty;
-
         bool HasOrderField { get; }
         IEnumerable<OrderField> OrderFields { get; }
     }

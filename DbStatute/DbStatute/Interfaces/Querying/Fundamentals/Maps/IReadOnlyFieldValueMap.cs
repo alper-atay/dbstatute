@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace DbStatute.Interfaces.Querying.Fundamentals.Maps
 {
-    public interface IFieldValueMap
+    public interface IReadOnlyFieldValueMap
     {
-        IReadOnlyDictionary<Field, object> FieldValueMap { get; }
+        IReadOnlyDictionary<Field, object> ReadOnlyFieldValueMap { get; }
     }
 }

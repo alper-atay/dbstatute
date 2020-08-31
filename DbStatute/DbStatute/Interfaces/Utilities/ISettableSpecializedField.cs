@@ -13,6 +13,6 @@ namespace DbStatute.Interfaces.Querying.Fundamentals.Qualifiers
     public interface ISettableSpecializedField<TModel, TValue> : ISettableField<TModel>, ISettableSpecializedField<TValue>
         where TModel : class, IModel, new()
     {
-        bool Set(Expression<Func<TModel, object>> expression, TValue value, bool overrideEnabled = false);
+        int Set(Expression<Func<TModel, object>> expression, TValue value, bool overrideEnabled = false);
     }
 }

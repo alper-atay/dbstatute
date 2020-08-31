@@ -11,24 +11,51 @@ namespace DbStatute.Querying.Qualifiers.Fields
 {
     public class PredicateFieldQualifier : IPredicateFieldQualifier
     {
-        private readonly Dictionary<Field, ReadOnlyLogbookPredicate<object>> _predicateMap = new Dictionary<Field, ReadOnlyLogbookPredicate<object>>();
+        public IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> ReadOnlyFieldPredicateMap => FieldPredicateMap;
+        protected Dictionary<Field, ReadOnlyLogbookPredicate<object>> FieldPredicateMap { get; } = new Dictionary<Field, ReadOnlyLogbookPredicate<object>>();
 
-        public IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> FieldPredicateMap => _predicateMap;
+        public IEnumerable<Field> GetAllByName(string name)
+        {
+            Dictionary<Field, ReadOnlyLogbookPredicate<object>>.KeyCollection fields = FieldPredicateMap.Keys;
+
+            return fields.Where(x => x.Name.Equals(name));
+        }
+
+        public IEnumerable<Field> GetAllByType(Type type)
+        {
+            Dictionary<Field, ReadOnlyLogbookPredicate<object>>.KeyCollection fields = FieldPredicateMap.Keys;
+
+            return fields.Where(x => x.Type.Equals(type));
+        }
+
+        public IEnumerable<Field> GetAllByType<T>()
+        {
+            Type type = typeof(T);
+
+            return GetAllByType(type);
+        }
 
         public bool IsSetted(Field field)
         {
-            return _predicateMap.ContainsKey(field);
+            return FieldPredicateMap.ContainsKey(field);
+        }
+
+        public int IsSetted(string name)
+        {
+            Dictionary<Field, ReadOnlyLogbookPredicate<object>>.KeyCollection fields = FieldPredicateMap.Keys;
+
+            return fields.Count(x => x.Name.Equals(name));
         }
 
         public bool Set(Field field, ReadOnlyLogbookPredicate<object> value, bool overrideEnabled = false)
         {
-            if (!_predicateMap.TryAdd(field, value))
+            if (!FieldPredicateMap.TryAdd(field, value))
             {
                 if (overrideEnabled)
                 {
-                    _predicateMap.Remove(field);
+                    FieldPredicateMap.Remove(field);
 
-                    return _predicateMap.TryAdd(field, value);
+                    return FieldPredicateMap.TryAdd(field, value);
                 }
                 else
                 {
@@ -41,12 +68,12 @@ namespace DbStatute.Querying.Qualifiers.Fields
 
         public bool Set(Field field, bool overrideEnabled = false)
         {
-            if (!_predicateMap.TryAdd(field, default))
+            if (!FieldPredicateMap.TryAdd(field, default))
             {
                 if (overrideEnabled)
                 {
-                    _predicateMap.Remove(field);
-                    return _predicateMap.TryAdd(field, default);
+                    FieldPredicateMap.Remove(field);
+                    return FieldPredicateMap.TryAdd(field, default);
                 }
                 else
                 {
@@ -59,17 +86,13 @@ namespace DbStatute.Querying.Qualifiers.Fields
 
         public bool Unset(Field field)
         {
-            return _predicateMap.Remove(field);
+            return FieldPredicateMap.Remove(field);
         }
     }
 
-    public class PredicateFieldQualifier<TModel> : IPredicateFieldQualifier<TModel>
+    public class PredicateFieldQualifier<TModel> : PredicateFieldQualifier, IPredicateFieldQualifier<TModel>
         where TModel : class, IModel, new()
     {
-        private readonly Dictionary<Field, ReadOnlyLogbookPredicate<object>> _predicateMap;
-
-        public IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> FieldPredicateMap => _predicateMap;
-
         public bool IsSetted(Expression<Func<TModel, object>> expression)
         {
             IEnumerable<Field> fields = Field.Parse(expression);
@@ -78,15 +101,10 @@ namespace DbStatute.Querying.Qualifiers.Fields
 
             foreach (Field field in fields)
             {
-                isSetted = isSetted && _predicateMap.ContainsKey(field);
+                isSetted = isSetted && FieldPredicateMap.ContainsKey(field);
             }
 
             return isSetted;
-        }
-
-        public bool IsSetted(Field field)
-        {
-            return _predicateMap.ContainsKey(field);
         }
 
         public bool Set(Expression<Func<TModel, object>> expression, ReadOnlyLogbookPredicate<object> predicate, bool overrideEnabled = false)
@@ -97,13 +115,13 @@ namespace DbStatute.Querying.Qualifiers.Fields
 
             foreach (Field field in fields)
             {
-                if (!_predicateMap.TryAdd(field, predicate))
+                if (!FieldPredicateMap.TryAdd(field, predicate))
                 {
                     if (overrideEnabled)
                     {
-                        _predicateMap.Remove(field);
+                        FieldPredicateMap.Remove(field);
 
-                        return _predicateMap.TryAdd(field, predicate);
+                        return FieldPredicateMap.TryAdd(field, predicate);
                     }
                     else
                     {
@@ -115,25 +133,6 @@ namespace DbStatute.Querying.Qualifiers.Fields
             }
 
             return settedCount > 0;
-        }
-
-        public bool Set(Field field, ReadOnlyLogbookPredicate<object> predicate, bool overrideEnabled = false)
-        {
-            if (!_predicateMap.TryAdd(field, predicate))
-            {
-                if (overrideEnabled)
-                {
-                    _predicateMap.Remove(field);
-
-                    return _predicateMap.TryAdd(field, predicate);
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         public bool Set(Expression<Func<TModel, object>> expression, bool overrideEnabled = false)
@@ -144,13 +143,13 @@ namespace DbStatute.Querying.Qualifiers.Fields
 
             foreach (Field field in fields)
             {
-                if (!_predicateMap.TryAdd(field, default))
+                if (!FieldPredicateMap.TryAdd(field, default))
                 {
                     if (overrideEnabled)
                     {
-                        _predicateMap.Remove(field);
+                        FieldPredicateMap.Remove(field);
 
-                        return _predicateMap.TryAdd(field, default);
+                        return FieldPredicateMap.TryAdd(field, default);
                     }
                     else
                     {
@@ -164,24 +163,6 @@ namespace DbStatute.Querying.Qualifiers.Fields
             return settedCount > 0;
         }
 
-        public bool Set(Field field, bool overrideEnabled = false)
-        {
-            if (!_predicateMap.TryAdd(field, default))
-            {
-                if (overrideEnabled)
-                {
-                    _predicateMap.Remove(field);
-                    return _predicateMap.TryAdd(field, default);
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
         public bool Unset(Expression<Func<TModel, object>> expression)
         {
             IEnumerable<Field> fields = Field.Parse(expression);
@@ -190,18 +171,13 @@ namespace DbStatute.Querying.Qualifiers.Fields
 
             foreach (Field field in fields)
             {
-                if (_predicateMap.Remove(field))
+                if (FieldPredicateMap.Remove(field))
                 {
                     unsettedCount += 1;
                 }
             }
 
             return unsettedCount > 0;
-        }
-
-        public bool Unset(Field field)
-        {
-            return _predicateMap.Remove(field);
         }
     }
 }

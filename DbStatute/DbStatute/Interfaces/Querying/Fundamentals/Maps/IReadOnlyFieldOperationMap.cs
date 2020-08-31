@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 namespace DbStatute.Interfaces.Querying.Fundamentals.Maps
 {
-    public interface IFieldOperationMap
+    public interface IReadOnlyFieldOperationMap
     {
-        IReadOnlyDictionary<Field, Operation> FieldOperationMap { get; }
+        IReadOnlyDictionary<Field, Operation> ReadOnlyFieldOperationMap { get; }
     }
 }

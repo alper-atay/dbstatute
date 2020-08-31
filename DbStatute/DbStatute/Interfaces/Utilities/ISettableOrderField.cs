@@ -1,15 +1,27 @@
 ﻿using RepoDb;
 using RepoDb.Enumerations;
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace DbStatute.Interfaces.Utilities
 {
     public interface ISettableOrderField
     {
+        IEnumerable<OrderField> GetAllByField(Field field);
+        IEnumerable<OrderField> GetAllByName(string name);
+
+        IEnumerable<OrderField> GetAllByOrder(Order order);
+
+        int IsSetted(Field field);
+
         bool IsSetted(OrderField orderField);
 
         bool Set(OrderField orderField, bool overrideEnabled = false);
+
+        int Unset(Field field);
+
+        int Unset(string name);
 
         bool Unset(OrderField orderField);
     }
@@ -17,10 +29,10 @@ namespace DbStatute.Interfaces.Utilities
     public interface ISettableOrderField<TModel> : ISettableOrderField
         where TModel : class, IModel, new()
     {
-        bool IsSetted(Expression<Func<TModel, object>> expression);
+        int IsSetted(Expression<Func<TModel, object>> expression);
 
-        bool Set(Expression<Func<TModel, object>> expression, Order order, bool overrideEnabled = false);
+        int Set(Expression<Func<TModel, object>> expression, Order order, bool overrideEnabled = false);
 
-        bool Unset(Expression<Func<TModel, object>> expression);
+        int Unset(Expression<Func<TModel, object>> expression);
     }
 }

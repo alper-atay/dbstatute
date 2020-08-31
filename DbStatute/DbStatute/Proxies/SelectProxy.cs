@@ -7,8 +7,8 @@ namespace DbStatute.Querying
 {
     public class SelectProxy : StatuteProxyBase, ISelectProxy
     {
-        public IFieldQualifier FieldQualifier { get; }
-        public bool FieldQualifierEnabled { get; set; }
+        public IFieldQualifier SelectedFieldQualifier { get; }
+        public bool SelectedFieldQualifierEnabled { get; set; }
         public IOrderFieldQualifier OrderFieldQualifier { get; }
         public bool OrderFieldQualifierEnabled { get; set; }
     }
@@ -16,9 +16,9 @@ namespace DbStatute.Querying
     public class SelectProxy<TModel> : StatuteProxyBase<TModel>, ISelectProxy<TModel>
         where TModel : class, IModel, new()
     {
-        public IFieldQualifier<TModel> FieldQualifier { get; }
-        IFieldQualifier ISelectProxy.FieldQualifier => FieldQualifier;
-        public bool FieldQualifierEnabled { get; set; }
+        public IFieldQualifier<TModel> SelectedFieldQualifier { get; }
+        IFieldQualifier ISelectProxy.SelectedFieldQualifier => SelectedFieldQualifier;
+        public bool SelectedFieldQualifierEnabled { get; set; }
         public IOrderFieldQualifier<TModel> OrderFieldQualifier { get; }
         IOrderFieldQualifier ISelectProxy.OrderFieldQualifier => OrderFieldQualifier;
         public bool OrderFieldQualifierEnabled { get; set; }

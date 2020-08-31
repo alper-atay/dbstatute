@@ -4,7 +4,7 @@ using DbStatute.Interfaces.Querying.Fundamentals.Qualifiers;
 
 namespace DbStatute.Interfaces.Querying.Qualifiers.Fields
 {
-    public interface IPredicateFieldQualifier : ISettableSpecializedField<ReadOnlyLogbookPredicate<object>>, IFieldPredicateMap
+    public interface IPredicateFieldQualifier : ISettableSpecializedField<ReadOnlyLogbookPredicate<object>>, IReadOnlyFieldPredicateMap
     {
     }
 

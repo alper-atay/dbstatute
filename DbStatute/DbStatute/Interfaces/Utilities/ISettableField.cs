@@ -1,12 +1,21 @@
 ﻿using RepoDb;
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace DbStatute.Interfaces.Utilities
 {
     public interface ISettableField
     {
+        IEnumerable<Field> GetAllByName(string name);
+
+        IEnumerable<Field> GetAllByType(Type type);
+
+        IEnumerable<Field> GetAllByType<T>();
+
         bool IsSetted(Field field);
+
+        int IsSetted(string name);
 
         bool Set(Field field, bool overrideEnabled = false);
 
@@ -18,8 +27,8 @@ namespace DbStatute.Interfaces.Utilities
     {
         bool IsSetted(Expression<Func<TModel, object>> expression);
 
-        bool Set(Expression<Func<TModel, object>> expression, bool overrideEnabled = false);
+        int Set(Expression<Func<TModel, object>> expression, bool overrideEnabled = false);
 
-        bool Unset(Expression<Func<TModel, object>> expression);
+        int Unset(Expression<Func<TModel, object>> expression);
     }
 }

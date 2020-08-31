@@ -4,7 +4,7 @@ using RepoDb.Enumerations;
 
 namespace DbStatute.Interfaces.Querying.Qualifiers.Fields
 {
-    public interface IOperationFieldQualifier : ISettableSpecializedField<Operation>, IFieldOperationMap
+    public interface IOperationFieldQualifier : ISettableSpecializedField<Operation>, IReadOnlyFieldOperationMap
     {
     }
 

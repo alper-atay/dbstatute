@@ -7,8 +7,6 @@ namespace DbStatute.Interfaces.Querying.Builders
         object Built { get; }
 
         IReadOnlyLogbook ReadOnlyLogs { get; }
-
-        bool Build(out object built);
     }
 
     public interface IBuilder<T> : IBuilder

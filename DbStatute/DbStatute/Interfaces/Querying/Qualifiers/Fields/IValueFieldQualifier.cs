@@ -3,7 +3,7 @@ using DbStatute.Interfaces.Querying.Fundamentals.Qualifiers;
 
 namespace DbStatute.Interfaces.Querying.Qualifiers.Fields
 {
-    public interface IValueFieldQualifier : ISettableSpecializedField<object>, IFieldValueMap
+    public interface IValueFieldQualifier : ISettableSpecializedField<object>, IReadOnlyFieldValueMap
     {
     }
 

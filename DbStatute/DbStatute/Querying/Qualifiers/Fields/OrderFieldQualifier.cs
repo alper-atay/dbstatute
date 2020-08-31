@@ -2,7 +2,6 @@
 using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using RepoDb;
 using RepoDb.Enumerations;
-using RepoDb.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +11,7 @@ namespace DbStatute.Querying.Qualifiers.Fields
 {
     public class OrderFieldQualifier : IOrderFieldQualifier
     {
-        private readonly HashSet<OrderField> _orderFields;
+        protected readonly HashSet<OrderField> _orderFields;
 
         public OrderFieldQualifier()
         {
@@ -32,9 +31,29 @@ namespace DbStatute.Querying.Qualifiers.Fields
         public bool HasOrderField => _orderFields.Count > 0;
         public IEnumerable<OrderField> OrderFields => _orderFields;
 
+        public IEnumerable<OrderField> GetAllByField(Field field)
+        {
+            return _orderFields.Where(x => x.Name == field.Name);
+        }
+
+        public IEnumerable<OrderField> GetAllByName(string name)
+        {
+            return _orderFields.Where(x => x.Name == name);
+        }
+
+        public IEnumerable<OrderField> GetAllByOrder(Order order)
+        {
+            return _orderFields.Where(x => x.Order == order);
+        }
+
         public bool IsSetted(OrderField orderField)
         {
             return _orderFields.Contains(orderField);
+        }
+
+        public int IsSetted(Field field)
+        {
+            return _orderFields.Count(x => x.Equals(field));
         }
 
         public bool Set(OrderField orderField, bool overrideEnabled = false)
@@ -60,105 +79,71 @@ namespace DbStatute.Querying.Qualifiers.Fields
         {
             return _orderFields.Remove(orderField);
         }
+
+        public int Unset(Field field)
+        {
+            return _orderFields.RemoveWhere(x => x.Name == field.Name);
+        }
+
+        public int Unset(string name)
+        {
+            return _orderFields.RemoveWhere(x => x.Name == name);
+        }
     }
 
-    public class OrderFieldQualifier<TModel> : IOrderFieldQualifier<TModel>
+    public class OrderFieldQualifier<TModel> : OrderFieldQualifier, IOrderFieldQualifier<TModel>
         where TModel : class, IModel, new()
     {
-        private readonly HashSet<OrderField> _orderFields = new HashSet<OrderField>();
-
         public OrderFieldQualifier()
         {
-            _orderFields = new HashSet<OrderField>();
         }
 
-        public OrderFieldQualifier(IEnumerable<OrderField> orderFields)
+        public OrderFieldQualifier(IEnumerable<OrderField> orderFields) : base(orderFields)
         {
-            if (orderFields is null)
+        }
+
+        public int IsSetted(Expression<Func<TModel, object>> expression)
+        {
+            IEnumerable<Field> fields = Field.Parse(expression);
+            int settedCount = 0;
+
+            foreach (var field in fields)
             {
-                throw new ArgumentNullException(nameof(orderFields));
+                settedCount += IsSetted(field);
             }
 
-            _orderFields = new HashSet<OrderField>(orderFields);
+            return settedCount;
         }
 
-        public bool HasOrderField => _orderFields.Count > 0;
-        public IEnumerable<OrderField> OrderFields => _orderFields.Count > 0 ? _orderFields : null;
-
-        public bool IsSetted(Expression<Func<TModel, object>> expression)
+        public int Set(Expression<Func<TModel, object>> expression, Order order, bool overrideEnabled = false)
         {
-            Field field = expression?.ToMember().GetField();
-            string name = field?.Name;
+            IEnumerable<Field> fields = Field.Parse(expression);
+            int settedCount = 0;
 
-            if (string.IsNullOrWhiteSpace(name))
+            foreach (Field field in fields)
             {
-                throw new NullReferenceException();
-            }
+                OrderField orderField = new OrderField(field.Name, order);
 
-            return _orderFields.Count(x => x.Name == field.Name) > 0;
-        }
-
-        public bool IsSetted(OrderField orderField)
-        {
-            return _orderFields.Contains(orderField);
-        }
-
-        public bool Set(Expression<Func<TModel, object>> expression, Order order, bool overrideEnabled = false)
-        {
-            OrderField orderField = OrderField.Parse(expression, order);
-
-            if (!_orderFields.Add(orderField))
-            {
-                if (overrideEnabled)
+                if (Set(orderField, overrideEnabled))
                 {
-                    _orderFields.Remove(orderField);
-
-                    return _orderFields.Add(orderField);
-                }
-                else
-                {
-                    return false;
+                    settedCount += 1;
                 }
             }
 
-            return true;
+            return settedCount;
         }
 
-        public bool Set(OrderField orderField, bool overrideEnabled = false)
+        public int Unset(Expression<Func<TModel, object>> expression)
         {
-            if (!_orderFields.Add(orderField))
-            {
-                if (overrideEnabled)
-                {
-                    _orderFields.Remove(orderField);
+            IEnumerable<Field> fields = Field.Parse(expression);
+            int unsettedCount = 0;
 
-                    return _orderFields.Add(orderField);
-                }
-                else
-                {
-                    return false;
-                }
+            foreach (Field field in fields)
+            {
+                unsettedCount += Unset(field);
             }
 
-            return true;
-        }
-
-        public bool Unset(Expression<Func<TModel, object>> expression)
-        {
-            Field field = expression?.ToMember().GetField();
-            string name = field?.Name;
-
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new NullReferenceException();
-            }
-
-            return _orderFields.RemoveWhere(x => x.Name == name) > 0;
-        }
-
-        public bool Unset(OrderField orderField)
-        {
-            return _orderFields.RemoveWhere(x => x.Name == orderField.Name) > 0;
+            return unsettedCount;
         }
     }
 }
