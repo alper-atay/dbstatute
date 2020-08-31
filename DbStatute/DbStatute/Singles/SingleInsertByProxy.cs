@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Singles
 {
-    public class SingleInsertByQuery<TModel, TInsertProxy> : SingleInsertBase<TModel>, ISingleInsertByProxy<TModel, TInsertProxy>
+    public class SingleInsertByProxy<TModel, TInsertProxy> : SingleInsertBase<TModel>, ISingleInsertByProxy<TModel, TInsertProxy>
         where TModel : class, IModel, new()
         where TInsertProxy : IInsertProxy<TModel>
     {
-        public SingleInsertByQuery(TInsertProxy insertProxy)
+        public SingleInsertByProxy(TInsertProxy insertProxy)
         {
             InsertProxy = insertProxy ?? throw new ArgumentNullException(nameof(insertProxy));
         }
