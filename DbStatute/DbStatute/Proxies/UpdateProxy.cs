@@ -4,7 +4,7 @@ using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Querying.Builders;
 using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using DbStatute.Querying.Builders;
-using DbStatute.Querying.Qualifiers;
+using DbStatute.Querying.Qualifiers.Fields;
 using System;
 
 namespace DbStatute.Querying

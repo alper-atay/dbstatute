@@ -6,6 +6,8 @@ namespace DbStatute.Interfaces.Fundamentals.Multiples
 {
     public interface IMultipleMergeBase : IMergeBase
     {
+        int BatchSize { get; set; }
+
         IEnumerable<object> MergedModels { get; }
 
         IAsyncEnumerable<object> MergeAsSinglyAsync(IDbConnection dbConnection);

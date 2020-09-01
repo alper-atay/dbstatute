@@ -16,17 +16,17 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Multiples
 {
-    public class MultipleInsertByRawModels<TModel> : MultipleInsertBase<TModel>, IMultipleInsertByRawModels<TModel>
+    public class MultipleMergeByRawModels<TModel> : MultipleMergeBase<TModel>, IMultipleMergeByRawModels<TModel>
         where TModel : class, IModel, new()
     {
-        public MultipleInsertByRawModels(IEnumerable<TModel> rawModels)
+        public MultipleMergeByRawModels(IEnumerable<TModel> rawModels)
         {
             RawModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
             FieldQualifier = new FieldQualifier<TModel>();
             PredicateFieldQualifier = new PredicateFieldQualifier<TModel>();
         }
 
-        public MultipleInsertByRawModels(IEnumerable<TModel> rawModels, IFieldQualifier<TModel> fieldQualifier, IPredicateFieldQualifier<TModel> predicateFieldQualifier)
+        public MultipleMergeByRawModels(IEnumerable<TModel> rawModels, IFieldQualifier<TModel> fieldQualifier, IPredicateFieldQualifier<TModel> predicateFieldQualifier)
         {
             RawModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
             FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
@@ -34,13 +34,13 @@ namespace DbStatute.Multiples
         }
 
         public IFieldQualifier<TModel> FieldQualifier { get; }
-        IFieldQualifier IMultipleInsertByRawModels.FieldQualifier => FieldQualifier;
+        IFieldQualifier IMultipleMergeByRawModels.FieldQualifier => FieldQualifier;
         public IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
-        IPredicateFieldQualifier IMultipleInsertByRawModels.PredicateFieldQualifier => PredicateFieldQualifier;
+        IPredicateFieldQualifier IMultipleMergeByRawModels.PredicateFieldQualifier => PredicateFieldQualifier;
         public IEnumerable<TModel> RawModels { get; }
         IEnumerable<object> IRawModels.RawModels => RawModels;
 
-        protected override async IAsyncEnumerable<TModel> InsertAsSingleOperationAsync(IDbConnection dbConnection)
+        protected override async IAsyncEnumerable<TModel> MergeAsSinglyOperationAsync(IDbConnection dbConnection)
         {
             IFieldBuilder<TModel> fieldBuilder = new FieldBuilder<TModel>(FieldQualifier);
 
@@ -57,16 +57,16 @@ namespace DbStatute.Multiples
                         continue;
                     }
 
-                    TModel insertedModel = await dbConnection.InsertAsync<TModel, TModel>(rawModel, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                    TModel mergedModel = await dbConnection.MergeAsync<TModel, TModel>(rawModel, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
-                    yield return insertedModel;
+                    yield return mergedModel;
                 }
             }
 
             Logs.AddRange(fieldBuilder.ReadOnlyLogs);
         }
 
-        protected override async Task<IEnumerable<TModel>> InsertOperationAsync(IDbConnection dbConnection)
+        protected override async Task<IEnumerable<TModel>> MergeOperationAsync(IDbConnection dbConnection)
         {
             IFieldBuilder<TModel> fieldBuilder = new FieldBuilder<TModel>(FieldQualifier);
 
@@ -90,9 +90,9 @@ namespace DbStatute.Multiples
 
                 if (readyModels.Count > 0)
                 {
-                    int insertedCount = await dbConnection.InsertAllAsync(readyModels, BatchSize, fields, Hints, CommandTimeout, Transaction);
+                    int mergedCount = await dbConnection.MergeAllAsync(readyModels, BatchSize, fields, Hints, CommandTimeout, Transaction);
 
-                    return insertedCount > 0 ? readyModels : null;
+                    return mergedCount > 0 ? readyModels : null;
                 }
             }
 

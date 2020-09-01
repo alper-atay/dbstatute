@@ -24,20 +24,17 @@ namespace DbStatute.Multiples
         {
             foreach (TModel readyModel in ReadyModels)
             {
-                if (readyModel is null)
-                {
-                    continue;
-                }
-
                 TModel insertedModel = await dbConnection.InsertAsync<TModel, TModel>(readyModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
                 yield return insertedModel;
             }
         }
 
-        protected override Task<IEnumerable<TModel>> InsertOperationAsync(IDbConnection dbConnection)
+        protected override async Task<IEnumerable<TModel>> InsertOperationAsync(IDbConnection dbConnection)
         {
-            throw new NotImplementedException();
+            int insertedCount = await dbConnection.InsertAllAsync(ReadyModels, BatchSize, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+
+            return insertedCount > 0 ? ReadyModels : null;
         }
     }
 }

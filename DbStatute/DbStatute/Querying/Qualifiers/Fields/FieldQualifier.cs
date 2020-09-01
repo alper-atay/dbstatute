@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace DbStatute.Querying.Qualifiers
+namespace DbStatute.Querying.Qualifiers.Fields
 {
     public class FieldQualifier : IFieldQualifier
     {

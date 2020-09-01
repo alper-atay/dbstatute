@@ -12,7 +12,9 @@ namespace DbStatute.Fundamentals.Multiples
         where TModel : class, IModel, new()
     {
         private readonly List<TModel> _selectedModels = new List<TModel>();
+        private int? _maxSelectCount = null;
 
+        public override int? MaxSelectCount => _maxSelectCount;
         public override int SelectedCount => _selectedModels.Count;
         public IEnumerable<TModel> SelectedModels => SelectedCount > 0 ? _selectedModels : null;
         IEnumerable<object> IMultipleSelectBase.SelectedModels => SelectedModels;
@@ -60,6 +62,21 @@ namespace DbStatute.Fundamentals.Multiples
         Task<IEnumerable<object>> IMultipleSelectBase.SelectAsync(IDbConnection dbConnection)
         {
             return SelectAsync(dbConnection).ContinueWith(x => x.Result.Cast<object>());
+        }
+
+        public void SetMaxSelectCount(int? maxSelectCount)
+        {
+            if (maxSelectCount.HasValue)
+            {
+                if (maxSelectCount.Value < 0)
+                {
+                    _maxSelectCount = 0;
+                }
+            }
+            else
+            {
+                _maxSelectCount = null;
+            }
         }
 
         protected abstract IAsyncEnumerable<TModel> SelectAsSignlyOperationAsync(IDbConnection dbConnection);

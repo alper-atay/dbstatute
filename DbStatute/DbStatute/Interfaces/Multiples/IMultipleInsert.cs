@@ -6,7 +6,7 @@ namespace DbStatute.Interfaces.Multiples
     {
     }
 
-    public interface IMultipleInsert<TModel> : IMultipleInsertBase<TModel>, IReadyModels<TModel>
+    public interface IMultipleInsert<TModel> : IMultipleInsertBase<TModel>, IReadyModels<TModel>, IMultipleInsert
         where TModel : class, IModel, new()
     {
     }

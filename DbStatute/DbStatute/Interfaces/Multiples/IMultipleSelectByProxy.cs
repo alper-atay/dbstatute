@@ -9,7 +9,7 @@ namespace DbStatute.Interfaces.Multiples
         TSelectProxy SelectProxy { get; }
     }
 
-    public interface IMultipleSelectByQuery<TModel, TSelectProxy> : IMultipleSelectBase<TModel>, IMultipleSelectByProxy<TSelectProxy>
+    public interface IMultipleSelectByProxy<TModel, TSelectProxy> : IMultipleSelectBase<TModel>, IMultipleSelectByProxy<TSelectProxy>
         where TModel : class, IModel, new()
         where TSelectProxy : ISelectProxy<TModel>
     {

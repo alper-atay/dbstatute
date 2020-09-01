@@ -3,7 +3,6 @@ using DbStatute.Interfaces;
 using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using DbStatute.Interfaces.Singles;
 using DbStatute.Internals;
-using DbStatute.Querying.Qualifiers;
 using DbStatute.Querying.Qualifiers.Fields;
 using RepoDb;
 using System;

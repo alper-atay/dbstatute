@@ -11,6 +11,8 @@ namespace DbStatute.Interfaces.Fundamentals
         IAsyncEnumerable<object> SelectAsSinglyAsync(IDbConnection dbConnection);
 
         Task<IEnumerable<object>> SelectAsync(IDbConnection dbConnection);
+
+        void SetMaxSelectCount(int? maxSelectCount);
     }
 
     public interface IMultipleSelectBase<TModel> : ISelectBase<TModel>, IMultipleSelectBase

@@ -9,7 +9,7 @@ namespace DbStatute.Interfaces.Multiples
         TMergeProxy MergeProxy { get; }
     }
 
-    public interface IMultipleMergeByQuery<TModel, TMergeProxy> : IMultipleMergeBase<TModel>, IMultipleMergeByProxy<TMergeProxy>
+    public interface IMultipleMergeByProxy<TModel, TMergeProxy> : IMultipleMergeBase<TModel>, IMultipleMergeByProxy<TMergeProxy>
         where TModel : class, IModel, new()
         where TMergeProxy : IMergeProxy<TModel>
     {
