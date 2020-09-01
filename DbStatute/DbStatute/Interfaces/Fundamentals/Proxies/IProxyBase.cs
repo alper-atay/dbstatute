@@ -1,10 +1,10 @@
 ﻿namespace DbStatute.Interfaces.Fundamentals.Proxies
 {
-    public interface IStatuteProxyBase
+    public interface IProxyBase
     {
     }
 
-    public interface IStatuteProxyBase<TModel> : IStatuteProxyBase
+    public interface IProxyBase<TModel> : IProxyBase
         where TModel : class, IModel, new()
     {
     }

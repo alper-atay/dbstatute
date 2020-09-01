@@ -4,13 +4,13 @@ using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 
 namespace DbStatute.Interfaces.Proxies
 {
-    public interface IUpdateProxy : IStatuteProxyBase
+    public interface IUpdateProxy : IProxyBase
     {
         IFieldQualifier FieldQualifier { get; }
         IModelBuilder ModelBuilder { get; }
     }
 
-    public interface IUpdateProxy<TModel> : IStatuteProxyBase<TModel>, IUpdateProxy
+    public interface IUpdateProxy<TModel> : IProxyBase<TModel>, IUpdateProxy
         where TModel : class, IModel, new()
     {
         new IFieldQualifier<TModel> FieldQualifier { get; }

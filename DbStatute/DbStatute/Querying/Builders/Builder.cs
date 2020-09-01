@@ -5,10 +5,7 @@ namespace DbStatute.Querying.Builders
 {
     public abstract class Builder : IBuilder
     {
-        private readonly object _built;
-
-        public object Built => _built;
-
+        public abstract object Built { get; }
         public IReadOnlyLogbook ReadOnlyLogs => Logs;
         protected ILogbook Logs { get; } = Logger.NewLogbook();
     }
@@ -20,7 +17,6 @@ namespace DbStatute.Querying.Builders
         public T Built => _built;
         object IBuilder.Built => Built;
         public IReadOnlyLogbook ReadOnlyLogs => Logs;
-
         protected ILogbook Logs { get; } = Logger.NewLogbook();
 
         public bool Build(out T built)

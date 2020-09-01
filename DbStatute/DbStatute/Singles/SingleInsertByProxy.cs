@@ -1,9 +1,12 @@
 ﻿using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Proxies;
+using DbStatute.Interfaces.Querying.Builders;
 using DbStatute.Interfaces.Singles;
+using DbStatute.Querying.Builders;
 using RepoDb;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -22,7 +25,20 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> InsertOperationAsync(IDbConnection dbConnection)
         {
-            return await dbConnection.InsertAsync<TModel, TModel>(null/*insertModel*/, null/*fields*/, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+            IModelBuilder<TModel> modelBuilder = InsertProxy.ModelBuilder;
+            modelBuilder.Build(out TModel model);
+            Logs.AddRange(modelBuilder.ReadOnlyLogs);
+
+            IFieldBuilder<TModel> fieldBuilder = new FieldBuilder<TModel>(InsertProxy.InsertedFieldQualifier);
+            fieldBuilder.Build(out IEnumerable<Field> fields);
+            Logs.AddRange(fieldBuilder.ReadOnlyLogs);
+
+            if (model != null)
+            {
+                return await dbConnection.InsertAsync<TModel, TModel>(model, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+            }
+
+            return null;
         }
     }
 }

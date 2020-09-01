@@ -15,7 +15,7 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> MergeOperationAsync(IDbConnection dbConnection)
         {
-            return await dbConnection.MergeAsync<TModel>(RawModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder).ContinueWith(x => (TModel)x.Result);
+            return await dbConnection.MergeAsync(RawModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder).ContinueWith(x => (TModel)x.Result);
         }
     }
 }

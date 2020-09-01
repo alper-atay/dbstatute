@@ -5,13 +5,13 @@ using System;
 
 namespace DbStatute.Fundamentals.Proxies
 {
-    public abstract class StatuteProxyBase : IStatuteProxyBase
+    public abstract class StatuteProxyBase : IProxyBase
     {
         public IReadOnlyLogbook ReadOnlyLogs => Logs;
         protected ILogbook Logs { get; } = Logger.NewLogbook();
     }
 
-    public abstract class StatuteProxyBase<TModel> : IStatuteProxyBase<TModel>
+    public abstract class StatuteProxyBase<TModel> : IProxyBase<TModel>
         where TModel : class, IModel, new()
     {
         public Type ModelType => typeof(TModel);

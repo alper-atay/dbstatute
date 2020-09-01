@@ -3,14 +3,16 @@ using DbStatute.Interfaces.Proxies;
 
 namespace DbStatute.Interfaces.Singles
 {
-    public interface ISingleSelectByProxy : ISingleSelectBase
+    public interface ISingleSelectByProxy<TSelectProxy> : ISingleSelectBase
+        where TSelectProxy : ISelectProxy
     {
-        ISelectProxy SelectProxy { get; }
+        TSelectProxy SelectProxy { get; }
     }
 
-    public interface ISingleSelectByProxy<TModel> : ISingleSelectBase<TModel>, ISingleSelectByProxy
+    public interface ISingleSelectByProxy<TModel, TSelectProxy> : ISingleSelectBase<TModel>, ISingleSelectByProxy<TSelectProxy>
         where TModel : class, IModel, new()
+        where TSelectProxy : ISelectProxy<TModel>
     {
-        new ISelectProxy<TModel> SelectProxy { get; }
+        new TSelectProxy SelectProxy { get; }
     }
 }

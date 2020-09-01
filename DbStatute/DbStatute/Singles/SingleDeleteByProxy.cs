@@ -1,8 +1,10 @@
 ﻿using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Proxies;
+using DbStatute.Interfaces.Querying.Builders;
 using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using DbStatute.Interfaces.Singles;
+using DbStatute.Querying.Builders;
 using RepoDb;
 using System;
 using System.Collections.Generic;
@@ -26,18 +28,17 @@ namespace DbStatute.Singles
         protected override async Task<TModel> DeleteOperationAsync(IDbConnection dbConnection)
         {
             ISelectProxy<TModel> selectQuery = DeleteProxy.SelectProxy;
+
             IOrderFieldQualifier<TModel> orderFieldQualifier = selectQuery.OrderFieldQualifier;
+            IOrderFieldBuilder<TModel> orderFieldBuilder = new OrderFieldBuilder<TModel>(orderFieldQualifier);
 
-            IEnumerable<OrderField> orderFields = null;
-            if (orderFieldQualifier.HasOrderField)
-            {
-                orderFields = orderFieldQualifier.ReadOnlyOrderFields;
-            }
-
-            bool isQueryGroupBuilt = selectQuery.SelectQueryGroupBuilder.Build(out QueryGroup queryGroup);
+            selectQuery.SelectQueryGroupBuilder.Build(out QueryGroup queryGroup);
             Logs.AddRange(selectQuery.SelectQueryGroupBuilder.ReadOnlyLogs);
 
-            if (isQueryGroupBuilt)
+            orderFieldBuilder.Build(out IEnumerable<OrderField> orderFields);
+            Logs.AddRange(orderFieldBuilder.ReadOnlyLogs);
+
+            if (queryGroup != null)
             {
                 TModel deleteModel = await dbConnection.QueryAsync<TModel>(queryGroup, null, orderFields, 1, Hints, Cacheable?.Key, Cacheable.ItemExpiration ?? 180, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder).ContinueWith(x => x.Result.FirstOrDefault());
 

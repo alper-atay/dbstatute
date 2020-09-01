@@ -5,7 +5,6 @@ namespace DbStatute.Interfaces.Querying.Builders
     public interface IBuilder
     {
         object Built { get; }
-
         IReadOnlyLogbook ReadOnlyLogs { get; }
     }
 

@@ -15,8 +15,9 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Singles
 {
-    public class SingleSelectByProxy<TModel> : SingleSelectBase<TModel>, ISingleSelectByProxy<TModel>
+    public class SingleSelectByProxy<TModel, TSelectProxy> : SingleSelectBase<TModel>, ISingleSelectByProxy<TModel, TSelectProxy>
         where TModel : class, IModel, new()
+        where TSelectProxy : ISelectProxy<TModel>
     {
         public SingleSelectByProxy()
         {
@@ -28,8 +29,7 @@ namespace DbStatute.Singles
             SelectProxy = selectProxy ?? throw new ArgumentNullException(nameof(selectProxy));
         }
 
-        public ISelectProxy<TModel> SelectProxy { get; }
-        ISelectProxy ISingleSelectByProxy.SelectProxy => SelectProxy;
+        public TSelectProxy SelectProxy { get; }
 
         protected override async Task<TModel> SelectOperationAsync(IDbConnection dbConnection)
         {

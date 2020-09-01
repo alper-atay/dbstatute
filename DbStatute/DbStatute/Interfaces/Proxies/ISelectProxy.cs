@@ -4,14 +4,14 @@ using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 
 namespace DbStatute.Interfaces.Proxies
 {
-    public interface ISelectProxy : IStatuteProxyBase
+    public interface ISelectProxy : IProxyBase
     {
         IOrderFieldQualifier OrderFieldQualifier { get; }
         ISelectQueryGroupBuilder SelectQueryGroupBuilder { get; }
         IFieldQualifier SelectedFieldQualifier { get; }
     }
 
-    public interface ISelectProxy<TModel> : IStatuteProxyBase<TModel>, ISelectProxy
+    public interface ISelectProxy<TModel> : IProxyBase<TModel>, ISelectProxy
         where TModel : class, IModel, new()
     {
         new IOrderFieldQualifier<TModel> OrderFieldQualifier { get; }

@@ -4,14 +4,12 @@ using System.Collections.Generic;
 
 namespace DbStatute.Interfaces.Querying.Builders
 {
-    public interface IFieldBuilder
+    public interface IFieldBuilder : IBuilder
     {
         IFieldQualifier FieldQualifier { get; }
-
-        bool Build(out IEnumerable<Field> builtFields);
     }
 
-    public interface IFieldBuilder<TModel> : IFieldBuilder
+    public interface IFieldBuilder<TModel> : IBuilder<IEnumerable<Field>>, IFieldBuilder
         where TModel : class, IModel, new()
     {
         new IFieldQualifier<TModel> FieldQualifier { get; }
