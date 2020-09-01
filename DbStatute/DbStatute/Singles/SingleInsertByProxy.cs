@@ -1,9 +1,9 @@
-﻿using DbStatute.Fundamentals.Singles;
+﻿using DbStatute.Builders;
+using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
+using DbStatute.Interfaces.Builders;
 using DbStatute.Interfaces.Proxies;
-using DbStatute.Interfaces.Querying.Builders;
 using DbStatute.Interfaces.Singles;
-using DbStatute.Querying.Builders;
 using RepoDb;
 using System;
 using System.Collections.Generic;

@@ -1,6 +1,6 @@
 ﻿using DbStatute.Enumerations;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Fundamentals;
+using DbStatute.Interfaces.Fundamentals.Multiples;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;

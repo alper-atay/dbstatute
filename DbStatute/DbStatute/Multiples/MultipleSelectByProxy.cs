@@ -1,10 +1,10 @@
-﻿using DbStatute.Fundamentals.Multiples;
+﻿using DbStatute.Builders;
+using DbStatute.Fundamentals.Multiples;
 using DbStatute.Interfaces;
+using DbStatute.Interfaces.Builders;
 using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Proxies;
-using DbStatute.Interfaces.Querying.Builders;
 using DbStatute.Querying;
-using DbStatute.Querying.Builders;
 using RepoDb;
 using System.Collections.Generic;
 using System.Data;

@@ -1,4 +1,4 @@
-﻿using DbStatute.Interfaces.Fundamentals;
+﻿using DbStatute.Interfaces.Fundamentals.Multiples;
 using DbStatute.Interfaces.Proxies;
 
 namespace DbStatute.Interfaces.Multiples

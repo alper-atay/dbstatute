@@ -1,7 +1,7 @@
 ﻿using Basiclog;
+using DbStatute.Builders;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Querying.Qualifiers.Fields;
-using DbStatute.Querying.Builders;
+using DbStatute.Interfaces.Qualifiers;
 using RepoDb;
 using RepoDb.Exceptions;
 using System;

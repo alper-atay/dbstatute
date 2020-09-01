@@ -1,12 +1,12 @@
 ﻿using Basiclog;
+using DbStatute.Builders;
 using DbStatute.Fundamentals.Multiples;
 using DbStatute.Interfaces;
+using DbStatute.Interfaces.Builders;
 using DbStatute.Interfaces.Multiples;
-using DbStatute.Interfaces.Querying.Builders;
-using DbStatute.Interfaces.Querying.Qualifiers.Fields;
+using DbStatute.Interfaces.Qualifiers;
 using DbStatute.Internals;
-using DbStatute.Querying.Builders;
-using DbStatute.Querying.Qualifiers.Fields;
+using DbStatute.Qualifiers;
 using RepoDb;
 using System;
 using System.Collections.Generic;

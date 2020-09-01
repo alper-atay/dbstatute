@@ -1,10 +1,10 @@
-﻿using DbStatute.Fundamentals.Proxies;
+﻿using DbStatute.Builders;
+using DbStatute.Fundamentals.Proxies;
 using DbStatute.Interfaces;
+using DbStatute.Interfaces.Builders;
 using DbStatute.Interfaces.Proxies;
-using DbStatute.Interfaces.Querying.Builders;
-using DbStatute.Interfaces.Querying.Qualifiers.Fields;
-using DbStatute.Querying.Builders;
-using DbStatute.Querying.Qualifiers.Fields;
+using DbStatute.Interfaces.Qualifiers;
+using DbStatute.Qualifiers;
 
 namespace DbStatute.Querying
 {

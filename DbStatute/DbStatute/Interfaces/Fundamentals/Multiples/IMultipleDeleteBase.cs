@@ -2,7 +2,7 @@
 using System.Data;
 using System.Threading.Tasks;
 
-namespace DbStatute.Interfaces.Fundamentals
+namespace DbStatute.Interfaces.Fundamentals.Multiples
 {
     public interface IMultipleDeleteBase : IDeleteBase
     {
