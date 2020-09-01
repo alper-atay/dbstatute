@@ -9,7 +9,7 @@ namespace DbStatute.Interfaces.Multiples
         TInsertProxy InsertProxy { get; }
     }
 
-    public interface IMultipleInsertByQuery<TModel, TInsertProxy> : IMultipleInsertBase<TModel>, IMultipleInsertByProxy<TInsertProxy>
+    public interface IMultipleInsertByProxy<TModel, TInsertProxy> : IMultipleInsertBase<TModel>, IMultipleInsertByProxy<TInsertProxy>
         where TModel : class, IModel, new()
         where TInsertProxy : IInsertProxy<TModel>
     {
