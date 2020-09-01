@@ -2,6 +2,7 @@
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Singles;
 using RepoDb;
+using System;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -10,17 +11,17 @@ namespace DbStatute.Singles
     public class SingleInsert<TModel> : SingleInsertBase<TModel>, ISingleInsert<TModel>
         where TModel : class, IModel, new()
     {
-        public SingleInsert(TModel rawModel)
+        public SingleInsert(TModel readyModel)
         {
-            RawModel = rawModel;
+            ReadyModel = readyModel ?? throw new ArgumentNullException(nameof(readyModel));
         }
 
-        public TModel RawModel { get; }
-        object IRawModel.RawModel => RawModel;
+        public TModel ReadyModel { get; }
+        object IReadyModel.ReadyModel => ReadyModel;
 
         protected override async Task<TModel> InsertOperationAsync(IDbConnection dbConnection)
         {
-            return await dbConnection.InsertAsync<TModel, TModel>(RawModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+            return await dbConnection.InsertAsync<TModel, TModel>(ReadyModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Basiclog;
 using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
+using DbStatute.Interfaces.Querying.Builders;
 using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using DbStatute.Interfaces.Singles;
 using DbStatute.Querying.Builders;
@@ -9,41 +10,27 @@ using RepoDb.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
 namespace DbStatute.Singles
 {
-    public class SingleUpdateByRawModel<TModel, TFieldQualifier, TPredicateFieldQualifier> : SingleUpdateBase<TModel>, ISingleUpdateByRawModel<TModel, TFieldQualifier, TPredicateFieldQualifier>
+    public class SingleMergeByRawModel<TModel, TFieldQualifier, TPredicateFieldQualifier> : SingleMergeBase<TModel>, ISingleMergeByRawModel<TModel, TFieldQualifier, TPredicateFieldQualifier>
         where TModel : class, IModel, new()
-        where TFieldQualifier : class, IFieldQualifier<TModel>
-        where TPredicateFieldQualifier : class, IPredicateFieldQualifier<TModel>
+        where TFieldQualifier : IFieldQualifier<TModel>
+        where TPredicateFieldQualifier : IPredicateFieldQualifier<TModel>
     {
-        public SingleUpdateByRawModel(TModel rawModel)
-        {
-            RawModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
-        }
-
-        public SingleUpdateByRawModel(TModel rawModel, TFieldQualifier fieldQualifier, TPredicateFieldQualifier predicateFieldQualifier)
-        {
-            RawModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
-            FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
-            PredicateFieldQualifier = predicateFieldQualifier ?? throw new ArgumentNullException(nameof(predicateFieldQualifier));
-        }
-
         public TFieldQualifier FieldQualifier { get; }
         public TPredicateFieldQualifier PredicateFieldQualifier { get; }
         public TModel RawModel { get; }
         object IRawModel.RawModel => RawModel;
 
-        protected override async Task<TModel> UpdateOperationAsync(IDbConnection dbConnection)
+        protected override async Task<TModel> MergeOperationAsync(IDbConnection dbConnection)
         {
-            FieldBuilder<TModel> fieldBuilder = new FieldBuilder<TModel>(FieldQualifier);
-            fieldBuilder.Build(out IEnumerable<Field> fields);
+            IFieldBuilder<TModel> fieldBuilder = new FieldBuilder<TModel>(FieldQualifier);
             Logs.AddRange(fieldBuilder.ReadOnlyLogs);
 
-            if (ReadOnlyLogs.Safely)
+            if (fieldBuilder.Build(out IEnumerable<Field> fields))
             {
                 TPredicateFieldQualifier predicateFieldQualifier = PredicateFieldQualifier;
                 IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> fieldPredicateMap = predicateFieldQualifier.ReadOnlyFieldPredicateMap;
@@ -69,14 +56,11 @@ namespace DbStatute.Singles
                         }
                     }
                 }
-
-                int updatedId = await dbConnection.UpdateAsync(RawModel, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
-
-                return await dbConnection.QueryAsync<TModel>(updatedId, null, null, 1, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache)
-                    .ContinueWith(x => x.Result.FirstOrDefault());
             }
 
-            return null;
+            TModel mergedModel = await dbConnection.MergeAsync<TModel, TModel>(RawModel, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+
+            return mergedModel;
         }
     }
 }

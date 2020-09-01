@@ -4,6 +4,7 @@ using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Querying.Builders;
 using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using DbStatute.Interfaces.Singles;
+using DbStatute.Proxies;
 using DbStatute.Querying.Builders;
 using RepoDb;
 using System;
@@ -16,8 +17,13 @@ namespace DbStatute.Singles
 {
     public class SingleDeleteByProxy<TModel, TDeleteProxy> : SingleDeleteBase<TModel>, ISingleDeleteByProxy<TModel, TDeleteProxy>
         where TModel : class, IModel, new()
-        where TDeleteProxy : IDeleteProxy<TModel>
+        where TDeleteProxy : class, IDeleteProxy<TModel>
     {
+        public SingleDeleteByProxy()
+        {
+            DeleteProxy = new DeleteProxy<TModel>() as TDeleteProxy;
+        }
+
         public SingleDeleteByProxy(TDeleteProxy deleteProxy)
         {
             DeleteProxy = deleteProxy ?? throw new ArgumentNullException(nameof(deleteProxy));
@@ -28,19 +34,20 @@ namespace DbStatute.Singles
         protected override async Task<TModel> DeleteOperationAsync(IDbConnection dbConnection)
         {
             ISelectProxy<TModel> selectQuery = DeleteProxy.SelectProxy;
-
+            ISelectQueryGroupBuilder<TModel> selectQueryGroupBuilder = selectQuery.SelectQueryGroupBuilder;
             IOrderFieldQualifier<TModel> orderFieldQualifier = selectQuery.OrderFieldQualifier;
-            IOrderFieldBuilder<TModel> orderFieldBuilder = new OrderFieldBuilder<TModel>(orderFieldQualifier);
 
-            selectQuery.SelectQueryGroupBuilder.Build(out QueryGroup queryGroup);
+            selectQueryGroupBuilder.Build(out QueryGroup queryGroup);
             Logs.AddRange(selectQuery.SelectQueryGroupBuilder.ReadOnlyLogs);
 
+            IOrderFieldBuilder<TModel> orderFieldBuilder = new OrderFieldBuilder<TModel>(orderFieldQualifier);
             orderFieldBuilder.Build(out IEnumerable<OrderField> orderFields);
             Logs.AddRange(orderFieldBuilder.ReadOnlyLogs);
 
             if (queryGroup != null)
             {
-                TModel deleteModel = await dbConnection.QueryAsync<TModel>(queryGroup, null, orderFields, 1, Hints, Cacheable?.Key, Cacheable.ItemExpiration ?? 180, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder).ContinueWith(x => x.Result.FirstOrDefault());
+                TModel deleteModel = await dbConnection.QueryAsync<TModel>(queryGroup, null, orderFields, 1, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder)
+                    .ContinueWith(x => x.Result.FirstOrDefault());
 
                 if (deleteModel != null)
                 {

@@ -3,7 +3,7 @@ using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 
 namespace DbStatute.Interfaces.Singles
 {
-    public interface ISingleUpdateByRawModel<TFieldQualifier, TPredicateFieldQualifier> : ISingleUpdateBase, IRawModel
+    public interface ISingleMergeByRawModel<TFieldQualifier, TPredicateFieldQualifier> : ISingleMergeBase, IRawModel
         where TFieldQualifier : IFieldQualifier
         where TPredicateFieldQualifier : IPredicateFieldQualifier
     {
@@ -11,7 +11,7 @@ namespace DbStatute.Interfaces.Singles
         TPredicateFieldQualifier PredicateFieldQualifier { get; }
     }
 
-    public interface ISingleUpdateByRawModel<TModel, TFieldQualifier, TPredicateFieldQualifier> : ISingleUpdateBase<TModel>, IRawModel<TModel>, ISingleUpdateByRawModel<TFieldQualifier, TPredicateFieldQualifier>
+    public interface ISingleMergeByRawModel<TModel, TFieldQualifier, TPredicateFieldQualifier> : ISingleMergeBase<TModel>, IRawModel<TModel>, ISingleMergeByRawModel<TFieldQualifier, TPredicateFieldQualifier>
         where TModel : class, IModel, new()
         where TFieldQualifier : IFieldQualifier<TModel>
         where TPredicateFieldQualifier : IPredicateFieldQualifier<TModel>

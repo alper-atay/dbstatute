@@ -24,11 +24,11 @@ namespace DbStatute.Singles
 
             int deletedCount = 0;
 
-            if (deleteModel == null)
+            if (deleteModel is null)
             {
                 deletedCount = await dbConnection.DeleteAsync<TModel>(Id, Hints, CommandTimeout, Transaction, Trace);
 
-                if(deletedCount > 0)
+                if (deletedCount > 0)
                 {
                     Logs.Success($"The model was not found, but the operation was successful");
                 }
@@ -37,7 +37,7 @@ namespace DbStatute.Singles
             {
                 deletedCount = await dbConnection.DeleteAsync(deleteModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
-                if(deletedCount > 0)
+                if (deletedCount > 0)
                 {
                     Logs.Success("The model was found and the operation was performed successfully");
                 }

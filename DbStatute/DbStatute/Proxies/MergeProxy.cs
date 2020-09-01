@@ -2,6 +2,7 @@
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Querying.Builders;
+using DbStatute.Interfaces.Querying.Qualifiers.Fields;
 using DbStatute.Querying.Builders;
 using System;
 
@@ -14,6 +15,7 @@ namespace DbStatute.Querying
             ModelBuilder = modelBuilder;
         }
 
+        public IFieldQualifier MergedFieldQualifier { get; }
         public IModelBuilder ModelBuilder { get; }
     }
 
@@ -30,6 +32,8 @@ namespace DbStatute.Querying
             ModelBuilder = modelBuilder ?? throw new ArgumentNullException(nameof(modelBuilder));
         }
 
+        public IFieldQualifier<TModel> MergedFieldQualifier { get; }
+        IFieldQualifier IMergeProxy.MergedFieldQualifier => MergedFieldQualifier;
         public IModelBuilder<TModel> ModelBuilder { get; }
         IModelBuilder IMergeProxy.ModelBuilder => ModelBuilder;
     }

@@ -2,11 +2,11 @@
 
 namespace DbStatute.Interfaces.Singles
 {
-    public interface ISingleInsert : ISingleInsertBase, IRawModel
+    public interface ISingleInsert : ISingleInsertBase, IReadyModel
     {
     }
 
-    public interface ISingleInsert<TModel> : ISingleInsertBase<TModel>, IRawModel<TModel>, ISingleInsert
+    public interface ISingleInsert<TModel> : ISingleInsertBase<TModel>, IReadyModel<TModel>, ISingleInsert
         where TModel : class, IModel, new()
     {
     }

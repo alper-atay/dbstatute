@@ -17,14 +17,14 @@ namespace DbStatute.Singles
 {
     public class SingleSelectByProxy<TModel, TSelectProxy> : SingleSelectBase<TModel>, ISingleSelectByProxy<TModel, TSelectProxy>
         where TModel : class, IModel, new()
-        where TSelectProxy : ISelectProxy<TModel>
+        where TSelectProxy : class, ISelectProxy<TModel>
     {
         public SingleSelectByProxy()
         {
-            SelectProxy = new SelectProxy<TModel>();
+            SelectProxy = new SelectProxy<TModel>() as TSelectProxy;
         }
 
-        public SingleSelectByProxy(ISelectProxy<TModel> selectProxy)
+        public SingleSelectByProxy(TSelectProxy selectProxy)
         {
             SelectProxy = selectProxy ?? throw new ArgumentNullException(nameof(selectProxy));
         }
@@ -50,15 +50,11 @@ namespace DbStatute.Singles
                 orderFieldBuilder.Build(out IEnumerable<OrderField> orderFields);
                 Logs.AddRange(orderFieldBuilder.ReadOnlyLogs);
 
-                if (!ReadOnlyLogs.Safely)
-                {
-                    return null;
-                }
-
-                return await dbConnection.QueryAsync<TModel>(queryGroup, fields, orderFields, MaxSelectCount, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder).ContinueWith(x => x.Result.FirstOrDefault());
+                return await dbConnection.QueryAsync<TModel>(queryGroup, fields, orderFields, MaxSelectCount, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder)
+                    .ContinueWith(x => x.Result.FirstOrDefault());
             }
 
-            return default;
+            return null;
         }
     }
 }
