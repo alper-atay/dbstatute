@@ -17,7 +17,7 @@ namespace DbStatute.Fundamentals.Multiples
         public IEnumerable<TModel> DeletedModels => DeletedCount > 0 ? _deletedModels : null;
         IEnumerable<object> IMultipleDeleteBase.DeletedModels => DeletedModels;
 
-        public async IAsyncEnumerable<TModel> DeleteAsSinglyAsync(IDbConnection dbConnection)
+        public async IAsyncEnumerable<TModel> DeleteAsSinglyAsync(IDbConnection dbConnection, bool allowNullReturnIfDeleted = false)
         {
             await foreach (TModel deletedModel in DeleteAsSinglyOperationAsync(dbConnection))
             {
@@ -34,9 +34,9 @@ namespace DbStatute.Fundamentals.Multiples
             StatuteResult = DeletedModels is null ? StatuteResult.Failure : StatuteResult.Success;
         }
 
-        IAsyncEnumerable<object> IMultipleDeleteBase.DeleteAsSinglyAsync(IDbConnection dbConnection)
+        IAsyncEnumerable<object> IMultipleDeleteBase.DeleteAsSinglyAsync(IDbConnection dbConnection, bool allowNullReturnIfDeleted = false)
         {
-            return DeleteAsSinglyAsync(dbConnection);
+            return DeleteAsSinglyAsync(dbConnection, allowNullReturnIfDeleted);
         }
 
         public async Task<IEnumerable<TModel>> DeleteAsync(IDbConnection dbConnection)
@@ -59,7 +59,7 @@ namespace DbStatute.Fundamentals.Multiples
             return DeleteAsync(dbConnection).ContinueWith(x => x.Result.Cast<object>());
         }
 
-        protected abstract IAsyncEnumerable<TModel> DeleteAsSinglyOperationAsync(IDbConnection dbConnection);
+        protected abstract IAsyncEnumerable<TModel> DeleteAsSinglyOperationAsync(IDbConnection dbConnection, bool allowNullReturnIfDeleted = false);
 
         protected abstract Task<IEnumerable<TModel>> DeleteOperationAsync(IDbConnection dbConnection);
     }
