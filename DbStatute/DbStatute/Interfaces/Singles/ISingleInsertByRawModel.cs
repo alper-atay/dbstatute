@@ -8,6 +8,7 @@ namespace DbStatute.Interfaces.Singles
         where TPredicateFieldQualifier : IPredicateFieldQualifier
     {
         TFieldQualifier FieldQualifier { get; }
+
         TPredicateFieldQualifier PredicateFieldQualifier { get; }
     }
 
@@ -17,6 +18,7 @@ namespace DbStatute.Interfaces.Singles
         where TPredicateFieldQualifier : IPredicateFieldQualifier<TModel>
     {
         new TFieldQualifier FieldQualifier { get; }
+
         new TPredicateFieldQualifier PredicateFieldQualifier { get; }
     }
 }

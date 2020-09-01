@@ -14,8 +14,11 @@ namespace DbStatute.Fundamentals.Multiples
         private readonly List<TModel> _insertedModels = new List<TModel>();
 
         public int BatchSize { get; set; } = 10;
+
         public override int InsertedCount => _insertedModels.Count;
+
         public IEnumerable<TModel> InsertedModels => InsertedCount > 0 ? _insertedModels : null;
+
         IEnumerable<object> IMultipleInsertBase.InsertedModels => InsertedModels;
 
         public async IAsyncEnumerable<TModel> InsertAsSingleAsync(IDbConnection dbConnection)

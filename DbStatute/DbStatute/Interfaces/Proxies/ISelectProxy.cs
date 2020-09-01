@@ -7,15 +7,19 @@ namespace DbStatute.Interfaces.Proxies
     public interface ISelectProxy : IProxyBase
     {
         IOrderFieldQualifier OrderFieldQualifier { get; }
-        ISelectQueryGroupBuilder SelectQueryGroupBuilder { get; }
+
         IFieldQualifier SelectedFieldQualifier { get; }
+
+        ISelectQueryGroupBuilder SelectQueryGroupBuilder { get; }
     }
 
     public interface ISelectProxy<TModel> : IProxyBase<TModel>, ISelectProxy
         where TModel : class, IModel, new()
     {
         new IOrderFieldQualifier<TModel> OrderFieldQualifier { get; }
-        new ISelectQueryGroupBuilder<TModel> SelectQueryGroupBuilder { get; }
+
         new IFieldQualifier<TModel> SelectedFieldQualifier { get; }
+
+        new ISelectQueryGroupBuilder<TModel> SelectQueryGroupBuilder { get; }
     }
 }

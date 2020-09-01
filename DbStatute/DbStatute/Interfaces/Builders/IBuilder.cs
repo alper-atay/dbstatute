@@ -5,6 +5,7 @@ namespace DbStatute.Interfaces.Builders
     public interface IBuilder
     {
         object Built { get; }
+
         IReadOnlyLogbook ReadOnlyLogs { get; }
     }
 

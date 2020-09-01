@@ -6,14 +6,16 @@ namespace DbStatute.Interfaces.Proxies
 {
     public interface IInsertProxy : IProxyBase
     {
-        IModelBuilder ModelBuilder { get; }
         IFieldQualifier InsertedFieldQualifier { get; }
+
+        IModelBuilder ModelBuilder { get; }
     }
 
     public interface IInsertProxy<TModel> : IProxyBase<TModel>, IInsertProxy
         where TModel : class, IModel, new()
     {
-        new IModelBuilder<TModel> ModelBuilder { get; }
         new IFieldQualifier<TModel> InsertedFieldQualifier { get; }
+
+        new IModelBuilder<TModel> ModelBuilder { get; }
     }
 }

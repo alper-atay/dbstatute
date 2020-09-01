@@ -18,6 +18,7 @@ namespace DbStatute.Querying
         }
 
         public IFieldQualifier FieldQualifier { get; }
+
         public IModelBuilder ModelBuilder { get; }
     }
 
@@ -37,8 +38,11 @@ namespace DbStatute.Querying
         }
 
         public IFieldQualifier<TModel> FieldQualifier { get; }
+
         IFieldQualifier IUpdateProxy.FieldQualifier => FieldQualifier;
+
         public IModelBuilder<TModel> ModelBuilder { get; }
+
         IModelBuilder IUpdateProxy.ModelBuilder => ModelBuilder;
     }
 }

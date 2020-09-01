@@ -14,7 +14,9 @@ namespace DbStatute.Fundamentals.Multiples
         private readonly List<TModel> _deletedModels = new List<TModel>();
 
         public override int DeletedCount => _deletedModels.Count;
+
         public IEnumerable<TModel> DeletedModels => DeletedCount > 0 ? _deletedModels : null;
+
         IEnumerable<object> IMultipleDeleteBase.DeletedModels => DeletedModels;
 
         public async IAsyncEnumerable<TModel> DeleteAsSinglyAsync(IDbConnection dbConnection, bool allowNullReturnIfDeleted = false)

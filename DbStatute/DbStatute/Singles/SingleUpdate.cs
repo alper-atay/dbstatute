@@ -11,6 +11,7 @@ namespace DbStatute.Singles
         where TModel : class, IModel, new()
     {
         public TModel ReadyModel { get; }
+
         object IReadyModel.ReadyModel => ReadyModel;
 
         protected override Task<TModel> UpdateOperationAsync(IDbConnection dbConnection)

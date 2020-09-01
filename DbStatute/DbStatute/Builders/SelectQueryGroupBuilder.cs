@@ -12,13 +12,21 @@ namespace DbStatute.Builders
         where TModel : class, IModel, new()
     {
         public Conjunction Conjunction { get; set; } = Conjunction.And;
+
         public IFieldQualifier<TModel> FieldQualifier { get; }
+
         IFieldQualifier IQueryGroupBuilder.FieldQualifier => FieldQualifier;
+
         public IOperationFieldQualifier<TModel> OperationFieldQualifier { get; }
+
         IOperationFieldQualifier ISelectQueryGroupBuilder.OperationFieldQualifier => OperationFieldQualifier;
+
         public IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
+
         IPredicateFieldQualifier IQueryGroupBuilder.PredicateFieldQualifier => PredicateFieldQualifier;
+
         public IValueFieldQualifier<TModel> ValueFieldQualifier { get; }
+
         IValueFieldQualifier IQueryGroupBuilder.ValueFieldQualifier => ValueFieldQualifier;
 
         protected override bool BuildOperation(out QueryGroup built)

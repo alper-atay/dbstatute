@@ -16,10 +16,15 @@ namespace DbStatute.Builders
         where TModel : class, IModel, new()
     {
         public IFieldQualifier<TModel> FieldQualifier { get; }
+
         IFieldQualifier IModelBuilder.FieldQualifier => FieldQualifier;
+
         public IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
+
         IPredicateFieldQualifier IModelBuilder.PredicateFieldQualifier => PredicateFieldQualifier;
+
         public IValueFieldQualifier<TModel> ValueFieldQualifier { get; }
+
         IValueFieldQualifier IModelBuilder.ValueFieldQualifier => ValueFieldQualifier;
 
         /// <summary>

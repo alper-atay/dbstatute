@@ -12,7 +12,9 @@ namespace DbStatute.Fundamentals.Singles
         private TModel _insertedModel;
 
         public override int InsertedCount => InsertedModel is null ? 0 : 1;
+
         public TModel InsertedModel => _insertedModel;
+
         object ISingleInsertBase.InsertedModel => InsertedModel;
 
         public async Task<TModel> InsertAsync(IDbConnection dbConnection)

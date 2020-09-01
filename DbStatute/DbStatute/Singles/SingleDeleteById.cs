@@ -26,7 +26,6 @@ namespace DbStatute.Singles
             if (deleteModel is null)
             {
                 await dbConnection.DeleteAsync<TModel>(Id, Hints, CommandTimeout, Transaction, Trace);
-
             }
             else
             {

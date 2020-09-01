@@ -16,6 +16,7 @@ namespace DbStatute.Querying
         }
 
         public IFieldQualifier MergedFieldQualifier { get; }
+
         public IModelBuilder ModelBuilder { get; }
     }
 
@@ -33,8 +34,11 @@ namespace DbStatute.Querying
         }
 
         public IFieldQualifier<TModel> MergedFieldQualifier { get; }
+
         IFieldQualifier IMergeProxy.MergedFieldQualifier => MergedFieldQualifier;
+
         public IModelBuilder<TModel> ModelBuilder { get; }
+
         IModelBuilder IMergeProxy.ModelBuilder => ModelBuilder;
     }
 }

@@ -6,7 +6,6 @@ namespace DbStatute.Extensions
     {
         public static void BuildByFields(this IFieldOperationPairs fieldOperationPairs, IFields fields)
         {
-
         }
     }
 }

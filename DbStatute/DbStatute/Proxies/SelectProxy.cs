@@ -18,7 +18,9 @@ namespace DbStatute.Querying
         }
 
         public IOrderFieldQualifier OrderFieldQualifier { get; }
+
         public IFieldQualifier SelectedFieldQualifier { get; }
+
         public ISelectQueryGroupBuilder SelectQueryGroupBuilder { get; }
     }
 
@@ -40,10 +42,15 @@ namespace DbStatute.Querying
         }
 
         public IOrderFieldQualifier<TModel> OrderFieldQualifier { get; }
+
         IOrderFieldQualifier ISelectProxy.OrderFieldQualifier => OrderFieldQualifier;
+
         public IFieldQualifier<TModel> SelectedFieldQualifier { get; }
+
         IFieldQualifier ISelectProxy.SelectedFieldQualifier => SelectedFieldQualifier;
+
         public ISelectQueryGroupBuilder<TModel> SelectQueryGroupBuilder { get; }
+
         ISelectQueryGroupBuilder ISelectProxy.SelectQueryGroupBuilder => SelectQueryGroupBuilder;
     }
 }

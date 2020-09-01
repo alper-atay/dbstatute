@@ -25,8 +25,10 @@ namespace DbStatute.Qualifiers
             FieldHashSet = new HashSet<Field>(fields);
         }
 
-        public bool HasField => FieldHashSet.Count > 0;
         public IEnumerable<Field> Fields => FieldHashSet;
+
+        public bool HasField => FieldHashSet.Count > 0;
+
         protected HashSet<Field> FieldHashSet { get; }
 
         public IEnumerable<Field> GetAllByName(string name)

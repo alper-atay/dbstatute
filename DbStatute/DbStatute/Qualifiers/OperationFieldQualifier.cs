@@ -12,6 +12,7 @@ namespace DbStatute.Qualifiers
     public class OperationFieldQualifier : IOperationFieldQualifier
     {
         public IReadOnlyDictionary<Field, Operation> FieldOperationPairs => FieldOperationDictionary;
+
         protected Dictionary<Field, Operation> FieldOperationDictionary { get; } = new Dictionary<Field, Operation>();
 
         public IEnumerable<Field> GetAllByName(string name)

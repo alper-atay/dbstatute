@@ -7,6 +7,7 @@ namespace DbStatute.Interfaces.Fundamentals.Multiples
     public interface IMultipleInsertBase : IInsertBase
     {
         int BatchSize { get; set; }
+
         IEnumerable<object> InsertedModels { get; }
 
         IAsyncEnumerable<object> InsertAsSingleAsync(IDbConnection dbConnection);

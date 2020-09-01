@@ -12,7 +12,9 @@ namespace DbStatute.Fundamentals.Singles
         private TModel _deletedModel;
 
         public override int DeletedCount => DeletedModel is null ? 0 : 1;
+
         public TModel DeletedModel => _deletedModel;
+
         object ISingleDeleteBase.DeletedModel => DeletedModel;
 
         public async Task<TModel> DeleteAsync(IDbConnection dbConnection)

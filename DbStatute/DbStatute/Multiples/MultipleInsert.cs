@@ -18,6 +18,7 @@ namespace DbStatute.Multiples
         }
 
         public IEnumerable<TModel> ReadyModels { get; }
+
         IEnumerable<object> IReadyModels.ReadyModels => ReadyModels;
 
         protected override async IAsyncEnumerable<TModel> InsertAsSingleOperationAsync(IDbConnection dbConnection)

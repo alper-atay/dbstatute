@@ -5,7 +5,6 @@ namespace DbStatute.Interfaces.Qualifiers
 {
     public interface IOrderFieldQualifier : ISettableOrderField, IOrderFields
     {
-
     }
 
     public interface IOrderFieldQualifier<TModel> : ISettableOrderField<TModel>, IOrderFieldQualifier

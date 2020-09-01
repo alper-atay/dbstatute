@@ -12,7 +12,9 @@ namespace DbStatute.Fundamentals.Singles
         private TModel _updatedModel;
 
         public override int UpdatedCount => UpdatedModel is null ? 0 : 1;
+
         public TModel UpdatedModel => _updatedModel;
+
         object ISingleUpdateBase.UpdatedModel => UpdatedModel;
 
         public async Task<TModel> UpdateAsync(IDbConnection dbConnection)

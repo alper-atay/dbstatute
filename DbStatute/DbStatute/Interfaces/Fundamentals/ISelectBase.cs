@@ -3,8 +3,10 @@
     public interface ISelectBase : IStatuteBase
     {
         public ICacheable Cacheable { get; set; }
-        int SelectedCount { get; }
+
         int? MaxSelectCount { get; }
+
+        int SelectedCount { get; }
     }
 
     public interface ISelectBase<TModel> : IStatuteBase<TModel>, ISelectBase

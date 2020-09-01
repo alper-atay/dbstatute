@@ -26,10 +26,15 @@ namespace DbStatute.Builders
         }
 
         public IFieldQualifier<TModel> FieldQualifier { get; }
+
         IFieldQualifier IQueryGroupBuilder.FieldQualifier => FieldQualifier;
+
         public IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
+
         IPredicateFieldQualifier IQueryGroupBuilder.PredicateFieldQualifier => PredicateFieldQualifier;
+
         public IValueFieldQualifier<TModel> ValueFieldQualifier { get; }
+
         IValueFieldQualifier IQueryGroupBuilder.ValueFieldQualifier => ValueFieldQualifier;
 
         protected override bool BuildOperation(out QueryGroup built)

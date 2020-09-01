@@ -5,7 +5,6 @@ namespace DbStatute.Interfaces.Qualifiers
 {
     public interface IFieldQualifier : ISettableField, IFields
     {
-
     }
 
     public interface IFieldQualifier<TModel> : ISettableField<TModel>, IFieldQualifier

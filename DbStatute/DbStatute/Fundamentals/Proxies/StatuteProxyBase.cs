@@ -8,6 +8,7 @@ namespace DbStatute.Fundamentals.Proxies
     public abstract class StatuteProxyBase : IProxyBase
     {
         public IReadOnlyLogbook ReadOnlyLogs => Logs;
+
         protected ILogbook Logs { get; } = Logger.NewLogbook();
     }
 

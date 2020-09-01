@@ -23,6 +23,7 @@ namespace DbStatute.Builders
         }
 
         public IOrderFieldQualifier<TModel> OrderFieldQualifier { get; }
+
         IOrderFieldQualifier IOrderFieldBuilder.OrderFieldQualifier => OrderFieldQualifier;
 
         protected override bool BuildOperation(out IEnumerable<OrderField> built)

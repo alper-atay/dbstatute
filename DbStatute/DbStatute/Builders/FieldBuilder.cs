@@ -23,6 +23,7 @@ namespace DbStatute.Builders
         }
 
         public IFieldQualifier<TModel> FieldQualifier { get; }
+
         IFieldQualifier IFieldBuilder.FieldQualifier => FieldQualifier;
 
         protected override bool BuildOperation(out IEnumerable<Field> built)

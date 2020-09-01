@@ -14,8 +14,11 @@ namespace DbStatute.Fundamentals.Multiples
         private readonly List<TModel> _mergedModels = new List<TModel>();
 
         public int BatchSize { get; set; } = 10;
+
         public override int MergedCount => _mergedModels.Count;
+
         public IEnumerable<TModel> MergedModels => MergedCount > 0 ? _mergedModels : null;
+
         IEnumerable<object> IMultipleMergeBase.MergedModels => MergedModels;
 
         public async IAsyncEnumerable<TModel> MergeAsSinglyAsync(IDbConnection dbConnection)

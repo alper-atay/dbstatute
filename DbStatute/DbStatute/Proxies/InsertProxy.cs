@@ -24,6 +24,7 @@ namespace DbStatute.Querying
         }
 
         public IFieldQualifier InsertedFieldQualifier { get; }
+
         public IModelBuilder ModelBuilder { get; }
     }
 
@@ -49,8 +50,11 @@ namespace DbStatute.Querying
         }
 
         public IFieldQualifier<TModel> InsertedFieldQualifier { get; }
+
         IFieldQualifier IInsertProxy.InsertedFieldQualifier => InsertedFieldQualifier;
+
         public IModelBuilder<TModel> ModelBuilder { get; }
+
         IModelBuilder IInsertProxy.ModelBuilder => ModelBuilder;
     }
 }

@@ -12,7 +12,9 @@ namespace DbStatute.Fundamentals.Singles
         private TModel _mergedModel;
 
         public override int MergedCount => MergedModel is null ? 0 : 1;
+
         public TModel MergedModel => _mergedModel;
+
         object ISingleMergeBase.MergedModel => MergedModel;
 
         public async Task<TModel> MergeAsync(IDbConnection dbConnection)

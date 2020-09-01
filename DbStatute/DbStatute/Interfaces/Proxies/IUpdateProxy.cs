@@ -7,6 +7,7 @@ namespace DbStatute.Interfaces.Proxies
     public interface IUpdateProxy : IProxyBase
     {
         IFieldQualifier FieldQualifier { get; }
+
         IModelBuilder ModelBuilder { get; }
     }
 
@@ -14,6 +15,7 @@ namespace DbStatute.Interfaces.Proxies
         where TModel : class, IModel, new()
     {
         new IFieldQualifier<TModel> FieldQualifier { get; }
+
         new IModelBuilder<TModel> ModelBuilder { get; }
     }
 }

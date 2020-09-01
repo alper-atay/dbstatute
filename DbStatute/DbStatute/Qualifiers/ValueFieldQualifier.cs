@@ -11,7 +11,9 @@ namespace DbStatute.Qualifiers
     public class ValueFieldQualifier : IValueFieldQualifier
     {
         public IFieldQualifier FieldQualifier { get; }
+
         public IReadOnlyDictionary<Field, object> FieldValuePairs => FieldValueDictionary;
+
         protected Dictionary<Field, object> FieldValueDictionary { get; } = new Dictionary<Field, object>();
 
         public IEnumerable<Field> GetAllByName(string name)

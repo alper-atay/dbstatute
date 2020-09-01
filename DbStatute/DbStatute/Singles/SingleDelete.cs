@@ -15,6 +15,7 @@ namespace DbStatute.Singles
         }
 
         public TModel ReadyModel { get; }
+
         object IReadyModel.ReadyModel => ReadyModel;
 
         protected override async Task<TModel> DeleteOperationAsync(IDbConnection dbConnection)

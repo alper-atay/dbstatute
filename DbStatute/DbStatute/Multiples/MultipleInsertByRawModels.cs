@@ -34,10 +34,15 @@ namespace DbStatute.Multiples
         }
 
         public IFieldQualifier<TModel> FieldQualifier { get; }
+
         IFieldQualifier IMultipleInsertByRawModels.FieldQualifier => FieldQualifier;
+
         public IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
+
         IPredicateFieldQualifier IMultipleInsertByRawModels.PredicateFieldQualifier => PredicateFieldQualifier;
+
         public IEnumerable<TModel> RawModels { get; }
+
         IEnumerable<object> IRawModels.RawModels => RawModels;
 
         protected override async IAsyncEnumerable<TModel> InsertAsSingleOperationAsync(IDbConnection dbConnection)

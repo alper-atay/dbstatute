@@ -8,7 +8,6 @@ namespace DbStatute.UnitTests
         [TestMethod]
         public void TestForFailedEvent()
         {
-
         }
     }
 }

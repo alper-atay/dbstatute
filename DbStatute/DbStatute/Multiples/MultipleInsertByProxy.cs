@@ -13,12 +13,12 @@ namespace DbStatute.Multiples
         where TModel : class, IModel, new()
         where TInsertProxy : IInsertProxy<TModel>
     {
-        public TInsertProxy InsertProxy { get; }
-
         public MultipleInsertByProxy(TInsertProxy insertProxy)
         {
             InsertProxy = insertProxy ?? throw new ArgumentNullException(nameof(insertProxy));
         }
+
+        public TInsertProxy InsertProxy { get; }
 
         protected override IAsyncEnumerable<TModel> InsertAsSingleOperationAsync(IDbConnection dbConnection)
         {

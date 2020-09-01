@@ -6,7 +6,9 @@ namespace DbStatute.Builders
     public abstract class Builder : IBuilder
     {
         public abstract object Built { get; }
+
         public IReadOnlyLogbook ReadOnlyLogs => Logs;
+
         protected ILogbook Logs { get; } = Logger.NewLogbook();
     }
 
@@ -15,8 +17,11 @@ namespace DbStatute.Builders
         private T _built;
 
         public T Built => _built;
+
         object IBuilder.Built => Built;
+
         public IReadOnlyLogbook ReadOnlyLogs => Logs;
+
         protected ILogbook Logs { get; } = Logger.NewLogbook();
 
         public bool Build(out T built)

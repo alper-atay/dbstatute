@@ -13,6 +13,7 @@ namespace DbStatute.Fundamentals
         private StatuteResult _statuteResult = StatuteResult.Unknown;
 
         public IReadOnlyLogbook ReadOnlyLogs => Logs;
+
         protected ILogbook Logs { get; } = Logger.NewLogbook();
 
         #region IStatute
@@ -22,13 +23,17 @@ namespace DbStatute.Fundamentals
         public event Action Succeed;
 
         public ICacheable Cacheable { get; set; }
+
         public int? CommandTimeout { get; set; } = null;
+
         public string Hints { get; set; } = null;
+
         public IStatementBuilder StatementBuilder { get; set; } = null;
 
         public StatuteResult StatuteResult
         {
             get => _statuteResult;
+
             set
             {
                 _statuteResult = value;
@@ -54,6 +59,7 @@ namespace DbStatute.Fundamentals
         }
 
         public ITrace Trace { get; set; } = null;
+
         public IDbTransaction Transaction { get; set; } = null;
 
         #endregion IStatute

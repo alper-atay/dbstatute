@@ -2,7 +2,6 @@
 
 namespace DbStatute.Interfaces
 {
-
     public interface IIds
     {
         IEnumerable<object> Ids { get; }

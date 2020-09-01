@@ -15,8 +15,11 @@ namespace DbStatute.Fundamentals.Multiples
         private int? _maxSelectCount = null;
 
         public override int? MaxSelectCount => _maxSelectCount;
+
         public override int SelectedCount => _selectedModels.Count;
+
         public IEnumerable<TModel> SelectedModels => SelectedCount > 0 ? _selectedModels : null;
+
         IEnumerable<object> IMultipleSelectBase.SelectedModels => SelectedModels;
 
         public async IAsyncEnumerable<TModel> SelectAsSinglyAsync(IDbConnection dbConnection)

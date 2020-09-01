@@ -16,8 +16,11 @@ namespace DbStatute.Singles
         where TPredicateFieldQualifier : IPredicateFieldQualifier<TModel>
     {
         public TFieldQualifier FieldQualifier { get; }
+
         public TPredicateFieldQualifier PredicateFieldQualifier { get; }
+
         public TModel RawModel { get; }
+
         object IRawModel.RawModel => RawModel;
 
         protected override async Task<TModel> MergeOperationAsync(IDbConnection dbConnection)

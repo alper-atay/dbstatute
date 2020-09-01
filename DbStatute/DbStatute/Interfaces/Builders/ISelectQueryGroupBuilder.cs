@@ -6,6 +6,7 @@ namespace DbStatute.Interfaces.Builders
     public interface ISelectQueryGroupBuilder : IQueryGroupBuilder
     {
         Conjunction Conjunction { get; set; }
+
         IOperationFieldQualifier OperationFieldQualifier { get; }
     }
 

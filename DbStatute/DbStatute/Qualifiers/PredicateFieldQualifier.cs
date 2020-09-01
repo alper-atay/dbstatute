@@ -12,6 +12,7 @@ namespace DbStatute.Qualifiers
     public class PredicateFieldQualifier : IPredicateFieldQualifier
     {
         public IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> FieldPredicatePairs => FieldPredicateDictionary;
+
         protected Dictionary<Field, ReadOnlyLogbookPredicate<object>> FieldPredicateDictionary { get; } = new Dictionary<Field, ReadOnlyLogbookPredicate<object>>();
 
         public IEnumerable<Field> GetAllByName(string name)

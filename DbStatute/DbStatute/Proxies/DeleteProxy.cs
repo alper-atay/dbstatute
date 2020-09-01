@@ -29,6 +29,7 @@ namespace DbStatute.Proxies
         }
 
         public ISelectProxy<TModel> SelectProxy { get; }
+
         ISelectProxy IDeleteProxy.SelectProxy => SelectProxy;
     }
 }

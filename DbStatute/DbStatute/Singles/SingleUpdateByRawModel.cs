@@ -30,8 +30,11 @@ namespace DbStatute.Singles
         }
 
         public TFieldQualifier FieldQualifier { get; }
+
         public TPredicateFieldQualifier PredicateFieldQualifier { get; }
+
         public TModel RawModel { get; }
+
         object IRawModel.RawModel => RawModel;
 
         protected override async Task<TModel> UpdateOperationAsync(IDbConnection dbConnection)

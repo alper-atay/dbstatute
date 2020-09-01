@@ -15,8 +15,11 @@ namespace DbStatute.Fundamentals.Multiples
         private readonly List<TModel> _updatedModels = new List<TModel>();
 
         public int BatchSize { get; set; } = 10;
+
         public override int UpdatedCount => _updatedModels.Count;
+
         public IEnumerable<TModel> UpdatedModels => _updatedModels.Count > 0 ? _updatedModels : null;
+
         IEnumerable<object> IMultipleUpdateBase.UpdatedModels => UpdatedModels;
 
         public async IAsyncEnumerable<TModel> UpdateAsSinglyAsync(IDbConnection dbConnection)

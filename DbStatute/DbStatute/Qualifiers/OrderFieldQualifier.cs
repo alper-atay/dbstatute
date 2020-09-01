@@ -12,7 +12,9 @@ namespace DbStatute.Qualifiers
     public class OrderFieldQualifier : IOrderFieldQualifier
     {
         public bool HasOrderField => OrderFieldHashSet.Count > 0;
+
         public IEnumerable<OrderField> OrderFields => OrderFieldHashSet;
+
         protected HashSet<OrderField> OrderFieldHashSet { get; } = new HashSet<OrderField>();
 
         public IEnumerable<OrderField> GetAllByField(Field field)

@@ -11,11 +11,13 @@ namespace DbStatute.Fundamentals.Singles
     {
         private TModel _selectedModel;
 
-        public override int SelectedCount => SelectedModel is null ? 0 : 1;
-        public TModel SelectedModel => _selectedModel;
-        object ISingleSelectBase.SelectedModel => SelectedModel;
-
         public override int? MaxSelectCount => new int?(1);
+
+        public override int SelectedCount => SelectedModel is null ? 0 : 1;
+
+        public TModel SelectedModel => _selectedModel;
+
+        object ISingleSelectBase.SelectedModel => SelectedModel;
 
         public async Task<TModel> SelectAsync(IDbConnection dbConnection)
         {
