@@ -1,13 +1,11 @@
-﻿using DbStatute.Interfaces.Utilities;
-using RepoDb;
-using System.Collections.Generic;
+﻿using DbStatute.Interfaces.Fundamentals.Enumerables;
+using DbStatute.Interfaces.Utilities;
 
 namespace DbStatute.Interfaces.Qualifiers
 {
-    public interface IOrderFieldQualifier : ISettableOrderField
+    public interface IOrderFieldQualifier : ISettableOrderField, IOrderFields
     {
-        bool HasOrderField { get; }
-        IEnumerable<OrderField> ReadOnlyOrderFields { get; }
+
     }
 
     public interface IOrderFieldQualifier<TModel> : ISettableOrderField<TModel>, IOrderFieldQualifier

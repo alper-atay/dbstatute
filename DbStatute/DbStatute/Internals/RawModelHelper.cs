@@ -51,7 +51,7 @@ namespace DbStatute.Internals
 
             if (logs.Safely)
             {
-                IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> fieldPredicateMap = predicateFieldQualifier.ReadOnlyFieldPredicateMap;
+                IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> fieldPredicateMap = predicateFieldQualifier.FieldPredicatePairs;
 
                 Type modelType = typeof(TModel);
 

@@ -37,8 +37,8 @@ namespace DbStatute.Builders
             {
                 Logs.AddRange(fieldBuilder.ReadOnlyLogs);
 
-                IReadOnlyDictionary<Field, object> valueMap = ValueFieldQualifier.ReadOnlyFieldValueMap;
-                IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> predicateMap = PredicateFieldQualifier.ReadOnlyFieldPredicateMap;
+                IReadOnlyDictionary<Field, object> valueMap = ValueFieldQualifier.FieldValuePairs;
+                IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> predicateMap = PredicateFieldQualifier.FieldPredicatePairs;
 
                 ICollection<QueryField> queryFields = new Collection<QueryField>();
 

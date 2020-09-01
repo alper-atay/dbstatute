@@ -1,13 +1,10 @@
-﻿using DbStatute.Interfaces.Utilities;
-using RepoDb;
-using System.Collections.Generic;
+﻿using DbStatute.Interfaces.Fundamentals.Enumerables;
+using DbStatute.Interfaces.Utilities;
 
 namespace DbStatute.Interfaces.Qualifiers
 {
-    public interface IQueryFieldQualifier : ISettableQueryField
+    public interface IQueryFieldQualifier : ISettableQueryField, IQueryFields
     {
-        bool HasQueryField { get; }
-        IEnumerable<QueryField> ReadOnlyQueryFields { get; }
     }
 
     public interface IQueryFieldQualifier<TModel> : ISettableQueryField<TModel>

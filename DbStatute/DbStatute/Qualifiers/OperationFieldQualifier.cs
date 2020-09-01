@@ -11,19 +11,19 @@ namespace DbStatute.Qualifiers
 {
     public class OperationFieldQualifier : IOperationFieldQualifier
     {
-        public IReadOnlyDictionary<Field, Operation> ReadOnlyFieldOperationMap => FieldOperationMap;
-        protected Dictionary<Field, Operation> FieldOperationMap { get; } = new Dictionary<Field, Operation>();
+        public IReadOnlyDictionary<Field, Operation> FieldOperationPairs => FieldOperationDictionary;
+        protected Dictionary<Field, Operation> FieldOperationDictionary { get; } = new Dictionary<Field, Operation>();
 
         public IEnumerable<Field> GetAllByName(string name)
         {
-            Dictionary<Field, Operation>.KeyCollection fields = FieldOperationMap.Keys;
+            Dictionary<Field, Operation>.KeyCollection fields = FieldOperationDictionary.Keys;
 
             return fields.Where(x => x.Name.Equals(name));
         }
 
         public IEnumerable<Field> GetAllByType(Type type)
         {
-            Dictionary<Field, Operation>.KeyCollection fields = FieldOperationMap.Keys;
+            Dictionary<Field, Operation>.KeyCollection fields = FieldOperationDictionary.Keys;
 
             return fields.Where(x => x.Type.Equals(type));
         }
@@ -37,27 +37,27 @@ namespace DbStatute.Qualifiers
 
         public bool IsSetted(Field field)
         {
-            Dictionary<Field, Operation>.KeyCollection fields = FieldOperationMap.Keys;
+            Dictionary<Field, Operation>.KeyCollection fields = FieldOperationDictionary.Keys;
 
             return fields.Contains(field);
         }
 
         public int IsSetted(string name)
         {
-            Dictionary<Field, Operation>.KeyCollection fields = FieldOperationMap.Keys;
+            Dictionary<Field, Operation>.KeyCollection fields = FieldOperationDictionary.Keys;
 
             return fields.Count(x => x.Name.Equals(name));
         }
 
         public bool Set(Field field, Operation value, bool overrideEnabled = false)
         {
-            if (!FieldOperationMap.TryAdd(field, value))
+            if (!FieldOperationDictionary.TryAdd(field, value))
             {
                 if (overrideEnabled)
                 {
-                    FieldOperationMap.Remove(field);
+                    FieldOperationDictionary.Remove(field);
 
-                    return FieldOperationMap.TryAdd(field, value);
+                    return FieldOperationDictionary.TryAdd(field, value);
                 }
                 else
                 {
@@ -72,13 +72,13 @@ namespace DbStatute.Qualifiers
         {
             const Operation value = Operation.Equal;
 
-            if (!FieldOperationMap.TryAdd(field, value))
+            if (!FieldOperationDictionary.TryAdd(field, value))
             {
                 if (overrideEnabled)
                 {
-                    FieldOperationMap.Remove(field);
+                    FieldOperationDictionary.Remove(field);
 
-                    return FieldOperationMap.TryAdd(field, value);
+                    return FieldOperationDictionary.TryAdd(field, value);
                 }
                 else
                 {
@@ -91,7 +91,7 @@ namespace DbStatute.Qualifiers
 
         public bool Unset(Field field)
         {
-            return FieldOperationMap.Remove(field);
+            return FieldOperationDictionary.Remove(field);
         }
     }
 

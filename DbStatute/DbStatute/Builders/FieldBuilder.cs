@@ -1,11 +1,11 @@
-﻿using DbStatute.Interfaces;
+﻿using DbStatute.Extensions;
+using DbStatute.Interfaces;
 using DbStatute.Interfaces.Builders;
 using DbStatute.Interfaces.Qualifiers;
 using DbStatute.Qualifiers;
 using RepoDb;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DbStatute.Builders
 {
@@ -33,15 +33,14 @@ namespace DbStatute.Builders
 
             if (fieldQualifier.HasField)
             {
-                HashSet<Field> modelFields = Field.Parse<TModel>().ToHashSet();
-                if (!modelFields.IsSupersetOf(fieldQualifier.ReadOnlyFields))
+                if (!fieldQualifier.IsSubsetOfModel<TModel>())
                 {
-                    throw new InvalidOperationException("Model fields must be superset of qualifier fields");
+                    throw new InvalidOperationException("Qualifier fields must be subset of model fields");
                 }
 
                 HashSet<Field> builtFields = new HashSet<Field>();
 
-                foreach (Field field in fieldQualifier.ReadOnlyFields)
+                foreach (Field field in fieldQualifier.Fields)
                 {
                     builtFields.Add(field);
                 }

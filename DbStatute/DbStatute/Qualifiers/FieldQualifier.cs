@@ -12,7 +12,7 @@ namespace DbStatute.Qualifiers
     {
         public FieldQualifier()
         {
-            Fields = new HashSet<Field>();
+            FieldHashSet = new HashSet<Field>();
         }
 
         public FieldQualifier(IEnumerable<Field> fields)
@@ -22,21 +22,21 @@ namespace DbStatute.Qualifiers
                 throw new ArgumentNullException(nameof(fields));
             }
 
-            Fields = new HashSet<Field>(fields);
+            FieldHashSet = new HashSet<Field>(fields);
         }
 
-        public bool HasField => Fields.Count > 0;
-        public IEnumerable<Field> ReadOnlyFields => Fields;
-        protected HashSet<Field> Fields { get; }
+        public bool HasField => FieldHashSet.Count > 0;
+        public IEnumerable<Field> Fields => FieldHashSet;
+        protected HashSet<Field> FieldHashSet { get; }
 
         public IEnumerable<Field> GetAllByName(string name)
         {
-            return Fields.Where(x => x.Name == name);
+            return FieldHashSet.Where(x => x.Name == name);
         }
 
         public IEnumerable<Field> GetAllByType(Type type)
         {
-            return Fields.Where(x => x.Type == type);
+            return FieldHashSet.Where(x => x.Type == type);
         }
 
         public IEnumerable<Field> GetAllByType<T>()
@@ -48,22 +48,22 @@ namespace DbStatute.Qualifiers
 
         public bool IsSetted(Field field)
         {
-            return Fields.Contains(field);
+            return FieldHashSet.Contains(field);
         }
 
         public int IsSetted(string name)
         {
-            return Fields.Count(x => x.Name == name);
+            return FieldHashSet.Count(x => x.Name == name);
         }
 
         public bool Set(Field field, bool overrideEnabled = false)
         {
-            if (!Fields.Add(field))
+            if (!FieldHashSet.Add(field))
             {
                 if (overrideEnabled)
                 {
-                    Fields.Remove(field);
-                    return Fields.Add(field);
+                    FieldHashSet.Remove(field);
+                    return FieldHashSet.Add(field);
                 }
                 else
                 {
@@ -78,7 +78,7 @@ namespace DbStatute.Qualifiers
 
         public bool Unset(Field field)
         {
-            return Fields.Remove(field);
+            return FieldHashSet.Remove(field);
         }
     }
 

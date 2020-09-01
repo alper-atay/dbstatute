@@ -11,19 +11,19 @@ namespace DbStatute.Qualifiers
     public class ValueFieldQualifier : IValueFieldQualifier
     {
         public IFieldQualifier FieldQualifier { get; }
-        public IReadOnlyDictionary<Field, object> ReadOnlyFieldValueMap => FieldValueMap;
-        protected Dictionary<Field, object> FieldValueMap { get; } = new Dictionary<Field, object>();
+        public IReadOnlyDictionary<Field, object> FieldValuePairs => FieldValueDictionary;
+        protected Dictionary<Field, object> FieldValueDictionary { get; } = new Dictionary<Field, object>();
 
         public IEnumerable<Field> GetAllByName(string name)
         {
-            Dictionary<Field, object>.KeyCollection fields = FieldValueMap.Keys;
+            Dictionary<Field, object>.KeyCollection fields = FieldValueDictionary.Keys;
 
             return fields.Where(x => x.Name.Equals(name));
         }
 
         public IEnumerable<Field> GetAllByType(Type type)
         {
-            Dictionary<Field, object>.KeyCollection fields = FieldValueMap.Keys;
+            Dictionary<Field, object>.KeyCollection fields = FieldValueDictionary.Keys;
 
             return fields.Where(x => x.Type.Equals(type));
         }
@@ -37,25 +37,25 @@ namespace DbStatute.Qualifiers
 
         public bool IsSetted(Field field)
         {
-            return FieldValueMap.ContainsKey(field);
+            return FieldValueDictionary.ContainsKey(field);
         }
 
         public int IsSetted(string name)
         {
-            Dictionary<Field, object>.KeyCollection fields = FieldValueMap.Keys;
+            Dictionary<Field, object>.KeyCollection fields = FieldValueDictionary.Keys;
 
             return fields.Count(x => x.Name.Equals(name));
         }
 
         public bool Set(Field field, object value, bool overrideEnabled = false)
         {
-            if (!FieldValueMap.TryAdd(field, value))
+            if (!FieldValueDictionary.TryAdd(field, value))
             {
                 if (overrideEnabled)
                 {
-                    FieldValueMap.Remove(field);
+                    FieldValueDictionary.Remove(field);
 
-                    return FieldValueMap.TryAdd(field, value);
+                    return FieldValueDictionary.TryAdd(field, value);
                 }
                 else
                 {
@@ -68,13 +68,13 @@ namespace DbStatute.Qualifiers
 
         public bool Set(Field field, bool overrideEnabled = false)
         {
-            if (!FieldValueMap.TryAdd(field, default))
+            if (!FieldValueDictionary.TryAdd(field, default))
             {
                 if (overrideEnabled)
                 {
-                    FieldValueMap.Remove(field);
+                    FieldValueDictionary.Remove(field);
 
-                    return FieldValueMap.TryAdd(field, default);
+                    return FieldValueDictionary.TryAdd(field, default);
                 }
                 else
                 {
@@ -87,7 +87,7 @@ namespace DbStatute.Qualifiers
 
         public bool Unset(Field field)
         {
-            return FieldValueMap.Remove(field);
+            return FieldValueDictionary.Remove(field);
         }
     }
 
@@ -152,7 +152,7 @@ namespace DbStatute.Qualifiers
 
             foreach (Field field in fields)
             {
-                if (FieldValueMap.Remove(field))
+                if (FieldValueDictionary.Remove(field))
                 {
                     unsettedCount += 1;
                 }

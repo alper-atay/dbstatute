@@ -15,7 +15,7 @@ namespace DbStatute.Qualifiers
 
         public bool HasQueryField => _queryFields.Count > 0;
 
-        public IEnumerable<QueryField> ReadOnlyQueryFields => HasQueryField ? _queryFields : null;
+        public IEnumerable<QueryField> QueryFields => HasQueryField ? _queryFields : null;
 
         public int IsSetted(Field field)
         {

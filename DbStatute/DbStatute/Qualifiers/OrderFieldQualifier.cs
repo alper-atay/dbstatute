@@ -11,44 +11,44 @@ namespace DbStatute.Qualifiers
 {
     public class OrderFieldQualifier : IOrderFieldQualifier
     {
-        public bool HasOrderField => OrderFields.Count > 0;
-        public IEnumerable<OrderField> ReadOnlyOrderFields => OrderFields;
-        protected HashSet<OrderField> OrderFields { get; } = new HashSet<OrderField>();
+        public bool HasOrderField => OrderFieldHashSet.Count > 0;
+        public IEnumerable<OrderField> OrderFields => OrderFieldHashSet;
+        protected HashSet<OrderField> OrderFieldHashSet { get; } = new HashSet<OrderField>();
 
         public IEnumerable<OrderField> GetAllByField(Field field)
         {
-            return OrderFields.Where(x => x.Name.Equals(field.Name));
+            return OrderFieldHashSet.Where(x => x.Name.Equals(field.Name));
         }
 
         public IEnumerable<OrderField> GetAllByName(string name)
         {
-            return OrderFields.Where(x => x.Name.Equals(name));
+            return OrderFieldHashSet.Where(x => x.Name.Equals(name));
         }
 
         public IEnumerable<OrderField> GetAllByOrder(Order order)
         {
-            return OrderFields.Where(x => x.Order.Equals(order));
+            return OrderFieldHashSet.Where(x => x.Order.Equals(order));
         }
 
         public bool IsSetted(OrderField orderField)
         {
-            return OrderFields.Contains(orderField);
+            return OrderFieldHashSet.Contains(orderField);
         }
 
         public int IsSetted(Field field)
         {
-            return OrderFields.Count(x => x.Name.Equals(field.Name));
+            return OrderFieldHashSet.Count(x => x.Name.Equals(field.Name));
         }
 
         public bool Set(OrderField orderField, bool overrideEnabled = false)
         {
-            if (!OrderFields.Add(orderField))
+            if (!OrderFieldHashSet.Add(orderField))
             {
                 if (overrideEnabled)
                 {
-                    OrderFields.Remove(orderField);
+                    OrderFieldHashSet.Remove(orderField);
 
-                    return OrderFields.Add(orderField);
+                    return OrderFieldHashSet.Add(orderField);
                 }
                 else
                 {
@@ -70,7 +70,7 @@ namespace DbStatute.Qualifiers
                     Unset(field);
                     OrderField orderField = new OrderField(field.Name, order);
 
-                    return OrderFields.Add(orderField);
+                    return OrderFieldHashSet.Add(orderField);
                 }
             }
 
@@ -79,17 +79,17 @@ namespace DbStatute.Qualifiers
 
         public bool Unset(OrderField orderField)
         {
-            return OrderFields.Remove(orderField);
+            return OrderFieldHashSet.Remove(orderField);
         }
 
         public int Unset(Field field)
         {
-            return OrderFields.RemoveWhere(x => x.Name.Equals(field.Name));
+            return OrderFieldHashSet.RemoveWhere(x => x.Name.Equals(field.Name));
         }
 
         public int Unset(string name)
         {
-            return OrderFields.RemoveWhere(x => x.Name.Equals(name));
+            return OrderFieldHashSet.RemoveWhere(x => x.Name.Equals(name));
         }
     }
 

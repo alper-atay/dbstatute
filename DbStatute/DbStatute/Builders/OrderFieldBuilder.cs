@@ -35,7 +35,7 @@ namespace DbStatute.Builders
             {
                 HashSet<Field> modelFields = Field.Parse<TModel>().ToHashSet();
 
-                IEnumerable<OrderField> orderFields = OrderFieldQualifier.ReadOnlyOrderFields;
+                IEnumerable<OrderField> orderFields = OrderFieldQualifier.OrderFields;
                 string[] orderFieldNames = orderFields.Select(x => x.Name).ToArray();
                 IEnumerable<Field> fields = Field.From(orderFieldNames).ToHashSet();
 
@@ -44,7 +44,7 @@ namespace DbStatute.Builders
                     throw new InvalidOperationException("Model fields must be superset of qualifier fields");
                 }
 
-                built = OrderFieldQualifier.ReadOnlyOrderFields;
+                built = OrderFieldQualifier.OrderFields;
             }
 
             return !(built is null);

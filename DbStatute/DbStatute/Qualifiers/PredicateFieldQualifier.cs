@@ -11,19 +11,19 @@ namespace DbStatute.Qualifiers
 {
     public class PredicateFieldQualifier : IPredicateFieldQualifier
     {
-        public IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> ReadOnlyFieldPredicateMap => FieldPredicateMap;
-        protected Dictionary<Field, ReadOnlyLogbookPredicate<object>> FieldPredicateMap { get; } = new Dictionary<Field, ReadOnlyLogbookPredicate<object>>();
+        public IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> FieldPredicatePairs => FieldPredicateDictionary;
+        protected Dictionary<Field, ReadOnlyLogbookPredicate<object>> FieldPredicateDictionary { get; } = new Dictionary<Field, ReadOnlyLogbookPredicate<object>>();
 
         public IEnumerable<Field> GetAllByName(string name)
         {
-            Dictionary<Field, ReadOnlyLogbookPredicate<object>>.KeyCollection fields = FieldPredicateMap.Keys;
+            Dictionary<Field, ReadOnlyLogbookPredicate<object>>.KeyCollection fields = FieldPredicateDictionary.Keys;
 
             return fields.Where(x => x.Name.Equals(name));
         }
 
         public IEnumerable<Field> GetAllByType(Type type)
         {
-            Dictionary<Field, ReadOnlyLogbookPredicate<object>>.KeyCollection fields = FieldPredicateMap.Keys;
+            Dictionary<Field, ReadOnlyLogbookPredicate<object>>.KeyCollection fields = FieldPredicateDictionary.Keys;
 
             return fields.Where(x => x.Type.Equals(type));
         }
@@ -37,25 +37,25 @@ namespace DbStatute.Qualifiers
 
         public bool IsSetted(Field field)
         {
-            return FieldPredicateMap.ContainsKey(field);
+            return FieldPredicateDictionary.ContainsKey(field);
         }
 
         public int IsSetted(string name)
         {
-            Dictionary<Field, ReadOnlyLogbookPredicate<object>>.KeyCollection fields = FieldPredicateMap.Keys;
+            Dictionary<Field, ReadOnlyLogbookPredicate<object>>.KeyCollection fields = FieldPredicateDictionary.Keys;
 
             return fields.Count(x => x.Name.Equals(name));
         }
 
         public bool Set(Field field, ReadOnlyLogbookPredicate<object> value, bool overrideEnabled = false)
         {
-            if (!FieldPredicateMap.TryAdd(field, value))
+            if (!FieldPredicateDictionary.TryAdd(field, value))
             {
                 if (overrideEnabled)
                 {
-                    FieldPredicateMap.Remove(field);
+                    FieldPredicateDictionary.Remove(field);
 
-                    return FieldPredicateMap.TryAdd(field, value);
+                    return FieldPredicateDictionary.TryAdd(field, value);
                 }
                 else
                 {
@@ -68,12 +68,12 @@ namespace DbStatute.Qualifiers
 
         public bool Set(Field field, bool overrideEnabled = false)
         {
-            if (!FieldPredicateMap.TryAdd(field, default))
+            if (!FieldPredicateDictionary.TryAdd(field, default))
             {
                 if (overrideEnabled)
                 {
-                    FieldPredicateMap.Remove(field);
-                    return FieldPredicateMap.TryAdd(field, default);
+                    FieldPredicateDictionary.Remove(field);
+                    return FieldPredicateDictionary.TryAdd(field, default);
                 }
                 else
                 {
@@ -86,7 +86,7 @@ namespace DbStatute.Qualifiers
 
         public bool Unset(Field field)
         {
-            return FieldPredicateMap.Remove(field);
+            return FieldPredicateDictionary.Remove(field);
         }
     }
 

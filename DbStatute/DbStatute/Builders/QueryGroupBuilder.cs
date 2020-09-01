@@ -1,24 +1,16 @@
-﻿using Basiclog;
+﻿using DbStatute.Extensions;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Builders;
 using DbStatute.Interfaces.Qualifiers;
 using DbStatute.Qualifiers;
 using RepoDb;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace DbStatute.Builders
 {
     public class QueryGroupBuilder<TModel> : Builder<QueryGroup>, IQueryGroupBuilder<TModel>
         where TModel : class, IModel, new()
     {
-        public IFieldQualifier<TModel> FieldQualifier { get; }
-        public IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
-        public IValueFieldQualifier<TModel> ValueFieldQualifier { get; }
-        IFieldQualifier IQueryGroupBuilder.FieldQualifier => FieldQualifier;
-        IPredicateFieldQualifier IQueryGroupBuilder.PredicateFieldQualifier => PredicateFieldQualifier;
-        IValueFieldQualifier IQueryGroupBuilder.ValueFieldQualifier => ValueFieldQualifier;
-
         public QueryGroupBuilder()
         {
             FieldQualifier = new FieldQualifier<TModel>();
@@ -33,46 +25,25 @@ namespace DbStatute.Builders
             PredicateFieldQualifier = predicateFieldQualifier;
         }
 
+        public IFieldQualifier<TModel> FieldQualifier { get; }
+        IFieldQualifier IQueryGroupBuilder.FieldQualifier => FieldQualifier;
+        public IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
+        IPredicateFieldQualifier IQueryGroupBuilder.PredicateFieldQualifier => PredicateFieldQualifier;
+        public IValueFieldQualifier<TModel> ValueFieldQualifier { get; }
+        IValueFieldQualifier IQueryGroupBuilder.ValueFieldQualifier => ValueFieldQualifier;
+
         protected override bool BuildOperation(out QueryGroup built)
         {
             built = null;
 
-            FieldBuilder<TModel> fieldBuilder = new FieldBuilder<TModel>(FieldQualifier);
+            Logs.AddRange(QueryFieldExtension.CreateQueryFields<TModel>(FieldQualifier, ValueFieldQualifier, PredicateFieldQualifier, out IEnumerable<QueryField> queryFields));
 
-            if (fieldBuilder.Build(out IEnumerable<Field> fields))
+            if (ReadOnlyLogs.Safely)
             {
-                Logs.AddRange(fieldBuilder.ReadOnlyLogs);
-
-                IReadOnlyDictionary<Field, object> valueMap = ValueFieldQualifier.ReadOnlyFieldValueMap;
-                IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> predicateMap = PredicateFieldQualifier.ReadOnlyFieldPredicateMap;
-
-                ICollection<QueryField> queryFields = new Collection<QueryField>();
-
-                foreach (Field field in fields)
-                {
-                    bool valueFound = valueMap.TryGetValue(field, out object value);
-                    bool predicateFound = predicateMap.TryGetValue(field, out ReadOnlyLogbookPredicate<object> predicate);
-
-                    if (valueFound && predicateFound && predicate != null)
-                    {
-                        Logs.AddRange(predicate.Invoke(value));
-                    }
-
-                    if (valueFound)
-                    {
-                        queryFields.Add(new QueryField(field, value));
-                    }
-                }
-
-                if (ReadOnlyLogs.Safely)
-                {
-                    built = new QueryGroup(queryFields);
-
-                    return true;
-                }
+                built = new QueryGroup(queryFields);
             }
 
-            return false;
+            return !(built is null);
         }
     }
 }

@@ -48,7 +48,7 @@ namespace DbStatute.Multiples
             {
                 foreach (TModel rawModel in RawModels)
                 {
-                    IReadOnlyLogbook rawModelPredicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier.ReadOnlyFieldPredicateMap);
+                    IReadOnlyLogbook rawModelPredicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier.FieldPredicatePairs);
 
                     Logs.AddRange(rawModelPredicateLogs);
 
@@ -76,7 +76,7 @@ namespace DbStatute.Multiples
 
                 foreach (TModel rawModel in RawModels)
                 {
-                    IReadOnlyLogbook rawModelPredicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier.ReadOnlyFieldPredicateMap);
+                    IReadOnlyLogbook rawModelPredicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier.FieldPredicatePairs);
 
                     Logs.AddRange(rawModelPredicateLogs);
 
