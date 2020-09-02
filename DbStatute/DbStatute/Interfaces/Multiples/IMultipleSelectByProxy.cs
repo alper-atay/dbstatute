@@ -3,16 +3,14 @@ using DbStatute.Interfaces.Proxies;
 
 namespace DbStatute.Interfaces.Multiples
 {
-    public interface IMultipleSelectByProxy<TSelectProxy> : IMultipleSelectBase
-        where TSelectProxy : ISelectProxy
+    public interface IMultipleSelectByProxy : IMultipleSelectBase
     {
-        TSelectProxy SelectProxy { get; }
+        ISelectProxy SelectProxy { get; }
     }
 
-    public interface IMultipleSelectByProxy<TModel, TSelectProxy> : IMultipleSelectBase<TModel>, IMultipleSelectByProxy<TSelectProxy>
+    public interface IMultipleSelectByProxy<TModel> : IMultipleSelectBase<TModel>, IMultipleSelectByProxy
         where TModel : class, IModel, new()
-        where TSelectProxy : ISelectProxy<TModel>
     {
-        new TSelectProxy SelectProxy { get; }
+        new ISelectProxy<TModel> SelectProxy { get; }
     }
 }

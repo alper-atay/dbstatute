@@ -10,16 +10,22 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Multiples
 {
-    public class MultipleDeleteByProxy<TModel, TDeleteProxy> : MultipleDeleteBase<TModel>, IMultipleDeleteByProxy<TModel, TDeleteProxy>
+    public class MultipleDeleteByProxy<TModel> : MultipleDeleteBase<TModel>, IMultipleDeleteByProxy<TModel>
         where TModel : class, IModel, new()
-        where TDeleteProxy : class, IDeleteProxy<TModel>
     {
         public MultipleDeleteByProxy()
         {
-            DeleteProxy = new DeleteProxy<TModel>() as TDeleteProxy;
+            DeleteProxy = new DeleteProxy<TModel>();
         }
 
-        public TDeleteProxy DeleteProxy { get; }
+        public MultipleDeleteByProxy(IDeleteProxy<TModel> deleteProxy)
+        {
+            DeleteProxy = deleteProxy ?? throw new ArgumentNullException(nameof(deleteProxy));
+        }
+
+        public IDeleteProxy<TModel> DeleteProxy { get; }
+
+        IDeleteProxy IMultipleDeleteByProxy.DeleteProxy => DeleteProxy;
 
         protected override IAsyncEnumerable<TModel> DeleteAsSinglyOperationAsync(IDbConnection dbConnection, bool allowNullReturnIfDeleted = false)
         {

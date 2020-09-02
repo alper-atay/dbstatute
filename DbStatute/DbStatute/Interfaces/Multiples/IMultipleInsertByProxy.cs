@@ -3,16 +3,14 @@ using DbStatute.Interfaces.Proxies;
 
 namespace DbStatute.Interfaces.Multiples
 {
-    public interface IMultipleInsertByProxy<TInsertProxy> : IMultipleInsertBase
-        where TInsertProxy : IInsertProxy
+    public interface IMultipleInsertByProxy : IMultipleInsertBase
     {
-        TInsertProxy InsertProxy { get; }
+        IInsertProxy InsertProxy { get; }
     }
 
-    public interface IMultipleInsertByProxy<TModel, TInsertProxy> : IMultipleInsertBase<TModel>, IMultipleInsertByProxy<TInsertProxy>
+    public interface IMultipleInsertByProxy<TModel> : IMultipleInsertBase<TModel>, IMultipleInsertByProxy
         where TModel : class, IModel, new()
-        where TInsertProxy : IInsertProxy<TModel>
     {
-        new TInsertProxy InsertProxy { get; }
+        new IInsertProxy<TModel> InsertProxy { get; }
     }
 }

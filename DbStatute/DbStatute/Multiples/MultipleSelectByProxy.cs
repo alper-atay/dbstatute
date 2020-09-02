@@ -5,27 +5,29 @@ using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Querying;
 using RepoDb;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 
 namespace DbStatute.Multiples
 {
-    public class MultipleSelectByProxy<TModel, TSelectProxy> : MultipleSelectBase<TModel>, IMultipleSelectByProxy<TModel, TSelectProxy>
+    public class MultipleSelectByProxy<TModel> : MultipleSelectBase<TModel>, IMultipleSelectByProxy<TModel>
         where TModel : class, IModel, new()
-        where TSelectProxy : class, ISelectProxy<TModel>
     {
         public MultipleSelectByProxy()
         {
-            SelectProxy = new SelectProxy<TModel>() as TSelectProxy;
+            SelectProxy = new SelectProxy<TModel>();
         }
 
-        public MultipleSelectByProxy(TSelectProxy selectProxy)
+        public MultipleSelectByProxy(ISelectProxy<TModel> selectProxy)
         {
-            SelectProxy = selectProxy;
+            SelectProxy = selectProxy ?? throw new ArgumentNullException(nameof(selectProxy));
         }
 
-        public TSelectProxy SelectProxy { get; }
+        public ISelectProxy<TModel> SelectProxy { get; }
+
+        ISelectProxy IMultipleSelectByProxy.SelectProxy => SelectProxy;
 
         protected override async IAsyncEnumerable<TModel> SelectAsSignlyOperationAsync(IDbConnection dbConnection)
         {

@@ -3,16 +3,14 @@ using DbStatute.Interfaces.Proxies;
 
 namespace DbStatute.Interfaces.Multiples
 {
-    public interface IMultipleUpdateByProxy<TUpdateProxy> : IMultipleUpdateBase
-        where TUpdateProxy : IUpdateProxy
+    public interface IMultipleUpdateByProxy : IMultipleUpdateBase
     {
-        TUpdateProxy UpdateProxy { get; }
+        IUpdateProxy UpdateProxy { get; }
     }
 
-    public interface IMultipleUpdateByQuery<TModel, TUpdateQuery> : IMultipleUpdateBase<TModel>, IMultipleUpdateByProxy<TUpdateQuery>
+    public interface IMultipleUpdateByQuery<TModel> : IMultipleUpdateBase<TModel>, IMultipleUpdateByProxy
         where TModel : class, IModel, new()
-        where TUpdateQuery : IUpdateProxy<TModel>
     {
-        new TUpdateQuery UpdateProxy { get; }
+        new IUpdateProxy<TModel> UpdateProxy { get; }
     }
 }

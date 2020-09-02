@@ -3,16 +3,14 @@ using DbStatute.Interfaces.Proxies;
 
 namespace DbStatute.Interfaces.Multiples
 {
-    public interface IMultipleDeleteByProxy<TDeleteProxy> : IMultipleDeleteBase
-        where TDeleteProxy : IDeleteProxy
+    public interface IMultipleDeleteByProxy : IMultipleDeleteBase
     {
-        TDeleteProxy DeleteProxy { get; }
+        IDeleteProxy DeleteProxy { get; }
     }
 
-    public interface IMultipleDeleteByProxy<TModel, TDeleteProxy> : IMultipleDeleteBase<TModel>, IMultipleDeleteByProxy<TDeleteProxy>
+    public interface IMultipleDeleteByProxy<TModel> : IMultipleDeleteBase<TModel>, IMultipleDeleteByProxy
         where TModel : class, IModel, new()
-        where TDeleteProxy : IDeleteProxy<TModel>
     {
-        new TDeleteProxy DeleteProxy { get; }
+        new IDeleteProxy<TModel> DeleteProxy { get; }
     }
 }

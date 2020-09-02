@@ -2,6 +2,7 @@
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Proxies;
+using DbStatute.Querying;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,16 +10,22 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Multiples
 {
-    public class MultipleMergeByProxy<TModel, TMergeProxy> : MultipleMergeBase<TModel>, IMultipleMergeByProxy<TModel, TMergeProxy>
+    public class MultipleMergeByProxy<TModel> : MultipleMergeBase<TModel>, IMultipleMergeByProxy<TModel>
         where TModel : class, IModel, new()
-        where TMergeProxy : class, IMergeProxy<TModel>
     {
-        public MultipleMergeByProxy(TMergeProxy mergeProxy)
+        public MultipleMergeByProxy()
+        {
+            MergeProxy = new MergeProxy<TModel>();
+        }
+
+        public MultipleMergeByProxy(IMergeProxy<TModel> mergeProxy)
         {
             MergeProxy = mergeProxy ?? throw new ArgumentNullException(nameof(mergeProxy));
         }
 
-        public TMergeProxy MergeProxy { get; }
+        public IMergeProxy<TModel> MergeProxy { get; }
+
+        IMergeProxy IMultipleMergeByProxy.MergeProxy => MergeProxy;
 
         protected override IAsyncEnumerable<TModel> MergeAsSinglyOperationAsync(IDbConnection dbConnection)
         {

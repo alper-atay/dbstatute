@@ -3,16 +3,14 @@ using DbStatute.Interfaces.Proxies;
 
 namespace DbStatute.Interfaces.Multiples
 {
-    public interface IMultipleMergeByProxy<TMergeProxy> : IMultipleMergeBase
-        where TMergeProxy : IMergeProxy
+    public interface IMultipleMergeByProxy : IMultipleMergeBase
     {
-        TMergeProxy MergeProxy { get; }
+        IMergeProxy MergeProxy { get; }
     }
 
-    public interface IMultipleMergeByProxy<TModel, TMergeProxy> : IMultipleMergeBase<TModel>, IMultipleMergeByProxy<TMergeProxy>
+    public interface IMultipleMergeByProxy<TModel> : IMultipleMergeBase<TModel>, IMultipleMergeByProxy
         where TModel : class, IModel, new()
-        where TMergeProxy : IMergeProxy<TModel>
     {
-        new TMergeProxy MergeProxy { get; }
+        new IMergeProxy<TModel> MergeProxy { get; }
     }
 }
