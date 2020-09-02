@@ -1,27 +1,35 @@
-﻿using DbStatute.Builders;
-using DbStatute.Fundamentals.Proxies;
+﻿using DbStatute.Fundamentals.Proxies;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Builders;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
+using DbStatute.Interfaces.Qualifiers.Groups;
 using DbStatute.Qualifiers;
+using DbStatute.Qualifiers.Group;
+using System;
 
 namespace DbStatute.Querying
 {
     public class SelectProxy : StatuteProxyBase, ISelectProxy
     {
-        public SelectProxy(ISelectQueryGroupBuilder selectQueryGroupBuilder, IOrderFieldQualifier orderFieldQualifier, IFieldQualifier selectedFieldQualifier)
+        public SelectProxy()
         {
-            SelectQueryGroupBuilder = selectQueryGroupBuilder ?? throw new System.ArgumentNullException(nameof(selectQueryGroupBuilder));
-            OrderFieldQualifier = orderFieldQualifier ?? throw new System.ArgumentNullException(nameof(orderFieldQualifier));
-            SelectedFieldQualifier = selectedFieldQualifier ?? throw new System.ArgumentNullException(nameof(selectedFieldQualifier));
+            SelectQualifierGroup = new SelectQualifierGroup();
+            OrderFieldQualifier = new OrderFieldQualifier();
+            SelectedFieldQualifier = new FieldQualifier();
+        }
+
+        public SelectProxy(ISelectQualifierGroup selectQualifierGroup, IOrderFieldQualifier orderFieldQualifier, IFieldQualifier selectedFieldQualifier)
+        {
+            SelectQualifierGroup = selectQualifierGroup ?? throw new ArgumentNullException(nameof(selectQualifierGroup));
+            OrderFieldQualifier = orderFieldQualifier ?? throw new ArgumentNullException(nameof(orderFieldQualifier));
+            SelectedFieldQualifier = selectedFieldQualifier ?? throw new ArgumentNullException(nameof(selectedFieldQualifier));
         }
 
         public IOrderFieldQualifier OrderFieldQualifier { get; }
 
         public IFieldQualifier SelectedFieldQualifier { get; }
 
-        public ISelectQueryGroupBuilder SelectQueryGroupBuilder { get; }
+        public ISelectQualifierGroup SelectQualifierGroup { get; }
     }
 
     public class SelectProxy<TModel> : StatuteProxyBase<TModel>, ISelectProxy<TModel>
@@ -29,16 +37,16 @@ namespace DbStatute.Querying
     {
         public SelectProxy()
         {
-            SelectQueryGroupBuilder = new SelectQueryGroupBuilder<TModel>();
+            SelectQualifierGroup = new SelectQualifierGroup<TModel>();
             OrderFieldQualifier = new OrderFieldQualifier<TModel>();
             SelectedFieldQualifier = new FieldQualifier<TModel>();
         }
 
-        public SelectProxy(ISelectQueryGroupBuilder<TModel> selectQueryGroupBuilder, IOrderFieldQualifier<TModel> orderFieldQualifier, IFieldQualifier<TModel> selectedFieldQualifier)
+        public SelectProxy(ISelectQualifierGroup<TModel> selectQualifierGroup, IOrderFieldQualifier<TModel> orderFieldQualifier, IFieldQualifier<TModel> selectedFieldQualifier)
         {
-            SelectQueryGroupBuilder = selectQueryGroupBuilder ?? throw new System.ArgumentNullException(nameof(selectQueryGroupBuilder));
-            OrderFieldQualifier = orderFieldQualifier ?? throw new System.ArgumentNullException(nameof(orderFieldQualifier));
-            SelectedFieldQualifier = selectedFieldQualifier ?? throw new System.ArgumentNullException(nameof(selectedFieldQualifier));
+            SelectQualifierGroup = selectQualifierGroup ?? throw new ArgumentNullException(nameof(selectQualifierGroup));
+            OrderFieldQualifier = orderFieldQualifier ?? throw new ArgumentNullException(nameof(orderFieldQualifier));
+            SelectedFieldQualifier = selectedFieldQualifier ?? throw new ArgumentNullException(nameof(selectedFieldQualifier));
         }
 
         public IOrderFieldQualifier<TModel> OrderFieldQualifier { get; }
@@ -49,8 +57,8 @@ namespace DbStatute.Querying
 
         IFieldQualifier ISelectProxy.SelectedFieldQualifier => SelectedFieldQualifier;
 
-        public ISelectQueryGroupBuilder<TModel> SelectQueryGroupBuilder { get; }
+        public ISelectQualifierGroup<TModel> SelectQualifierGroup { get; }
 
-        ISelectQueryGroupBuilder ISelectProxy.SelectQueryGroupBuilder => SelectQueryGroupBuilder;
+        ISelectQualifierGroup ISelectProxy.SelectQualifierGroup => SelectQualifierGroup;
     }
 }

@@ -1,9 +1,9 @@
-﻿using DbStatute.Builders;
+﻿using DbStatute.Extensions;
 using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Builders;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
+using DbStatute.Interfaces.Qualifiers.Groups;
 using DbStatute.Interfaces.Singles;
 using DbStatute.Proxies;
 using RepoDb;
@@ -34,15 +34,18 @@ namespace DbStatute.Singles
         protected override async Task<TModel> DeleteOperationAsync(IDbConnection dbConnection)
         {
             ISelectProxy<TModel> selectQuery = DeleteProxy.SelectProxy;
-            ISelectQueryGroupBuilder<TModel> selectQueryGroupBuilder = selectQuery.SelectQueryGroupBuilder;
+
+            ISelectQualifierGroup<TModel> selectQualifierGroup = selectQuery.SelectQualifierGroup;
             IOrderFieldQualifier<TModel> orderFieldQualifier = selectQuery.OrderFieldQualifier;
 
-            selectQueryGroupBuilder.Build(out QueryGroup queryGroup);
-            Logs.AddRange(selectQuery.SelectQueryGroupBuilder.ReadOnlyLogs);
+            Logs.AddRange(selectQualifierGroup.Build<TModel>(out QueryGroup queryGroup));
 
-            IOrderFieldBuilder<TModel> orderFieldBuilder = new OrderFieldBuilder<TModel>(orderFieldQualifier);
-            orderFieldBuilder.Build(out IEnumerable<OrderField> orderFields);
-            Logs.AddRange(orderFieldBuilder.ReadOnlyLogs);
+            bool orderFieldsBuilt = orderFieldQualifier.Build<TModel>(out IEnumerable<OrderField> orderFields);
+
+            if (!orderFieldsBuilt)
+            {
+                orderFields = null;
+            }
 
             if (queryGroup != null)
             {

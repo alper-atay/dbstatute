@@ -1,7 +1,6 @@
-﻿using DbStatute.Builders;
+﻿using DbStatute.Extensions;
 using DbStatute.Fundamentals.Multiples;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Builders;
 using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Querying;
@@ -30,13 +29,22 @@ namespace DbStatute.Multiples
 
         protected override async IAsyncEnumerable<TModel> SelectAsSignlyOperationAsync(IDbConnection dbConnection)
         {
-            if (SelectProxy.SelectQueryGroupBuilder.Build(out QueryGroup queryGroup))
-            {
-                IFieldBuilder<TModel> fieldBuilder = new FieldBuilder<TModel>(SelectProxy.SelectedFieldQualifier);
-                IOrderFieldBuilder<TModel> orderFieldBuilder = new OrderFieldBuilder<TModel>(SelectProxy.OrderFieldQualifier);
+            Logs.AddRange(SelectProxy.SelectQualifierGroup.Build<TModel>(out QueryGroup queryGroup));
 
-                fieldBuilder.Build(out IEnumerable<Field> fields);
-                orderFieldBuilder.Build(out IEnumerable<OrderField> orderFields);
+            if (ReadOnlyLogs.Safely)
+            {
+                bool selectedFieldsBuilt = SelectProxy.SelectedFieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
+                bool selectedOrderFieldsBuilt = SelectProxy.OrderFieldQualifier.Build<TModel>(out IEnumerable<OrderField> orderFields);
+
+                if (selectedFieldsBuilt)
+                {
+                    fields = null;
+                }
+
+                if (selectedOrderFieldsBuilt)
+                {
+                    orderFields = null;
+                }
 
                 IEnumerable<TModel> selectedModels = await dbConnection.QueryAsync<TModel>(queryGroup, fields, orderFields, MaxSelectCount, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder);
 
@@ -49,13 +57,22 @@ namespace DbStatute.Multiples
 
         protected override async Task<IEnumerable<TModel>> SelectOperationAsync(IDbConnection dbConnection)
         {
-            if (SelectProxy.SelectQueryGroupBuilder.Build(out QueryGroup queryGroup))
-            {
-                IFieldBuilder<TModel> fieldBuilder = new FieldBuilder<TModel>(SelectProxy.SelectedFieldQualifier);
-                IOrderFieldBuilder<TModel> orderFieldBuilder = new OrderFieldBuilder<TModel>(SelectProxy.OrderFieldQualifier);
+            Logs.AddRange(SelectProxy.SelectQualifierGroup.Build<TModel>(out QueryGroup queryGroup));
 
-                fieldBuilder.Build(out IEnumerable<Field> fields);
-                orderFieldBuilder.Build(out IEnumerable<OrderField> orderFields);
+            if (ReadOnlyLogs.Safely)
+            {
+                bool selectedFieldsBuilt = SelectProxy.SelectedFieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
+                bool selectedOrderFieldsBuilt = SelectProxy.OrderFieldQualifier.Build<TModel>(out IEnumerable<OrderField> orderFields);
+
+                if (selectedFieldsBuilt)
+                {
+                    fields = null;
+                }
+
+                if (selectedOrderFieldsBuilt)
+                {
+                    orderFields = null;
+                }
 
                 IEnumerable<TModel> selectedModels = await dbConnection.QueryAsync<TModel>(queryGroup, fields, orderFields, MaxSelectCount, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder);
 

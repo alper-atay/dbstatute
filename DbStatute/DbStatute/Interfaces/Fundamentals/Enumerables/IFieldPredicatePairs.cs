@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 namespace DbStatute.Interfaces.Fundamentals.Enumerables
 {
-    public interface IFieldPredicatePairs
+    public interface IFieldPredicatePairs : IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>>
     {
-        IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> FieldPredicatePairs { get; }
     }
 }

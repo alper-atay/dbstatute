@@ -2,6 +2,7 @@
 using DbStatute.Interfaces.Qualifiers;
 using RepoDb;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -10,9 +11,11 @@ namespace DbStatute.Qualifiers
 {
     public class FieldQualifier : IFieldQualifier
     {
+        private readonly HashSet<Field> _data = new HashSet<Field>();
+
         public FieldQualifier()
         {
-            FieldHashSet = new HashSet<Field>();
+            _data = new HashSet<Field>();
         }
 
         public FieldQualifier(IEnumerable<Field> fields)
@@ -22,23 +25,21 @@ namespace DbStatute.Qualifiers
                 throw new ArgumentNullException(nameof(fields));
             }
 
-            FieldHashSet = new HashSet<Field>(fields);
+            _data = new HashSet<Field>(fields);
         }
 
-        public IEnumerable<Field> Fields => FieldHashSet;
+        public int Count => _data.Count;
 
-        public bool HasField => FieldHashSet.Count > 0;
-
-        protected HashSet<Field> FieldHashSet { get; }
+        public bool HasField => _data.Count > 0;
 
         public IEnumerable<Field> GetAllByName(string name)
         {
-            return FieldHashSet.Where(x => x.Name == name);
+            return _data.Where(x => x.Name == name);
         }
 
         public IEnumerable<Field> GetAllByType(Type type)
         {
-            return FieldHashSet.Where(x => x.Type == type);
+            return _data.Where(x => x.Type == type);
         }
 
         public IEnumerable<Field> GetAllByType<T>()
@@ -48,24 +49,34 @@ namespace DbStatute.Qualifiers
             return GetAllByType(type);
         }
 
+        public IEnumerator<Field> GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
         public bool IsSetted(Field field)
         {
-            return FieldHashSet.Contains(field);
+            return _data.Contains(field);
         }
 
         public int IsSetted(string name)
         {
-            return FieldHashSet.Count(x => x.Name == name);
+            return _data.Count(x => x.Name == name);
         }
 
         public bool Set(Field field, bool overrideEnabled = false)
         {
-            if (!FieldHashSet.Add(field))
+            if (!_data.Add(field))
             {
                 if (overrideEnabled)
                 {
-                    FieldHashSet.Remove(field);
-                    return FieldHashSet.Add(field);
+                    _data.Remove(field);
+                    return _data.Add(field);
                 }
                 else
                 {
@@ -80,7 +91,7 @@ namespace DbStatute.Qualifiers
 
         public bool Unset(Field field)
         {
-            return FieldHashSet.Remove(field);
+            return _data.Remove(field);
         }
     }
 

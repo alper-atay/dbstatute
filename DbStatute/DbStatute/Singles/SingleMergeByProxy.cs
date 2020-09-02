@@ -1,9 +1,9 @@
-﻿using DbStatute.Builders;
+﻿using DbStatute.Extensions;
 using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Builders;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
+using DbStatute.Interfaces.Qualifiers.Groups;
 using DbStatute.Interfaces.Singles;
 using DbStatute.Querying;
 using RepoDb;
@@ -31,18 +31,20 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> MergeOperationAsync(IDbConnection dbConnection)
         {
-            IModelBuilder<TModel> modelBuilder = MergeProxy.ModelBuilder;
-            IFieldQualifier<TModel> mergedFieldQualifier = MergeProxy.MergedFieldQualifier;
+            IModelQualifierGroup<TModel> modelQualifierGroup = MergeProxy.ModelQualifierGroup;
 
-            modelBuilder.Build(out TModel model);
-            Logs.AddRange(modelBuilder.ReadOnlyLogs);
-
-            IFieldBuilder<TModel> mergedFieldBuilder = new FieldBuilder<TModel>(mergedFieldQualifier);
-            mergedFieldBuilder.Build(out IEnumerable<Field> fields);
-            Logs.AddRange(mergedFieldBuilder.ReadOnlyLogs);
+            Logs.AddRange(modelQualifierGroup.Build<TModel>(out TModel model));
 
             if (ReadOnlyLogs.Safely)
             {
+                IFieldQualifier<TModel> mergedFieldQualifier = MergeProxy.MergedFieldQualifier;
+                bool mergedFieldsBuilt = mergedFieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
+
+                if (!mergedFieldsBuilt)
+                {
+                    fields = null;
+                }
+
                 return await dbConnection.MergeAsync<TModel, TModel>(model, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
             }
 

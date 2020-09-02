@@ -3,7 +3,7 @@ using DbStatute.Interfaces.Utilities;
 
 namespace DbStatute.Interfaces.Qualifiers
 {
-    public interface IOrderFieldQualifier : ISettableOrderField, IOrderFields
+    public interface IOrderFieldQualifier : ISettableOrderField, IOrderFieldCollection
     {
     }
 

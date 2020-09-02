@@ -1,9 +1,9 @@
-﻿using DbStatute.Builders;
+﻿using DbStatute.Extensions;
 using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Builders;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
+using DbStatute.Interfaces.Qualifiers.Groups;
 using DbStatute.Interfaces.Singles;
 using DbStatute.Querying;
 using RepoDb;
@@ -33,22 +33,27 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> SelectOperationAsync(IDbConnection dbConnection)
         {
-            ISelectQueryGroupBuilder<TModel> selectQueryGroupBuilder = SelectProxy.SelectQueryGroupBuilder;
+            ISelectQualifierGroup<TModel> selectQualifierGroup = SelectProxy.SelectQualifierGroup;
 
-            if (selectQueryGroupBuilder.Build(out QueryGroup queryGroup))
+            Logs.AddRange(selectQualifierGroup.Build<TModel>(out QueryGroup queryGroup));
+
+            if (ReadOnlyLogs.Safely)
             {
-                Logs.AddRange(selectQueryGroupBuilder.ReadOnlyLogs);
-
                 IFieldQualifier<TModel> selectedFieldQualifier = SelectProxy.SelectedFieldQualifier;
                 IOrderFieldQualifier<TModel> orderFieldQualifier = SelectProxy.OrderFieldQualifier;
 
-                FieldBuilder<TModel> fieldBuilder = new FieldBuilder<TModel>(selectedFieldQualifier);
-                fieldBuilder.Build(out IEnumerable<Field> fields);
-                Logs.AddRange(fieldBuilder.ReadOnlyLogs);
+                bool fieldsCreated = selectedFieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
+                bool orderFieldsCreated = orderFieldQualifier.Build<TModel>(out IEnumerable<OrderField> orderFields);
 
-                OrderFieldBuilder<TModel> orderFieldBuilder = new OrderFieldBuilder<TModel>(orderFieldQualifier);
-                orderFieldBuilder.Build(out IEnumerable<OrderField> orderFields);
-                Logs.AddRange(orderFieldBuilder.ReadOnlyLogs);
+                if (!fieldsCreated)
+                {
+                    fields = null;
+                }
+
+                if (!orderFieldsCreated)
+                {
+                    orderFields = null;
+                }
 
                 return await dbConnection.QueryAsync<TModel>(queryGroup, fields, orderFields, MaxSelectCount, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder)
                     .ContinueWith(x => x.Result.FirstOrDefault());

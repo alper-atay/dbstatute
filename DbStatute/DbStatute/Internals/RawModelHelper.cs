@@ -1,5 +1,5 @@
 ﻿using Basiclog;
-using DbStatute.Builders;
+using DbStatute.Extensions;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Qualifiers;
 using RepoDb;
@@ -45,13 +45,9 @@ namespace DbStatute.Internals
         {
             ILogbook logs = Logger.NewLogbook();
 
-            FieldBuilder<TModel> fieldBuilder = new FieldBuilder<TModel>(fieldQualifier);
-            fieldBuilder.Build(out fields);
-            logs.AddRange(fieldBuilder.ReadOnlyLogs);
-
-            if (logs.Safely)
+            if (fieldQualifier.Build<TModel>(out fields))
             {
-                IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> fieldPredicateMap = predicateFieldQualifier.FieldPredicatePairs;
+                IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> fieldPredicateMap = predicateFieldQualifier;
 
                 Type modelType = typeof(TModel);
 

@@ -1,31 +1,30 @@
-﻿using DbStatute.Builders;
-using DbStatute.Fundamentals.Proxies;
+﻿using DbStatute.Fundamentals.Proxies;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Builders;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
+using DbStatute.Interfaces.Qualifiers.Groups;
 using DbStatute.Qualifiers;
+using DbStatute.Qualifiers.Group;
 using System;
 
 namespace DbStatute.Querying
 {
     public class InsertProxy : StatuteProxyBase, IInsertProxy
     {
-        public InsertProxy(IModelBuilder modelBuilder)
+        public InsertProxy()
         {
-            ModelBuilder = modelBuilder ?? throw new ArgumentNullException(nameof(modelBuilder));
+            ModelQualifierGroup = new ModelQualifierGroup();
             InsertedFieldQualifier = new FieldQualifier();
         }
 
-        public InsertProxy(IModelBuilder modelBuilder, IFieldQualifier insertedFieldQualifier)
+        public InsertProxy(IFieldQualifier insertedFieldQualifier)
         {
-            ModelBuilder = modelBuilder ?? throw new ArgumentNullException(nameof(modelBuilder));
             InsertedFieldQualifier = insertedFieldQualifier ?? throw new ArgumentNullException(nameof(insertedFieldQualifier));
         }
 
         public IFieldQualifier InsertedFieldQualifier { get; }
 
-        public IModelBuilder ModelBuilder { get; }
+        public IModelQualifierGroup ModelQualifierGroup { get; }
     }
 
     public class InsertProxy<TModel> : StatuteProxyBase<TModel>, IInsertProxy<TModel>
@@ -33,19 +32,11 @@ namespace DbStatute.Querying
     {
         public InsertProxy()
         {
-            ModelBuilder = new ModelBuilder<TModel>();
             InsertedFieldQualifier = new FieldQualifier<TModel>();
         }
 
-        public InsertProxy(IModelBuilder<TModel> modelBuilder)
+        public InsertProxy(IFieldQualifier<TModel> insertedFieldQualifier)
         {
-            ModelBuilder = modelBuilder ?? throw new ArgumentNullException(nameof(modelBuilder));
-            InsertedFieldQualifier = new FieldQualifier<TModel>();
-        }
-
-        public InsertProxy(IModelBuilder<TModel> modelBuilder, IFieldQualifier<TModel> insertedFieldQualifier)
-        {
-            ModelBuilder = modelBuilder ?? throw new ArgumentNullException(nameof(modelBuilder));
             InsertedFieldQualifier = insertedFieldQualifier ?? throw new ArgumentNullException(nameof(insertedFieldQualifier));
         }
 
@@ -53,8 +44,8 @@ namespace DbStatute.Querying
 
         IFieldQualifier IInsertProxy.InsertedFieldQualifier => InsertedFieldQualifier;
 
-        public IModelBuilder<TModel> ModelBuilder { get; }
+        public IModelQualifierGroup<TModel> ModelQualifierGroup { get; }
 
-        IModelBuilder IInsertProxy.ModelBuilder => ModelBuilder;
+        IModelQualifierGroup IInsertProxy.ModelQualifierGroup => ModelQualifierGroup;
     }
 }

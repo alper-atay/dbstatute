@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 namespace DbStatute.Interfaces.Fundamentals.Enumerables
 {
-    public interface IFieldOperationPairs
+    public interface IFieldOperationPairs : IReadOnlyDictionary<Field, Operation>
     {
-        IReadOnlyDictionary<Field, Operation> FieldOperationPairs { get; }
     }
 }

@@ -2,6 +2,7 @@
 using DbStatute.Interfaces.Qualifiers;
 using RepoDb;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -10,22 +11,31 @@ namespace DbStatute.Qualifiers
 {
     public class ValueFieldQualifier : IValueFieldQualifier
     {
-        public IFieldQualifier FieldQualifier { get; }
+        private readonly Dictionary<Field, object> _data = new Dictionary<Field, object>();
 
-        public IReadOnlyDictionary<Field, object> FieldValuePairs => FieldValueDictionary;
+        public int Count => _data.Count;
 
-        protected Dictionary<Field, object> FieldValueDictionary { get; } = new Dictionary<Field, object>();
+        public IEnumerable<Field> Keys => _data.Keys;
+
+        public IEnumerable<object> Values => _data.Values;
+
+        public object this[Field key] => _data[key];
+
+        public bool ContainsKey(Field key)
+        {
+            return _data.ContainsKey(key);
+        }
 
         public IEnumerable<Field> GetAllByName(string name)
         {
-            Dictionary<Field, object>.KeyCollection fields = FieldValueDictionary.Keys;
+            Dictionary<Field, object>.KeyCollection fields = _data.Keys;
 
             return fields.Where(x => x.Name.Equals(name));
         }
 
         public IEnumerable<Field> GetAllByType(Type type)
         {
-            Dictionary<Field, object>.KeyCollection fields = FieldValueDictionary.Keys;
+            Dictionary<Field, object>.KeyCollection fields = _data.Keys;
 
             return fields.Where(x => x.Type.Equals(type));
         }
@@ -37,27 +47,37 @@ namespace DbStatute.Qualifiers
             return GetAllByType(type);
         }
 
+        public IEnumerator<KeyValuePair<Field, object>> GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
         public bool IsSetted(Field field)
         {
-            return FieldValueDictionary.ContainsKey(field);
+            return _data.ContainsKey(field);
         }
 
         public int IsSetted(string name)
         {
-            Dictionary<Field, object>.KeyCollection fields = FieldValueDictionary.Keys;
+            Dictionary<Field, object>.KeyCollection fields = _data.Keys;
 
             return fields.Count(x => x.Name.Equals(name));
         }
 
         public bool Set(Field field, object value, bool overrideEnabled = false)
         {
-            if (!FieldValueDictionary.TryAdd(field, value))
+            if (!_data.TryAdd(field, value))
             {
                 if (overrideEnabled)
                 {
-                    FieldValueDictionary.Remove(field);
+                    _data.Remove(field);
 
-                    return FieldValueDictionary.TryAdd(field, value);
+                    return _data.TryAdd(field, value);
                 }
                 else
                 {
@@ -70,13 +90,13 @@ namespace DbStatute.Qualifiers
 
         public bool Set(Field field, bool overrideEnabled = false)
         {
-            if (!FieldValueDictionary.TryAdd(field, default))
+            if (!_data.TryAdd(field, default))
             {
                 if (overrideEnabled)
                 {
-                    FieldValueDictionary.Remove(field);
+                    _data.Remove(field);
 
-                    return FieldValueDictionary.TryAdd(field, default);
+                    return _data.TryAdd(field, default);
                 }
                 else
                 {
@@ -87,9 +107,14 @@ namespace DbStatute.Qualifiers
             return true;
         }
 
+        public bool TryGetValue(Field key, out object value)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Unset(Field field)
         {
-            return FieldValueDictionary.Remove(field);
+            return _data.Remove(field);
         }
     }
 
@@ -154,7 +179,7 @@ namespace DbStatute.Qualifiers
 
             foreach (Field field in fields)
             {
-                if (FieldValueDictionary.Remove(field))
+                if (Unset(field))
                 {
                     unsettedCount += 1;
                 }

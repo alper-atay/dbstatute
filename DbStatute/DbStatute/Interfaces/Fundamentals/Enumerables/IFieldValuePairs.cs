@@ -3,8 +3,7 @@ using System.Collections.Generic;
 
 namespace DbStatute.Interfaces.Fundamentals.Enumerables
 {
-    public interface IFieldValuePairs
+    public interface IFieldValuePairs : IReadOnlyDictionary<Field, object>
     {
-        IReadOnlyDictionary<Field, object> FieldValuePairs { get; }
     }
 }

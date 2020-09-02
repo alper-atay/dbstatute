@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace DbStatute.Interfaces.Fundamentals.Enumerables
 {
-    public interface IOrderFields
+    public interface IOrderFieldCollection : IEnumerable<OrderField>
     {
         bool HasOrderField { get; }
-
-        IEnumerable<OrderField> OrderFields { get; }
     }
 }

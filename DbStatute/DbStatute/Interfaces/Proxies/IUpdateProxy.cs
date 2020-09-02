@@ -1,21 +1,21 @@
-﻿using DbStatute.Interfaces.Builders;
-using DbStatute.Interfaces.Fundamentals.Proxies;
+﻿using DbStatute.Interfaces.Fundamentals.Proxies;
 using DbStatute.Interfaces.Qualifiers;
+using DbStatute.Interfaces.Qualifiers.Groups;
 
 namespace DbStatute.Interfaces.Proxies
 {
     public interface IUpdateProxy : IProxyBase
     {
-        IFieldQualifier FieldQualifier { get; }
+        IFieldQualifier MergedFieldQualifier { get; }
 
-        IModelBuilder ModelBuilder { get; }
+        IModelQualifierGroup ModelQualifierGroup { get; }
     }
 
     public interface IUpdateProxy<TModel> : IProxyBase<TModel>, IUpdateProxy
         where TModel : class, IModel, new()
     {
-        new IFieldQualifier<TModel> FieldQualifier { get; }
+        new IFieldQualifier<TModel> MergedFieldQualifier { get; }
 
-        new IModelBuilder<TModel> ModelBuilder { get; }
+        new IModelQualifierGroup<TModel> ModelQualifierGroup { get; }
     }
 }

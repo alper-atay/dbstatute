@@ -3,6 +3,7 @@ using DbStatute.Interfaces.Qualifiers;
 using RepoDb;
 using RepoDb.Enumerations;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -11,20 +12,31 @@ namespace DbStatute.Qualifiers
 {
     public class OperationFieldQualifier : IOperationFieldQualifier
     {
-        public IReadOnlyDictionary<Field, Operation> FieldOperationPairs => FieldOperationDictionary;
+        private Dictionary<Field, Operation> _data = new Dictionary<Field, Operation>();
 
-        protected Dictionary<Field, Operation> FieldOperationDictionary { get; } = new Dictionary<Field, Operation>();
+        public int Count => _data.Count;
+
+        public IEnumerable<Field> Keys => _data.Keys;
+
+        public IEnumerable<Operation> Values => _data.Values;
+
+        public Operation this[Field key] => _data[key];
+
+        public bool ContainsKey(Field key)
+        {
+            return _data.ContainsKey(key);
+        }
 
         public IEnumerable<Field> GetAllByName(string name)
         {
-            Dictionary<Field, Operation>.KeyCollection fields = FieldOperationDictionary.Keys;
+            Dictionary<Field, Operation>.KeyCollection fields = _data.Keys;
 
             return fields.Where(x => x.Name.Equals(name));
         }
 
         public IEnumerable<Field> GetAllByType(Type type)
         {
-            Dictionary<Field, Operation>.KeyCollection fields = FieldOperationDictionary.Keys;
+            Dictionary<Field, Operation>.KeyCollection fields = _data.Keys;
 
             return fields.Where(x => x.Type.Equals(type));
         }
@@ -36,29 +48,39 @@ namespace DbStatute.Qualifiers
             return GetAllByType(type);
         }
 
+        public IEnumerator<KeyValuePair<Field, Operation>> GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
         public bool IsSetted(Field field)
         {
-            Dictionary<Field, Operation>.KeyCollection fields = FieldOperationDictionary.Keys;
+            Dictionary<Field, Operation>.KeyCollection fields = _data.Keys;
 
             return fields.Contains(field);
         }
 
         public int IsSetted(string name)
         {
-            Dictionary<Field, Operation>.KeyCollection fields = FieldOperationDictionary.Keys;
+            Dictionary<Field, Operation>.KeyCollection fields = _data.Keys;
 
             return fields.Count(x => x.Name.Equals(name));
         }
 
         public bool Set(Field field, Operation value, bool overrideEnabled = false)
         {
-            if (!FieldOperationDictionary.TryAdd(field, value))
+            if (!_data.TryAdd(field, value))
             {
                 if (overrideEnabled)
                 {
-                    FieldOperationDictionary.Remove(field);
+                    _data.Remove(field);
 
-                    return FieldOperationDictionary.TryAdd(field, value);
+                    return _data.TryAdd(field, value);
                 }
                 else
                 {
@@ -73,13 +95,13 @@ namespace DbStatute.Qualifiers
         {
             const Operation value = Operation.Equal;
 
-            if (!FieldOperationDictionary.TryAdd(field, value))
+            if (!_data.TryAdd(field, value))
             {
                 if (overrideEnabled)
                 {
-                    FieldOperationDictionary.Remove(field);
+                    _data.Remove(field);
 
-                    return FieldOperationDictionary.TryAdd(field, value);
+                    return _data.TryAdd(field, value);
                 }
                 else
                 {
@@ -90,9 +112,14 @@ namespace DbStatute.Qualifiers
             return true;
         }
 
+        public bool TryGetValue(Field key, out Operation value)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Unset(Field field)
         {
-            return FieldOperationDictionary.Remove(field);
+            return _data.Remove(field);
         }
     }
 

@@ -3,7 +3,7 @@ using DbStatute.Interfaces.Utilities;
 
 namespace DbStatute.Interfaces.Qualifiers
 {
-    public interface IQueryFieldQualifier : ISettableQueryField, IQueryFields
+    public interface IQueryFieldQualifier : ISettableQueryField, IQueryFieldCollection
     {
     }
 

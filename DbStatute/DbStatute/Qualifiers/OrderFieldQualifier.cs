@@ -3,6 +3,7 @@ using DbStatute.Interfaces.Qualifiers;
 using RepoDb;
 using RepoDb.Enumerations;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -11,46 +12,54 @@ namespace DbStatute.Qualifiers
 {
     public class OrderFieldQualifier : IOrderFieldQualifier
     {
-        public bool HasOrderField => OrderFieldHashSet.Count > 0;
+        private readonly HashSet<OrderField> _data = new HashSet<OrderField>();
 
-        public IEnumerable<OrderField> OrderFields => OrderFieldHashSet;
-
-        protected HashSet<OrderField> OrderFieldHashSet { get; } = new HashSet<OrderField>();
+        public bool HasOrderField => _data.Count > 0;
 
         public IEnumerable<OrderField> GetAllByField(Field field)
         {
-            return OrderFieldHashSet.Where(x => x.Name.Equals(field.Name));
+            return _data.Where(x => x.Name.Equals(field.Name));
         }
 
         public IEnumerable<OrderField> GetAllByName(string name)
         {
-            return OrderFieldHashSet.Where(x => x.Name.Equals(name));
+            return _data.Where(x => x.Name.Equals(name));
         }
 
         public IEnumerable<OrderField> GetAllByOrder(Order order)
         {
-            return OrderFieldHashSet.Where(x => x.Order.Equals(order));
+            return _data.Where(x => x.Order.Equals(order));
+        }
+
+        public IEnumerator<OrderField> GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _data.GetEnumerator();
         }
 
         public bool IsSetted(OrderField orderField)
         {
-            return OrderFieldHashSet.Contains(orderField);
+            return _data.Contains(orderField);
         }
 
         public int IsSetted(Field field)
         {
-            return OrderFieldHashSet.Count(x => x.Name.Equals(field.Name));
+            return _data.Count(x => x.Name.Equals(field.Name));
         }
 
         public bool Set(OrderField orderField, bool overrideEnabled = false)
         {
-            if (!OrderFieldHashSet.Add(orderField))
+            if (!_data.Add(orderField))
             {
                 if (overrideEnabled)
                 {
-                    OrderFieldHashSet.Remove(orderField);
+                    _data.Remove(orderField);
 
-                    return OrderFieldHashSet.Add(orderField);
+                    return _data.Add(orderField);
                 }
                 else
                 {
@@ -72,7 +81,7 @@ namespace DbStatute.Qualifiers
                     Unset(field);
                     OrderField orderField = new OrderField(field.Name, order);
 
-                    return OrderFieldHashSet.Add(orderField);
+                    return _data.Add(orderField);
                 }
             }
 
@@ -81,17 +90,17 @@ namespace DbStatute.Qualifiers
 
         public bool Unset(OrderField orderField)
         {
-            return OrderFieldHashSet.Remove(orderField);
+            return _data.Remove(orderField);
         }
 
         public int Unset(Field field)
         {
-            return OrderFieldHashSet.RemoveWhere(x => x.Name.Equals(field.Name));
+            return _data.RemoveWhere(x => x.Name.Equals(field.Name));
         }
 
         public int Unset(string name)
         {
-            return OrderFieldHashSet.RemoveWhere(x => x.Name.Equals(name));
+            return _data.RemoveWhere(x => x.Name.Equals(name));
         }
     }
 

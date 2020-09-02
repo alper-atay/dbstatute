@@ -1,8 +1,7 @@
 ﻿using Basiclog;
-using DbStatute.Builders;
+using DbStatute.Extensions;
 using DbStatute.Fundamentals.Multiples;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Builders;
 using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Qualifiers;
 using DbStatute.Internals;
@@ -47,61 +46,61 @@ namespace DbStatute.Multiples
 
         protected override async IAsyncEnumerable<TModel> MergeAsSinglyOperationAsync(IDbConnection dbConnection)
         {
-            IFieldBuilder<TModel> fieldBuilder = new FieldBuilder<TModel>(FieldQualifier);
+            bool fieldQualified = FieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
 
-            if (fieldBuilder.Build(out IEnumerable<Field> fields))
+            if (!fieldQualified)
             {
-                foreach (TModel rawModel in RawModels)
-                {
-                    IReadOnlyLogbook rawModelPredicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier.FieldPredicatePairs);
-
-                    Logs.AddRange(rawModelPredicateLogs);
-
-                    if (!rawModelPredicateLogs.Safely)
-                    {
-                        continue;
-                    }
-
-                    TModel mergedModel = await dbConnection.MergeAsync<TModel, TModel>(rawModel, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
-
-                    yield return mergedModel;
-                }
+                fields = null;
             }
 
-            Logs.AddRange(fieldBuilder.ReadOnlyLogs);
+            foreach (TModel rawModel in RawModels)
+            {
+                IReadOnlyLogbook rawModelPredicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier);
+
+                Logs.AddRange(rawModelPredicateLogs);
+
+                if (!rawModelPredicateLogs.Safely)
+                {
+                    continue;
+                }
+
+                TModel mergedModel = await dbConnection.MergeAsync<TModel, TModel>(rawModel, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+
+                yield return mergedModel;
+            }
         }
 
         protected override async Task<IEnumerable<TModel>> MergeOperationAsync(IDbConnection dbConnection)
         {
-            IFieldBuilder<TModel> fieldBuilder = new FieldBuilder<TModel>(FieldQualifier);
+            bool fieldQualified = FieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
 
-            if (fieldBuilder.Build(out IEnumerable<Field> fields))
+            if (!fieldQualified)
             {
-                ICollection<TModel> readyModels = new Collection<TModel>();
-
-                foreach (TModel rawModel in RawModels)
-                {
-                    IReadOnlyLogbook rawModelPredicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier.FieldPredicatePairs);
-
-                    Logs.AddRange(rawModelPredicateLogs);
-
-                    if (!rawModelPredicateLogs.Safely)
-                    {
-                        continue;
-                    }
-
-                    readyModels.Add(rawModel);
-                }
-
-                if (readyModels.Count > 0)
-                {
-                    int mergedCount = await dbConnection.MergeAllAsync(readyModels, BatchSize, fields, Hints, CommandTimeout, Transaction);
-
-                    return mergedCount > 0 ? readyModels : null;
-                }
+                fields = null;
             }
 
-            Logs.AddRange(fieldBuilder.ReadOnlyLogs);
+            ICollection<TModel> readyModels = new Collection<TModel>();
+
+            foreach (TModel rawModel in RawModels)
+            {
+                IReadOnlyLogbook rawModelPredicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier);
+
+                Logs.AddRange(rawModelPredicateLogs);
+
+                if (!rawModelPredicateLogs.Safely)
+                {
+                    continue;
+                }
+
+                readyModels.Add(rawModel);
+            }
+
+            if (readyModels.Count > 0)
+            {
+                int mergedCount = await dbConnection.MergeAllAsync(readyModels, BatchSize, fields, Hints, CommandTimeout, Transaction);
+
+                return mergedCount > 0 ? readyModels : null;
+            }
 
             return null;
         }

@@ -1,25 +1,31 @@
-﻿using DbStatute.Builders;
-using DbStatute.Fundamentals.Proxies;
+﻿using DbStatute.Fundamentals.Proxies;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Builders;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
+using DbStatute.Interfaces.Qualifiers.Groups;
 using DbStatute.Qualifiers;
+using DbStatute.Qualifiers.Group;
 using System;
 
 namespace DbStatute.Querying
 {
     public class UpdateProxy : StatuteProxyBase, IUpdateProxy
     {
-        public UpdateProxy(IModelBuilder modelBuilder, IFieldQualifier fieldQualifier)
+        public UpdateProxy()
         {
-            ModelBuilder = modelBuilder ?? throw new ArgumentNullException(nameof(modelBuilder));
-            FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
+            ModelQualifierGroup = new ModelQualifierGroup();
+            MergedFieldQualifier = new FieldQualifier();
         }
 
-        public IFieldQualifier FieldQualifier { get; }
+        public UpdateProxy(IModelQualifierGroup modelQualifierGroup, IFieldQualifier fieldQualifier)
+        {
+            ModelQualifierGroup = modelQualifierGroup ?? throw new ArgumentNullException(nameof(modelQualifierGroup));
+            MergedFieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
+        }
 
-        public IModelBuilder ModelBuilder { get; }
+        public IFieldQualifier MergedFieldQualifier { get; }
+
+        public IModelQualifierGroup ModelQualifierGroup { get; }
     }
 
     public class UpdateProxy<TModel> : StatuteProxyBase<TModel>, IUpdateProxy<TModel>
@@ -27,22 +33,22 @@ namespace DbStatute.Querying
     {
         public UpdateProxy()
         {
-            ModelBuilder = new ModelBuilder<TModel>();
-            FieldQualifier = new FieldQualifier<TModel>();
+            ModelQualifierGroup = new ModelQualifierGroup<TModel>();
+            MergedFieldQualifier = new FieldQualifier<TModel>();
         }
 
-        public UpdateProxy(IModelBuilder<TModel> modelBuilder, IFieldQualifier<TModel> fieldQualifier)
+        public UpdateProxy(IModelQualifierGroup<TModel> modelQualifierGroup, IFieldQualifier<TModel> fieldQualifier)
         {
-            ModelBuilder = modelBuilder ?? throw new ArgumentNullException(nameof(modelBuilder));
-            FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
+            ModelQualifierGroup = modelQualifierGroup ?? throw new ArgumentNullException(nameof(modelQualifierGroup));
+            MergedFieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
         }
 
-        public IFieldQualifier<TModel> FieldQualifier { get; }
+        public IFieldQualifier<TModel> MergedFieldQualifier { get; }
 
-        IFieldQualifier IUpdateProxy.FieldQualifier => FieldQualifier;
+        IFieldQualifier IUpdateProxy.MergedFieldQualifier => MergedFieldQualifier;
 
-        public IModelBuilder<TModel> ModelBuilder { get; }
+        public IModelQualifierGroup<TModel> ModelQualifierGroup { get; }
 
-        IModelBuilder IUpdateProxy.ModelBuilder => ModelBuilder;
+        IModelQualifierGroup IUpdateProxy.ModelQualifierGroup => ModelQualifierGroup;
     }
 }

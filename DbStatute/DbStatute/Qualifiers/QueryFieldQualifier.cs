@@ -3,6 +3,7 @@ using DbStatute.Interfaces.Qualifiers;
 using RepoDb;
 using RepoDb.Enumerations;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -11,20 +12,28 @@ namespace DbStatute.Qualifiers
 {
     public class QueryFieldQualifier : IQueryFieldQualifier
     {
-        private readonly HashSet<QueryField> _queryFields = new HashSet<QueryField>();
+        private readonly HashSet<QueryField> _data = new HashSet<QueryField>();
 
-        public bool HasQueryField => _queryFields.Count > 0;
+        public bool HasQueryField => _data.Count > 0;
 
-        public IEnumerable<QueryField> QueryFields => HasQueryField ? _queryFields : null;
+        public IEnumerator<QueryField> GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
 
         public int IsSetted(Field field)
         {
-            return _queryFields.Count(x => x.Field.Equals(field));
+            return _data.Count(x => x.Field.Equals(field));
         }
 
         public bool IsSetted(QueryField queryField)
         {
-            return _queryFields.Contains(queryField);
+            return _data.Contains(queryField);
         }
 
         public bool Set(Field field, object value, bool overrideEnabled = false)
@@ -35,7 +44,7 @@ namespace DbStatute.Qualifiers
             {
                 if (overrideEnabled)
                 {
-                    _queryFields.RemoveWhere(x => x.Field == field);
+                    _data.RemoveWhere(x => x.Field == field);
                 }
                 else
                 {
@@ -44,7 +53,7 @@ namespace DbStatute.Qualifiers
             }
 
             QueryField queryField = new QueryField(field, value);
-            return _queryFields.Add(queryField);
+            return _data.Add(queryField);
         }
 
         public bool Set(QueryField queryField, bool overrideEnabled = false)
@@ -53,7 +62,7 @@ namespace DbStatute.Qualifiers
             {
                 if (overrideEnabled)
                 {
-                    _queryFields.Remove(queryField);
+                    _data.Remove(queryField);
                 }
                 else
                 {
@@ -61,7 +70,7 @@ namespace DbStatute.Qualifiers
                 }
             }
 
-            return _queryFields.Add(queryField);
+            return _data.Add(queryField);
         }
 
         public bool Set(Field field, bool overrideEnabled = false)
@@ -72,7 +81,7 @@ namespace DbStatute.Qualifiers
             {
                 if (overrideEnabled)
                 {
-                    int removedCount = _queryFields.RemoveWhere(x => x.Field.Equals(field));
+                    int removedCount = _data.RemoveWhere(x => x.Field.Equals(field));
                 }
                 else
                 {
@@ -81,7 +90,7 @@ namespace DbStatute.Qualifiers
             }
 
             QueryField queryField = new QueryField(field, default);
-            return _queryFields.Add(queryField);
+            return _data.Add(queryField);
         }
 
         public bool Set(Field field, Operation operation, bool overrideEnabled = false)
@@ -92,7 +101,7 @@ namespace DbStatute.Qualifiers
             {
                 if (overrideEnabled)
                 {
-                    _queryFields.RemoveWhere(x => x.Field == field);
+                    _data.RemoveWhere(x => x.Field == field);
                 }
                 else
                 {
@@ -101,7 +110,7 @@ namespace DbStatute.Qualifiers
             }
 
             QueryField queryField = new QueryField(field, operation, default);
-            return _queryFields.Add(queryField);
+            return _data.Add(queryField);
         }
 
         public bool Set(Field field, Operation operation, object value, bool overrideEnabled = false)
@@ -112,7 +121,7 @@ namespace DbStatute.Qualifiers
             {
                 if (overrideEnabled)
                 {
-                    _queryFields.RemoveWhere(x => x.Field == field);
+                    _data.RemoveWhere(x => x.Field == field);
                 }
                 else
                 {
@@ -121,22 +130,22 @@ namespace DbStatute.Qualifiers
             }
 
             QueryField queryField = new QueryField(field, operation, value);
-            return _queryFields.Add(queryField);
+            return _data.Add(queryField);
         }
 
         public int SettedCount(Field field)
         {
-            return _queryFields.Count(x => x.Field.Equals(field));
+            return _data.Count(x => x.Field.Equals(field));
         }
 
         public int Unset(Field field)
         {
-            return _queryFields.RemoveWhere(x => x.Field.Equals(field));
+            return _data.RemoveWhere(x => x.Field.Equals(field));
         }
 
         public bool Unset(QueryField queryField)
         {
-            return _queryFields.Remove(queryField);
+            return _data.Remove(queryField);
         }
     }
 

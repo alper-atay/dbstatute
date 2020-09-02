@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace DbStatute.Interfaces.Fundamentals.Enumerables
 {
-    public interface IFields
+    public interface IFieldCollection : IReadOnlyCollection<Field>
     {
-        IEnumerable<Field> Fields { get; }
-
-        bool HasField { get; }
+        public bool HasField { get; }
     }
 }

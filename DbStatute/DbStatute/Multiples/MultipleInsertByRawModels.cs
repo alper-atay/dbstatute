@@ -1,8 +1,7 @@
 ﻿using Basiclog;
-using DbStatute.Builders;
+using DbStatute.Extensions;
 using DbStatute.Fundamentals.Multiples;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Builders;
 using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Qualifiers;
 using DbStatute.Internals;
@@ -47,13 +46,11 @@ namespace DbStatute.Multiples
 
         protected override async IAsyncEnumerable<TModel> InsertAsSingleOperationAsync(IDbConnection dbConnection)
         {
-            IFieldBuilder<TModel> fieldBuilder = new FieldBuilder<TModel>(FieldQualifier);
-
-            if (fieldBuilder.Build(out IEnumerable<Field> fields))
+            if (FieldQualifier.Build<TModel>(out IEnumerable<Field> fields))
             {
                 foreach (TModel rawModel in RawModels)
                 {
-                    IReadOnlyLogbook rawModelPredicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier.FieldPredicatePairs);
+                    IReadOnlyLogbook rawModelPredicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier);
 
                     Logs.AddRange(rawModelPredicateLogs);
 
@@ -67,21 +64,17 @@ namespace DbStatute.Multiples
                     yield return insertedModel;
                 }
             }
-
-            Logs.AddRange(fieldBuilder.ReadOnlyLogs);
         }
 
         protected override async Task<IEnumerable<TModel>> InsertOperationAsync(IDbConnection dbConnection)
         {
-            IFieldBuilder<TModel> fieldBuilder = new FieldBuilder<TModel>(FieldQualifier);
-
-            if (fieldBuilder.Build(out IEnumerable<Field> fields))
+            if (FieldQualifier.Build<TModel>(out IEnumerable<Field> fields))
             {
                 ICollection<TModel> readyModels = new Collection<TModel>();
 
                 foreach (TModel rawModel in RawModels)
                 {
-                    IReadOnlyLogbook rawModelPredicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier.FieldPredicatePairs);
+                    IReadOnlyLogbook rawModelPredicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier);
 
                     Logs.AddRange(rawModelPredicateLogs);
 
@@ -100,8 +93,6 @@ namespace DbStatute.Multiples
                     return insertedCount > 0 ? readyModels : null;
                 }
             }
-
-            Logs.AddRange(fieldBuilder.ReadOnlyLogs);
 
             return null;
         }

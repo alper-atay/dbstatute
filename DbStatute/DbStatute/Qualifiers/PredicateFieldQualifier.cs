@@ -3,6 +3,7 @@ using DbStatute.Interfaces;
 using DbStatute.Interfaces.Qualifiers;
 using RepoDb;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -11,20 +12,31 @@ namespace DbStatute.Qualifiers
 {
     public class PredicateFieldQualifier : IPredicateFieldQualifier
     {
-        public IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> FieldPredicatePairs => FieldPredicateDictionary;
+        private readonly Dictionary<Field, ReadOnlyLogbookPredicate<object>> _data = new Dictionary<Field, ReadOnlyLogbookPredicate<object>>();
 
-        protected Dictionary<Field, ReadOnlyLogbookPredicate<object>> FieldPredicateDictionary { get; } = new Dictionary<Field, ReadOnlyLogbookPredicate<object>>();
+        public int Count => _data.Count;
+
+        public IEnumerable<Field> Keys => _data.Keys;
+
+        public IEnumerable<ReadOnlyLogbookPredicate<object>> Values => _data.Values;
+
+        public ReadOnlyLogbookPredicate<object> this[Field key] => _data[key];
+
+        public bool ContainsKey(Field key)
+        {
+            return _data.ContainsKey(key);
+        }
 
         public IEnumerable<Field> GetAllByName(string name)
         {
-            Dictionary<Field, ReadOnlyLogbookPredicate<object>>.KeyCollection fields = FieldPredicateDictionary.Keys;
+            Dictionary<Field, ReadOnlyLogbookPredicate<object>>.KeyCollection fields = _data.Keys;
 
             return fields.Where(x => x.Name.Equals(name));
         }
 
         public IEnumerable<Field> GetAllByType(Type type)
         {
-            Dictionary<Field, ReadOnlyLogbookPredicate<object>>.KeyCollection fields = FieldPredicateDictionary.Keys;
+            Dictionary<Field, ReadOnlyLogbookPredicate<object>>.KeyCollection fields = _data.Keys;
 
             return fields.Where(x => x.Type.Equals(type));
         }
@@ -36,27 +48,37 @@ namespace DbStatute.Qualifiers
             return GetAllByType(type);
         }
 
+        public IEnumerator<KeyValuePair<Field, ReadOnlyLogbookPredicate<object>>> GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _data.GetEnumerator();
+        }
+
         public bool IsSetted(Field field)
         {
-            return FieldPredicateDictionary.ContainsKey(field);
+            return _data.ContainsKey(field);
         }
 
         public int IsSetted(string name)
         {
-            Dictionary<Field, ReadOnlyLogbookPredicate<object>>.KeyCollection fields = FieldPredicateDictionary.Keys;
+            Dictionary<Field, ReadOnlyLogbookPredicate<object>>.KeyCollection fields = _data.Keys;
 
             return fields.Count(x => x.Name.Equals(name));
         }
 
         public bool Set(Field field, ReadOnlyLogbookPredicate<object> value, bool overrideEnabled = false)
         {
-            if (!FieldPredicateDictionary.TryAdd(field, value))
+            if (!_data.TryAdd(field, value))
             {
                 if (overrideEnabled)
                 {
-                    FieldPredicateDictionary.Remove(field);
+                    _data.Remove(field);
 
-                    return FieldPredicateDictionary.TryAdd(field, value);
+                    return _data.TryAdd(field, value);
                 }
                 else
                 {
@@ -69,12 +91,12 @@ namespace DbStatute.Qualifiers
 
         public bool Set(Field field, bool overrideEnabled = false)
         {
-            if (!FieldPredicateDictionary.TryAdd(field, default))
+            if (!_data.TryAdd(field, default))
             {
                 if (overrideEnabled)
                 {
-                    FieldPredicateDictionary.Remove(field);
-                    return FieldPredicateDictionary.TryAdd(field, default);
+                    _data.Remove(field);
+                    return _data.TryAdd(field, default);
                 }
                 else
                 {
@@ -85,9 +107,14 @@ namespace DbStatute.Qualifiers
             return true;
         }
 
+        public bool TryGetValue(Field key, out ReadOnlyLogbookPredicate<object> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Unset(Field field)
         {
-            return FieldPredicateDictionary.Remove(field);
+            return _data.Remove(field);
         }
     }
 

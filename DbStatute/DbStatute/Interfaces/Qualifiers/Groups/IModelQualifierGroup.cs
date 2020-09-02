@@ -1,9 +1,6 @@
-﻿using DbStatute.Interfaces.Qualifiers;
-using RepoDb;
-
-namespace DbStatute.Interfaces.Builders
+﻿namespace DbStatute.Interfaces.Qualifiers.Groups
 {
-    public interface IQueryGroupBuilder : IBuilder
+    public interface IModelQualifierGroup
     {
         IFieldQualifier FieldQualifier { get; }
 
@@ -12,8 +9,8 @@ namespace DbStatute.Interfaces.Builders
         IValueFieldQualifier ValueFieldQualifier { get; }
     }
 
-    public interface IQueryGroupBuilder<TModel> : IBuilder<QueryGroup>, IQueryGroupBuilder
-        where TModel : class, IModel, new()
+    public interface IModelQualifierGroup<TModel> : IModelQualifierGroup
+    where TModel : class, IModel, new()
     {
         new IFieldQualifier<TModel> FieldQualifier { get; }
 

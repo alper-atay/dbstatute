@@ -1,9 +1,9 @@
-﻿using DbStatute.Builders;
+﻿using DbStatute.Extensions;
 using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Builders;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
+using DbStatute.Interfaces.Qualifiers.Groups;
 using DbStatute.Interfaces.Singles;
 using RepoDb;
 using System.Collections.Generic;
@@ -21,17 +21,18 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> UpdateOperationAsync(IDbConnection dbConnection)
         {
-            IModelBuilder<TModel> modelBuilder = UpdateProxy.ModelBuilder;
-            IFieldQualifier<TModel> fieldQualifier = UpdateProxy.FieldQualifier;
+            IModelQualifierGroup<TModel> modelQualifierGroup = UpdateProxy.ModelQualifierGroup;
+            Logs.AddRange(modelQualifierGroup.Build(out TModel model));
 
-            bool isModelBuilt = modelBuilder.Build(out TModel model);
-            Logs.AddRange(modelBuilder.ReadOnlyLogs);
-
-            if (isModelBuilt)
+            if (ReadOnlyLogs.Safely)
             {
-                FieldBuilder<TModel> fieldBuilder = new FieldBuilder<TModel>(fieldQualifier);
-                fieldBuilder.Build(out IEnumerable<Field> fields);
-                Logs.AddRange(fieldBuilder.ReadOnlyLogs);
+                IFieldQualifier<TModel> mergedFieldQualifier = UpdateProxy.MergedFieldQualifier;
+                bool mergedFieldBuilt = mergedFieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
+
+                if (!mergedFieldBuilt)
+                {
+                    fields = null;
+                }
 
                 int updateCount = await dbConnection.UpdateAsync(model, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 

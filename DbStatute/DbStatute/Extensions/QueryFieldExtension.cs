@@ -11,7 +11,7 @@ namespace DbStatute.Extensions
 {
     public static class QueryFieldExtension
     {
-        public static IReadOnlyLogbook CreateQueryFields<TModel>(IFields fields, IFieldValuePairs fieldValuePairs, IFieldPredicatePairs fieldPredicatePairs, out IEnumerable<QueryField> queryFields) where TModel : class, IModel, new()
+        public static IReadOnlyLogbook CreateQueryFields<TModel>(IFieldCollection fields, IFieldValuePairs fieldValuePairs, IFieldPredicatePairs fieldPredicatePairs, out IEnumerable<QueryField> queryFields) where TModel : class, IModel, new()
         {
             queryFields = Enumerable.Empty<QueryField>();
 
@@ -25,10 +25,10 @@ namespace DbStatute.Extensions
 
             ICollection<QueryField> queryFieldCollection = new Collection<QueryField>();
 
-            foreach (Field field in fields.Fields)
+            foreach (Field field in fields)
             {
-                bool valueFound = fieldValuePairs.FieldValuePairs.TryGetValue(field, out object value);
-                bool predicateFound = fieldPredicatePairs.FieldPredicatePairs.TryGetValue(field, out ReadOnlyLogbookPredicate<object> predicate);
+                bool valueFound = fieldValuePairs.TryGetValue(field, out object value);
+                bool predicateFound = fieldPredicatePairs.TryGetValue(field, out ReadOnlyLogbookPredicate<object> predicate);
 
                 if (valueFound && predicateFound && predicate != null)
                 {
@@ -44,7 +44,41 @@ namespace DbStatute.Extensions
             return logs;
         }
 
-        public static IReadOnlyLogbook CreateQueryFields<TModel>(IFields fields, IFieldValuePairs fieldValuePairs, IFieldPredicatePairs fieldPredicatePairs, IFieldOperationPairs fieldOperationPairs, out IEnumerable<QueryField> queryFields) where TModel : class, IModel, new()
+        public static IReadOnlyLogbook CreateQueryFields(IFieldCollection fields, IFieldValuePairs fieldValuePairs, IFieldPredicatePairs fieldPredicatePairs, IFieldOperationPairs fieldOperationPairs, out IEnumerable<QueryField> queryFields)
+        {
+            queryFields = Enumerable.Empty<QueryField>();
+
+            ILogbook logs = Logger.NewLogbook();
+
+            ICollection<QueryField> queryFieldCollection = new Collection<QueryField>();
+
+            foreach (Field field in fields)
+            {
+                bool valueFound = fieldValuePairs.TryGetValue(field, out object value);
+                bool predicateFound = fieldPredicatePairs.TryGetValue(field, out ReadOnlyLogbookPredicate<object> predicate);
+                bool operationFound = fieldOperationPairs.TryGetValue(field, out Operation operation);
+
+                if (valueFound && predicateFound && predicate != null)
+                {
+                    logs.AddRange(predicate.Invoke(value));
+                }
+
+                if (!logs.Safely)
+                {
+                    break;
+                }
+
+                if (valueFound && operationFound)
+                {
+                    queryFieldCollection.Add(new QueryField(field, operation, value));
+                }
+            }
+
+            return logs;
+        }
+
+
+        public static IReadOnlyLogbook CreateQueryFields<TModel>(IFieldCollection fields, IFieldValuePairs fieldValuePairs, IFieldPredicatePairs fieldPredicatePairs, IFieldOperationPairs fieldOperationPairs, out IEnumerable<QueryField> queryFields) where TModel : class, IModel, new()
         {
             queryFields = Enumerable.Empty<QueryField>();
 
@@ -59,11 +93,11 @@ namespace DbStatute.Extensions
 
             ICollection<QueryField> queryFieldCollection = new Collection<QueryField>();
 
-            foreach (Field field in fields.Fields)
+            foreach (Field field in fields)
             {
-                bool valueFound = fieldValuePairs.FieldValuePairs.TryGetValue(field, out object value);
-                bool predicateFound = fieldPredicatePairs.FieldPredicatePairs.TryGetValue(field, out ReadOnlyLogbookPredicate<object> predicate);
-                bool operationFound = fieldOperationPairs.FieldOperationPairs.TryGetValue(field, out Operation operation);
+                bool valueFound = fieldValuePairs.TryGetValue(field, out object value);
+                bool predicateFound = fieldPredicatePairs.TryGetValue(field, out ReadOnlyLogbookPredicate<object> predicate);
+                bool operationFound = fieldOperationPairs.TryGetValue(field, out Operation operation);
 
                 if (valueFound && predicateFound && predicate != null)
                 {

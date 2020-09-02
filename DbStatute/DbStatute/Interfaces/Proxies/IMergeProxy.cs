@@ -1,6 +1,6 @@
-﻿using DbStatute.Interfaces.Builders;
-using DbStatute.Interfaces.Fundamentals.Proxies;
+﻿using DbStatute.Interfaces.Fundamentals.Proxies;
 using DbStatute.Interfaces.Qualifiers;
+using DbStatute.Interfaces.Qualifiers.Groups;
 
 namespace DbStatute.Interfaces.Proxies
 {
@@ -8,7 +8,7 @@ namespace DbStatute.Interfaces.Proxies
     {
         IFieldQualifier MergedFieldQualifier { get; }
 
-        IModelBuilder ModelBuilder { get; }
+        IModelQualifierGroup ModelQualifierGroup { get; }
     }
 
     public interface IMergeProxy<TModel> : IProxyBase<TModel>, IMergeProxy
@@ -16,6 +16,6 @@ namespace DbStatute.Interfaces.Proxies
     {
         new IFieldQualifier<TModel> MergedFieldQualifier { get; }
 
-        new IModelBuilder<TModel> ModelBuilder { get; }
+        new IModelQualifierGroup<TModel> ModelQualifierGroup { get; }
     }
 }
