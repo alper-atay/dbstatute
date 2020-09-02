@@ -3,22 +3,18 @@ using DbStatute.Interfaces.Qualifiers;
 
 namespace DbStatute.Interfaces.Singles
 {
-    public interface ISingleMergeByRawModel<TFieldQualifier, TPredicateFieldQualifier> : ISingleMergeBase, IRawModel
-        where TFieldQualifier : IFieldQualifier
-        where TPredicateFieldQualifier : IPredicateFieldQualifier
+    public interface ISingleMergeByRawModel : ISingleMergeBase, IRawModel
     {
-        TFieldQualifier FieldQualifier { get; }
+        IFieldQualifier FieldQualifier { get; }
 
-        TPredicateFieldQualifier PredicateFieldQualifier { get; }
+        IPredicateFieldQualifier PredicateFieldQualifier { get; }
     }
 
-    public interface ISingleMergeByRawModel<TModel, TFieldQualifier, TPredicateFieldQualifier> : ISingleMergeBase<TModel>, IRawModel<TModel>, ISingleMergeByRawModel<TFieldQualifier, TPredicateFieldQualifier>
+    public interface ISingleMergeByRawModel<TModel> : ISingleMergeBase<TModel>, IRawModel<TModel>, ISingleMergeByRawModel
         where TModel : class, IModel, new()
-        where TFieldQualifier : IFieldQualifier<TModel>
-        where TPredicateFieldQualifier : IPredicateFieldQualifier<TModel>
     {
-        new TFieldQualifier FieldQualifier { get; }
+        new IFieldQualifier<TModel> FieldQualifier { get; }
 
-        new TPredicateFieldQualifier PredicateFieldQualifier { get; }
+        new IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
     }
 }

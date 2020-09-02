@@ -3,16 +3,16 @@ using DbStatute.Interfaces.Proxies;
 
 namespace DbStatute.Interfaces.Singles
 {
-    public interface ISingleInsertByProxy<TModel, TInsertQuery> : ISingleInsertBase<TModel>, ISingleInsertByQuery<TInsertQuery>
-        where TModel : class, IModel, new()
-        where TInsertQuery : IInsertProxy<TModel>
+    public interface ISingleInsertByQuery : ISingleInsertBase
     {
-        new TInsertQuery InsertProxy { get; }
+        IInsertProxy InsertProxy { get; }
     }
 
-    public interface ISingleInsertByQuery<TInsertQuery> : ISingleInsertBase
-            where TInsertQuery : IInsertProxy
+    public interface ISingleInsertByProxy<TModel> : ISingleInsertBase<TModel>, ISingleInsertByQuery
+        where TModel : class, IModel, new()
     {
-        TInsertQuery InsertProxy { get; }
+        new IInsertProxy<TModel> InsertProxy { get; }
     }
+
+
 }

@@ -3,16 +3,14 @@ using DbStatute.Interfaces.Proxies;
 
 namespace DbStatute.Interfaces.Singles
 {
-    public interface ISingleMergeByProxy<TMergeProxy> : ISingleMergeBase
-        where TMergeProxy : IMergeProxy
+    public interface ISingleMergeByProxy : ISingleMergeBase
     {
-        TMergeProxy MergeProxy { get; }
+        IMergeProxy MergeProxy { get; }
     }
 
-    public interface ISingleMergeByProxy<TModel, TMergeProxy> : ISingleMergeBase<TModel>, ISingleMergeByProxy<TMergeProxy>
+    public interface ISingleMergeByProxy<TModel> : ISingleMergeBase<TModel>, ISingleMergeByProxy
         where TModel : class, IModel, new()
-        where TMergeProxy : IMergeProxy<TModel>
     {
-        new TMergeProxy MergeProxy { get; }
+        new IMergeProxy<TModel> MergeProxy { get; }
     }
 }

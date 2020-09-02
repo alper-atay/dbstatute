@@ -13,11 +13,12 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Singles
 {
-    public class SingleUpdateByProxy<TModel, TUpdateProxy> : SingleUpdateBase<TModel>, ISingleUpdateByProxy<TUpdateProxy>
+    public class SingleUpdateByProxy<TModel> : SingleUpdateBase<TModel>, ISingleUpdateByProxy
         where TModel : class, IModel, new()
-        where TUpdateProxy : IUpdateProxy<TModel>
     {
-        public TUpdateProxy UpdateProxy { get; }
+        public IUpdateProxy<TModel> UpdateProxy { get; }
+
+        IUpdateProxy ISingleUpdateByProxy.UpdateProxy => UpdateProxy;
 
         protected override async Task<TModel> UpdateOperationAsync(IDbConnection dbConnection)
         {

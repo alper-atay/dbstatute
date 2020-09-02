@@ -3,22 +3,18 @@ using DbStatute.Interfaces.Qualifiers;
 
 namespace DbStatute.Interfaces.Singles
 {
-    public interface ISingleInsertByRawModel<TFieldQualifier, TPredicateFieldQualifier> : ISingleInsertBase, IRawModel
-        where TFieldQualifier : IFieldQualifier
-        where TPredicateFieldQualifier : IPredicateFieldQualifier
+    public interface ISingleInsertByRawModel : ISingleInsertBase, IRawModel
     {
-        TFieldQualifier FieldQualifier { get; }
+        IFieldQualifier FieldQualifier { get; }
 
-        TPredicateFieldQualifier PredicateFieldQualifier { get; }
+        IPredicateFieldQualifier PredicateFieldQualifier { get; }
     }
 
-    public interface ISingleInsertByRawModel<TModel, TFieldQualifier, TPredicateFieldQualifier> : ISingleInsertBase<TModel>, IRawModel<TModel>, ISingleInsertByRawModel<TFieldQualifier, TPredicateFieldQualifier>
+    public interface ISingleInsertByRawModel<TModel> : ISingleInsertBase<TModel>, IRawModel<TModel>, ISingleInsertByRawModel
         where TModel : class, IModel, new()
-        where TFieldQualifier : IFieldQualifier<TModel>
-        where TPredicateFieldQualifier : IPredicateFieldQualifier<TModel>
     {
-        new TFieldQualifier FieldQualifier { get; }
+        new IFieldQualifier<TModel> FieldQualifier { get; }
 
-        new TPredicateFieldQualifier PredicateFieldQualifier { get; }
+        new IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
     }
 }

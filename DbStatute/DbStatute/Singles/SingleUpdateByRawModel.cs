@@ -12,26 +12,28 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Singles
 {
-    public class SingleUpdateByRawModel<TModel, TFieldQualifier, TPredicateFieldQualifier> : SingleUpdateBase<TModel>, ISingleUpdateByRawModel<TModel, TFieldQualifier, TPredicateFieldQualifier>
+    public class SingleUpdateByRawModel<TModel> : SingleUpdateBase<TModel>, ISingleUpdateByRawModel<TModel>
         where TModel : class, IModel, new()
-        where TFieldQualifier : class, IFieldQualifier<TModel>
-        where TPredicateFieldQualifier : class, IPredicateFieldQualifier<TModel>
     {
         public SingleUpdateByRawModel(TModel rawModel)
         {
             RawModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
         }
 
-        public SingleUpdateByRawModel(TModel rawModel, TFieldQualifier fieldQualifier, TPredicateFieldQualifier predicateFieldQualifier)
+        public SingleUpdateByRawModel(TModel rawModel, IFieldQualifier<TModel> fieldQualifier, IPredicateFieldQualifier<TModel> predicateFieldQualifier)
         {
             RawModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
             FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
             PredicateFieldQualifier = predicateFieldQualifier ?? throw new ArgumentNullException(nameof(predicateFieldQualifier));
         }
 
-        public TFieldQualifier FieldQualifier { get; }
+        public IFieldQualifier<TModel> FieldQualifier { get; }
 
-        public TPredicateFieldQualifier PredicateFieldQualifier { get; }
+        IFieldQualifier ISingleUpdateByRawModel.FieldQualifier => FieldQualifier;
+
+        public IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
+
+        IPredicateFieldQualifier ISingleUpdateByRawModel.PredicateFieldQualifier => PredicateFieldQualifier;
 
         public TModel RawModel { get; }
 

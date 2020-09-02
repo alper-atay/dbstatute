@@ -10,14 +10,16 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Singles
 {
-    public class SingleMergeByRawModel<TModel, TFieldQualifier, TPredicateFieldQualifier> : SingleMergeBase<TModel>, ISingleMergeByRawModel<TModel, TFieldQualifier, TPredicateFieldQualifier>
+    public class SingleMergeByRawModel<TModel> : SingleMergeBase<TModel>, ISingleMergeByRawModel<TModel>
         where TModel : class, IModel, new()
-        where TFieldQualifier : IFieldQualifier<TModel>
-        where TPredicateFieldQualifier : IPredicateFieldQualifier<TModel>
     {
-        public TFieldQualifier FieldQualifier { get; }
+        public IFieldQualifier<TModel> FieldQualifier { get; }
 
-        public TPredicateFieldQualifier PredicateFieldQualifier { get; }
+        IFieldQualifier ISingleMergeByRawModel.FieldQualifier => FieldQualifier;
+
+        public IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
+
+        IPredicateFieldQualifier ISingleMergeByRawModel.PredicateFieldQualifier => PredicateFieldQualifier;
 
         public TModel RawModel { get; }
 

@@ -15,21 +15,22 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Singles
 {
-    public class SingleSelectByProxy<TModel, TSelectProxy> : SingleSelectBase<TModel>, ISingleSelectByProxy<TModel, TSelectProxy>
+    public class SingleSelectByProxy<TModel> : SingleSelectBase<TModel>, ISingleSelectByProxy<TModel>
         where TModel : class, IModel, new()
-        where TSelectProxy : class, ISelectProxy<TModel>
     {
         public SingleSelectByProxy()
         {
-            SelectProxy = new SelectProxy<TModel>() as TSelectProxy;
+            SelectProxy = new SelectProxy<TModel>();
         }
 
-        public SingleSelectByProxy(TSelectProxy selectProxy)
+        public SingleSelectByProxy(ISelectProxy<TModel> selectProxy)
         {
             SelectProxy = selectProxy ?? throw new ArgumentNullException(nameof(selectProxy));
         }
 
-        public TSelectProxy SelectProxy { get; }
+        public ISelectProxy<TModel> SelectProxy { get; }
+
+        ISelectProxy ISingleSelectByProxy.SelectProxy => SelectProxy;
 
         protected override async Task<TModel> SelectOperationAsync(IDbConnection dbConnection)
         {

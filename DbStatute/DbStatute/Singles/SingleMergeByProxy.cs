@@ -7,33 +7,35 @@ using DbStatute.Interfaces.Qualifiers.Groups;
 using DbStatute.Interfaces.Singles;
 using DbStatute.Querying;
 using RepoDb;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 
 namespace DbStatute.Singles
 {
-    public class SingleMergeByProxy<TModel, TMergeProxy> : SingleMergeBase<TModel>, ISingleMergeByProxy<TModel, TMergeProxy>
+    public class SingleMergeByProxy<TModel> : SingleMergeBase<TModel>, ISingleMergeByProxy<TModel>
         where TModel : class, IModel, new()
-        where TMergeProxy : class, IMergeProxy<TModel>
     {
         public SingleMergeByProxy()
         {
-            MergeProxy = new MergeProxy<TModel>() as TMergeProxy;
+            MergeProxy = new MergeProxy<TModel>();
         }
 
-        public SingleMergeByProxy(TMergeProxy mergeProxy)
+        public SingleMergeByProxy(IMergeProxy<TModel> mergeProxy)
         {
-            MergeProxy = mergeProxy ?? throw new System.ArgumentNullException(nameof(mergeProxy));
+            MergeProxy = mergeProxy ?? throw new ArgumentNullException(nameof(mergeProxy));
         }
 
-        public TMergeProxy MergeProxy { get; }
+        public IMergeProxy<TModel> MergeProxy { get; }
+
+        IMergeProxy ISingleMergeByProxy.MergeProxy => MergeProxy;
 
         protected override async Task<TModel> MergeOperationAsync(IDbConnection dbConnection)
         {
             IModelQualifierGroup<TModel> modelQualifierGroup = MergeProxy.ModelQualifierGroup;
 
-            Logs.AddRange(modelQualifierGroup.Build<TModel>(out TModel model));
+            Logs.AddRange(modelQualifierGroup.Build(out TModel model));
 
             if (ReadOnlyLogs.Safely)
             {

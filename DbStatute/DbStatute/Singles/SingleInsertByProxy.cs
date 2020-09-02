@@ -12,16 +12,17 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Singles
 {
-    public class SingleInsertByProxy<TModel, TInsertProxy> : SingleInsertBase<TModel>, ISingleInsertByProxy<TModel, TInsertProxy>
+    public class SingleInsertByProxy<TModel> : SingleInsertBase<TModel>, ISingleInsertByProxy<TModel>
         where TModel : class, IModel, new()
-        where TInsertProxy : IInsertProxy<TModel>
     {
-        public SingleInsertByProxy(TInsertProxy insertProxy)
+        public SingleInsertByProxy(IInsertProxy<TModel> insertProxy)
         {
             InsertProxy = insertProxy ?? throw new ArgumentNullException(nameof(insertProxy));
         }
 
-        public TInsertProxy InsertProxy { get; }
+        public IInsertProxy<TModel> InsertProxy { get; }
+
+        IInsertProxy ISingleInsertByQuery.InsertProxy => InsertProxy;
 
         protected override async Task<TModel> InsertOperationAsync(IDbConnection dbConnection)
         {

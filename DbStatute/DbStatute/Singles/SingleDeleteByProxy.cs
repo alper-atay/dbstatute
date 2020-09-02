@@ -15,21 +15,22 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Singles
 {
-    public class SingleDeleteByProxy<TModel, TDeleteProxy> : SingleDeleteBase<TModel>, ISingleDeleteByProxy<TModel, TDeleteProxy>
+    public class SingleDeleteByProxy<TModel> : SingleDeleteBase<TModel>, ISingleDeleteByProxy<TModel>
         where TModel : class, IModel, new()
-        where TDeleteProxy : class, IDeleteProxy<TModel>
     {
         public SingleDeleteByProxy()
         {
-            DeleteProxy = new DeleteProxy<TModel>() as TDeleteProxy;
+            DeleteProxy = new DeleteProxy<TModel>();
         }
 
-        public SingleDeleteByProxy(TDeleteProxy deleteProxy)
+        public SingleDeleteByProxy(IDeleteProxy<TModel> deleteProxy)
         {
             DeleteProxy = deleteProxy ?? throw new ArgumentNullException(nameof(deleteProxy));
         }
 
-        public TDeleteProxy DeleteProxy { get; }
+        public IDeleteProxy<TModel> DeleteProxy { get; }
+
+        IDeleteProxy ISingleDeleteByProxy.DeleteProxy => DeleteProxy;
 
         protected override async Task<TModel> DeleteOperationAsync(IDbConnection dbConnection)
         {

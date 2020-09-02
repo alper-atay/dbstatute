@@ -12,35 +12,37 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Singles
 {
-    public class SingleInsertByRawModel<TModel, TFieldQualifier, TPredicateFieldQualifier> : SingleInsertBase<TModel>, ISingleInsertByRawModel<TModel, TFieldQualifier, TPredicateFieldQualifier>
+    public class SingleInsertByRawModel<TModel> : SingleInsertBase<TModel>, ISingleInsertByRawModel<TModel>
         where TModel : class, IModel, new()
-        where TFieldQualifier : class, IFieldQualifier<TModel>
-        where TPredicateFieldQualifier : class, IPredicateFieldQualifier<TModel>
     {
         public SingleInsertByRawModel(TModel rawModel)
         {
             RawModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
-            FieldQualifier = new FieldQualifier<TModel>() as TFieldQualifier;
-            PredicateFieldQualifier = new PredicateFieldQualifier<TModel>() as TPredicateFieldQualifier;
+            FieldQualifier = new FieldQualifier<TModel>();
+            PredicateFieldQualifier = new PredicateFieldQualifier<TModel>();
         }
 
-        public SingleInsertByRawModel(TModel rawModel, TFieldQualifier fieldQualifier)
+        public SingleInsertByRawModel(TModel rawModel, IFieldQualifier<TModel> fieldQualifier)
         {
             RawModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
             FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
-            PredicateFieldQualifier = new PredicateFieldQualifier<TModel>() as TPredicateFieldQualifier;
+            PredicateFieldQualifier = new PredicateFieldQualifier<TModel>();
         }
 
-        public SingleInsertByRawModel(TModel rawModel, TFieldQualifier fieldQualifier, TPredicateFieldQualifier predicateFieldQualifier)
+        public SingleInsertByRawModel(TModel rawModel, IFieldQualifier<TModel> fieldQualifier, IPredicateFieldQualifier<TModel> predicateFieldQualifier)
         {
             RawModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
             FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
             PredicateFieldQualifier = predicateFieldQualifier ?? throw new ArgumentNullException(nameof(predicateFieldQualifier));
         }
 
-        public TFieldQualifier FieldQualifier { get; }
+        public IFieldQualifier<TModel> FieldQualifier { get; }
 
-        public TPredicateFieldQualifier PredicateFieldQualifier { get; }
+        IFieldQualifier ISingleInsertByRawModel.FieldQualifier => FieldQualifier;
+
+        public IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
+
+        IPredicateFieldQualifier ISingleInsertByRawModel.PredicateFieldQualifier => PredicateFieldQualifier;
 
         public TModel RawModel { get; }
 
