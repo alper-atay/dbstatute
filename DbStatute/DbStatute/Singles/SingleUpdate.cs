@@ -10,6 +10,11 @@ namespace DbStatute.Singles
     public class SingleUpdate<TModel> : SingleUpdateBase<TModel>, ISingleUpdate<TModel>
         where TModel : class, IModel, new()
     {
+        public SingleUpdate(TModel readyModel)
+        {
+            ReadyModel = readyModel ?? throw new ArgumentNullException(nameof(readyModel));
+        }
+
         public TModel ReadyModel { get; }
 
         object IReadyModel.ReadyModel => ReadyModel;

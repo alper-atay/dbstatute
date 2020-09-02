@@ -5,6 +5,7 @@ using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
 using DbStatute.Interfaces.Qualifiers.Groups;
 using DbStatute.Interfaces.Singles;
+using DbStatute.Querying;
 using RepoDb;
 using System.Collections.Generic;
 using System.Data;
@@ -16,6 +17,16 @@ namespace DbStatute.Singles
     public class SingleUpdateByProxy<TModel> : SingleUpdateBase<TModel>, ISingleUpdateByProxy
         where TModel : class, IModel, new()
     {
+        public SingleUpdateByProxy()
+        {
+            UpdateProxy = new UpdateProxy<TModel>();
+        }
+
+        public SingleUpdateByProxy(IUpdateProxy<TModel> updateProxy)
+        {
+            UpdateProxy = updateProxy ?? throw new System.ArgumentNullException(nameof(updateProxy));
+        }
+
         public IUpdateProxy<TModel> UpdateProxy { get; }
 
         IUpdateProxy ISingleUpdateByProxy.UpdateProxy => UpdateProxy;
