@@ -4,6 +4,7 @@ using DbStatute.Interfaces;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers.Groups;
 using DbStatute.Interfaces.Singles;
+using DbStatute.Querying;
 using RepoDb;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,11 @@ namespace DbStatute.Singles
     public class SingleInsertByProxy<TModel> : SingleInsertBase<TModel>, ISingleInsertByProxy<TModel>
         where TModel : class, IModel, new()
     {
+        public SingleInsertByProxy()
+        {
+            InsertProxy = new InsertProxy<TModel>();
+        }
+
         public SingleInsertByProxy(IInsertProxy<TModel> insertProxy)
         {
             InsertProxy = insertProxy ?? throw new ArgumentNullException(nameof(insertProxy));
