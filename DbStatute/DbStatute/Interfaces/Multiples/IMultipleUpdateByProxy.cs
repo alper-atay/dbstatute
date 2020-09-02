@@ -8,7 +8,7 @@ namespace DbStatute.Interfaces.Multiples
         IUpdateProxy UpdateProxy { get; }
     }
 
-    public interface IMultipleUpdateByQuery<TModel> : IMultipleUpdateBase<TModel>, IMultipleUpdateByProxy
+    public interface IMultipleUpdateByProxy<TModel> : IMultipleUpdateBase<TModel>, IMultipleUpdateByProxy
         where TModel : class, IModel, new()
     {
         new IUpdateProxy<TModel> UpdateProxy { get; }

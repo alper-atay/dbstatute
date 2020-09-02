@@ -43,7 +43,5 @@ namespace DbStatute.Extensions
 
             return fieldHashSet.IsSubsetOf(modelFieldHashSet);
         }
-
-
     }
 }

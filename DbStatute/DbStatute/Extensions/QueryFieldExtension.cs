@@ -77,7 +77,6 @@ namespace DbStatute.Extensions
             return logs;
         }
 
-
         public static IReadOnlyLogbook CreateQueryFields<TModel>(IFieldCollection fields, IFieldValuePairs fieldValuePairs, IFieldPredicatePairs fieldPredicatePairs, IFieldOperationPairs fieldOperationPairs, out IEnumerable<QueryField> queryFields) where TModel : class, IModel, new()
         {
             queryFields = Enumerable.Empty<QueryField>();

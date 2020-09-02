@@ -28,7 +28,7 @@ namespace DbStatute.Singles
 
         public IInsertProxy<TModel> InsertProxy { get; }
 
-        IInsertProxy ISingleInsertByQuery.InsertProxy => InsertProxy;
+        IInsertProxy ISingleInsertByProxy.InsertProxy => InsertProxy;
 
         protected override async Task<TModel> InsertOperationAsync(IDbConnection dbConnection)
         {
