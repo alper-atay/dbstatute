@@ -21,28 +21,27 @@ namespace DbStatute.Multiples
 
         public IEnumerable<object> Ids { get; }
 
-        protected override async IAsyncEnumerable<TModel> DeleteAsSinglyOperationAsync(IDbConnection dbConnection, bool allowNullReturnIfDeleted = false)
+        protected override async IAsyncEnumerable<TModel> DeleteAsSinglyOperationAsync(IDbConnection dbConnection)
         {
-            foreach (object id in Ids)
+            int idCount = Ids.Count();
+
+            if (idCount > 0)
             {
-                TModel deletedModel = await dbConnection.QueryAsync<TModel>(id, null, null, 1, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder)
-                    .ContinueWith(x => x.Result.FirstOrDefault());
-
-                int deletedCount = await dbConnection.DeleteAsync<TModel>(id, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
-
-                if (deletedCount > 0 && !(deletedModel is null))
+                foreach (object id in Ids)
                 {
-                    yield return deletedModel;
-                }
-                else if (deletedCount > 0 && deletedModel is null)
-                {
-                    if (allowNullReturnIfDeleted)
+                    TModel selectedModel = await dbConnection.QueryAsync<TModel>(id, null, null, 1, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder)
+                        .ContinueWith(x => x.Result.FirstOrDefault());
+
+                    if (selectedModel is null)
                     {
-                        yield return null;
+                        continue;
                     }
-                    else
+
+                    int deletedCount = await dbConnection.DeleteAsync<TModel>(id, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+
+                    if (deletedCount > 0)
                     {
-                        yield return new TModel() { Id = id };
+                        yield return selectedModel;
                     }
                 }
             }
@@ -50,12 +49,33 @@ namespace DbStatute.Multiples
 
         protected override async Task<IEnumerable<TModel>> DeleteOperationAsync(IDbConnection dbConnection)
         {
-            QueryField queryField = new QueryField("Id", Operation.In, Ids);
-            IEnumerable<TModel> deletedModels = await dbConnection.QueryAsync<TModel>(queryField, null, null, null, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder);
+            var idCount = Ids.Count();
 
-            int deletedCount = await dbConnection.DeleteAsync<TModel>(queryField, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+            if (idCount > 0)
+            {
+                QueryField idsInQuery = new QueryField(nameof(IModel.Id), Operation.In, Ids);
 
-            return deletedCount > 0 ? deletedModels : null;
+                IEnumerable<TModel> selectedModels = await dbConnection.QueryAsync<TModel>(idsInQuery, null, null, null, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder);
+
+                int selectedCount = selectedModels.Count();
+
+                if (selectedCount > 0)
+                {
+                    int deletedCount = await dbConnection.DeleteAsync<TModel>(idsInQuery, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+
+                    if (deletedCount != selectedCount)
+                    {
+                        Logs.Warning($"{selectedCount} models selected and {deletedCount} models deleted");
+                    }
+
+                    if (deletedCount > 0)
+                    {
+                        return selectedModels;
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace DbStatute.Extensions
 
             ILogbook logs = Logger.NewLogbook();
 
-            logs.AddRange(QueryFieldExtension.CreateQueryFields(selectQualifierGroup.FieldQualifier, selectQualifierGroup.ValueFieldQualifier, selectQualifierGroup.PredicateFieldQualifier, selectQualifierGroup.OperationFieldQualifier, out IEnumerable<QueryField> queryFields));
+            logs.AddRange(QueryFieldExtension.Build(selectQualifierGroup.FieldQualifier, selectQualifierGroup.ValueFieldQualifier, selectQualifierGroup.PredicateFieldQualifier, selectQualifierGroup.OperationFieldQualifier, out IEnumerable<QueryField> queryFields));
 
             if (logs.Safely)
             {
@@ -30,7 +30,7 @@ namespace DbStatute.Extensions
 
             ILogbook logs = Logger.NewLogbook();
 
-            logs.AddRange(QueryFieldExtension.CreateQueryFields<TModel>(selectQualifierGroup.FieldQualifier, selectQualifierGroup.ValueFieldQualifier, selectQualifierGroup.PredicateFieldQualifier, selectQualifierGroup.OperationFieldQualifier, out IEnumerable<QueryField> queryFields));
+            logs.AddRange(QueryFieldExtension.Build<TModel>(selectQualifierGroup.FieldQualifier, selectQualifierGroup.ValueFieldQualifier, selectQualifierGroup.PredicateFieldQualifier, selectQualifierGroup.OperationFieldQualifier, out IEnumerable<QueryField> queryFields));
 
             if (logs.Safely)
             {

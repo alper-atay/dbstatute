@@ -22,6 +22,8 @@ namespace DbStatute.Querying
             InsertedFieldQualifier = insertedFieldQualifier ?? throw new ArgumentNullException(nameof(insertedFieldQualifier));
         }
 
+        public int? InsertCount { get; set; }
+
         public IFieldQualifier InsertedFieldQualifier { get; }
 
         public IModelQualifierGroup ModelQualifierGroup { get; }
@@ -39,6 +41,8 @@ namespace DbStatute.Querying
         {
             InsertedFieldQualifier = insertedFieldQualifier ?? throw new ArgumentNullException(nameof(insertedFieldQualifier));
         }
+
+        public int? InsertCount { get; set; }
 
         public IFieldQualifier<TModel> InsertedFieldQualifier { get; }
 

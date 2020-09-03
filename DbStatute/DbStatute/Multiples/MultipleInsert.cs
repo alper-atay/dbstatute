@@ -5,6 +5,7 @@ using RepoDb;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DbStatute.Multiples
@@ -23,9 +24,14 @@ namespace DbStatute.Multiples
 
         protected override async IAsyncEnumerable<TModel> InsertAsSingleOperationAsync(IDbConnection dbConnection)
         {
-            foreach (TModel readyModel in ReadyModels)
+            foreach (TModel selectedModel in ReadyModels)
             {
-                TModel insertedModel = await dbConnection.InsertAsync<TModel, TModel>(readyModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                TModel insertedModel = await dbConnection.InsertAsync<TModel, TModel>(selectedModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+
+                if (insertedModel is null)
+                {
+                    continue;
+                }
 
                 yield return insertedModel;
             }
@@ -33,9 +39,24 @@ namespace DbStatute.Multiples
 
         protected override async Task<IEnumerable<TModel>> InsertOperationAsync(IDbConnection dbConnection)
         {
-            int insertedCount = await dbConnection.InsertAllAsync(ReadyModels, BatchSize, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+            int selectedCount = ReadyModels.Count();
 
-            return insertedCount > 0 ? ReadyModels : null;
+            if (selectedCount > 0)
+            {
+                int insertedCount = await dbConnection.InsertAllAsync(ReadyModels, BatchSize, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+
+                if (insertedCount != selectedCount)
+                {
+                    Logs.Warning($"{selectedCount} models selected and {insertedCount} models inserted");
+                }
+
+                if (insertedCount > 0)
+                {
+                    return ReadyModels;
+                }
+            }
+
+            return null;
         }
     }
 }

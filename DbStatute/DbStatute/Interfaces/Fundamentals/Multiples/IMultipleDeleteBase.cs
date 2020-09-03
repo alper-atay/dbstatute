@@ -8,7 +8,7 @@ namespace DbStatute.Interfaces.Fundamentals.Multiples
     {
         IEnumerable<object> DeletedModels { get; }
 
-        IAsyncEnumerable<object> DeleteAsSinglyAsync(IDbConnection dbConnection, bool allowNullReturnIfDeleted = false);
+        IAsyncEnumerable<object> DeleteAsSinglyAsync(IDbConnection dbConnection);
 
         Task<IEnumerable<object>> DeleteAsync(IDbConnection dbConnection);
     }
@@ -18,7 +18,7 @@ namespace DbStatute.Interfaces.Fundamentals.Multiples
     {
         new IEnumerable<TModel> DeletedModels { get; }
 
-        new IAsyncEnumerable<TModel> DeleteAsSinglyAsync(IDbConnection dbConnection, bool allowNullReturnIfDeleted = false);
+        new IAsyncEnumerable<TModel> DeleteAsSinglyAsync(IDbConnection dbConnection);
 
         new Task<IEnumerable<TModel>> DeleteAsync(IDbConnection dbConnection);
     }

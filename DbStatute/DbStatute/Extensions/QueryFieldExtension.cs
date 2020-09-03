@@ -11,7 +11,7 @@ namespace DbStatute.Extensions
 {
     public static class QueryFieldExtension
     {
-        public static IReadOnlyLogbook CreateQueryFields<TModel>(IFieldCollection fields, IFieldValuePairs fieldValuePairs, IFieldPredicatePairs fieldPredicatePairs, out IEnumerable<QueryField> queryFields) where TModel : class, IModel, new()
+        public static IReadOnlyLogbook Build<TModel>(IFieldCollection fields, IFieldValuePairs fieldValuePairs, IFieldPredicatePairs fieldPredicatePairs, out IEnumerable<QueryField> queryFields) where TModel : class, IModel, new()
         {
             queryFields = Enumerable.Empty<QueryField>();
 
@@ -44,7 +44,7 @@ namespace DbStatute.Extensions
             return logs;
         }
 
-        public static IReadOnlyLogbook CreateQueryFields(IFieldCollection fields, IFieldValuePairs fieldValuePairs, IFieldPredicatePairs fieldPredicatePairs, IFieldOperationPairs fieldOperationPairs, out IEnumerable<QueryField> queryFields)
+        public static IReadOnlyLogbook Build(IFieldCollection fields, IFieldValuePairs fieldValuePairs, IFieldPredicatePairs fieldPredicatePairs, IFieldOperationPairs fieldOperationPairs, out IEnumerable<QueryField> queryFields)
         {
             queryFields = Enumerable.Empty<QueryField>();
 
@@ -77,7 +77,7 @@ namespace DbStatute.Extensions
             return logs;
         }
 
-        public static IReadOnlyLogbook CreateQueryFields<TModel>(IFieldCollection fields, IFieldValuePairs fieldValuePairs, IFieldPredicatePairs fieldPredicatePairs, IFieldOperationPairs fieldOperationPairs, out IEnumerable<QueryField> queryFields) where TModel : class, IModel, new()
+        public static IReadOnlyLogbook Build<TModel>(IFieldCollection fields, IFieldValuePairs fieldValuePairs, IFieldPredicatePairs fieldPredicatePairs, IFieldOperationPairs fieldOperationPairs, out IEnumerable<QueryField> queryFields) where TModel : class, IModel, new()
         {
             queryFields = Enumerable.Empty<QueryField>();
 

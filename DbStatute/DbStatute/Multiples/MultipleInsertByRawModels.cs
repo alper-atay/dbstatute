@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DbStatute.Multiples
@@ -46,17 +47,28 @@ namespace DbStatute.Multiples
 
         protected override async IAsyncEnumerable<TModel> InsertAsSingleOperationAsync(IDbConnection dbConnection)
         {
-            if (FieldQualifier.Build<TModel>(out IEnumerable<Field> fields))
+            int selectedCount = RawModels.Count();
+
+            if (selectedCount > 0)
             {
+                bool fieldsBuilt = FieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
+
+                if (!fieldsBuilt)
+                {
+                    fields = null;
+                }
+
                 foreach (TModel rawModel in RawModels)
                 {
-                    IReadOnlyLogbook rawModelPredicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier);
-
-                    Logs.AddRange(rawModelPredicateLogs);
-
-                    if (!rawModelPredicateLogs.Safely)
+                    if (fieldsBuilt)
                     {
-                        continue;
+                        IReadOnlyLogbook predicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier);
+                        Logs.AddRange(predicateLogs);
+
+                        if (!predicateLogs.Safely)
+                        {
+                            continue;
+                        }
                     }
 
                     TModel insertedModel = await dbConnection.InsertAsync<TModel, TModel>(rawModel, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
@@ -68,29 +80,45 @@ namespace DbStatute.Multiples
 
         protected override async Task<IEnumerable<TModel>> InsertOperationAsync(IDbConnection dbConnection)
         {
-            if (FieldQualifier.Build<TModel>(out IEnumerable<Field> fields))
+            int selectedCount = RawModels.Count();
+
+            if (selectedCount > 0)
             {
-                ICollection<TModel> readyModels = new Collection<TModel>();
+                bool fieldsBuilt = FieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
+
+                if (!fieldsBuilt)
+                {
+                    fields = null;
+                }
+
+                ICollection<TModel> insertModels = new Collection<TModel>();
 
                 foreach (TModel rawModel in RawModels)
                 {
-                    IReadOnlyLogbook rawModelPredicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier);
-
-                    Logs.AddRange(rawModelPredicateLogs);
-
-                    if (!rawModelPredicateLogs.Safely)
+                    if (fieldsBuilt)
                     {
-                        continue;
+                        IReadOnlyLogbook predicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier);
+                        Logs.AddRange(predicateLogs);
+
+                        if (!predicateLogs.Safely)
+                        {
+                            continue;
+                        }
                     }
 
-                    readyModels.Add(rawModel);
+                    insertModels.Add(rawModel);
                 }
 
-                if (readyModels.Count > 0)
+                if (insertModels.Count > 0)
                 {
-                    int insertedCount = await dbConnection.InsertAllAsync(readyModels, BatchSize, fields, Hints, CommandTimeout, Transaction);
+                    int insertedCount = await dbConnection.InsertAllAsync(insertModels, BatchSize, fields, Hints, CommandTimeout, Transaction);
 
-                    return insertedCount > 0 ? readyModels : null;
+                    if(insertedCount > 0)
+                    {
+                        return insertModels;
+                    }
+
+                    return insertedCount > 0 ? insertModels : null;
                 }
             }
 

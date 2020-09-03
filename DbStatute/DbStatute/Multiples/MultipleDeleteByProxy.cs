@@ -1,11 +1,14 @@
-﻿using DbStatute.Fundamentals.Multiples;
+﻿using DbStatute.Extensions;
+using DbStatute.Fundamentals.Multiples;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Proxies;
+using RepoDb;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DbStatute.Multiples
@@ -27,14 +30,84 @@ namespace DbStatute.Multiples
 
         IDeleteProxy IMultipleDeleteByProxy.DeleteProxy => DeleteProxy;
 
-        protected override IAsyncEnumerable<TModel> DeleteAsSinglyOperationAsync(IDbConnection dbConnection, bool allowNullReturnIfDeleted = false)
+        protected override async IAsyncEnumerable<TModel> DeleteAsSinglyOperationAsync(IDbConnection dbConnection)
         {
-            throw new NotImplementedException();
+            Logs.AddRange(DeleteProxy.SelectProxy.SelectQualifierGroup.Build<TModel>(out QueryGroup queryGroup));
+
+            if (ReadOnlyLogs.Safely)
+            {
+                bool fieldsBuilt = DeleteProxy.SelectProxy.SelectedFieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
+                bool orderFieldsBuilt = DeleteProxy.SelectProxy.OrderFieldQualifier.Build<TModel>(out IEnumerable<OrderField> orderFields);
+
+                if (fieldsBuilt)
+                {
+                    fields = null;
+                }
+
+                if (orderFieldsBuilt)
+                {
+                    orderFields = null;
+                }
+
+                IEnumerable<TModel> selectedModels = await dbConnection.QueryAsync<TModel>(queryGroup, fields, orderFields, null, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder);
+
+                int selectedCount = selectedModels.Count();
+
+                if (selectedCount > 0)
+                {
+                    foreach (TModel selectedModel in selectedModels)
+                    {
+                        int deletedCount = await dbConnection.DeleteAsync(selectedModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+
+                        if (deletedCount > 0)
+                        {
+                            yield return selectedModel;
+                        }
+                    }
+                }
+            }
         }
 
-        protected override Task<IEnumerable<TModel>> DeleteOperationAsync(IDbConnection dbConnection)
+        protected override async Task<IEnumerable<TModel>> DeleteOperationAsync(IDbConnection dbConnection)
         {
-            throw new NotImplementedException();
+            Logs.AddRange(DeleteProxy.SelectProxy.SelectQualifierGroup.Build<TModel>(out QueryGroup queryGroup));
+
+            if (ReadOnlyLogs.Safely)
+            {
+                bool fieldsBuilt = DeleteProxy.SelectProxy.SelectedFieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
+                bool orderFieldsBuilt = DeleteProxy.SelectProxy.OrderFieldQualifier.Build<TModel>(out IEnumerable<OrderField> orderFields);
+
+                if (fieldsBuilt)
+                {
+                    fields = null;
+                }
+
+                if (orderFieldsBuilt)
+                {
+                    orderFields = null;
+                }
+
+                IEnumerable<TModel> selectedModels = await dbConnection.QueryAsync<TModel>(queryGroup, fields, orderFields, null, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder);
+
+                int selectedCount = selectedModels.Count();
+
+                if (selectedCount > 0)
+                {
+                    int deletedCount = await dbConnection.DeleteAllAsync(selectedModels, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+
+                    if (deletedCount != selectedCount)
+                    {
+                        Logs.Warning($"{selectedCount} models selected and {deletedCount} models deleted");
+                    }
+
+                    if (deletedCount > 0)
+                    {
+                        return selectedModels;
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }

@@ -22,42 +22,41 @@ namespace DbStatute.Multiples
 
         IEnumerable<object> IReadyModels.ReadyModels => ReadyModels;
 
-        protected override async IAsyncEnumerable<TModel> DeleteAsSinglyOperationAsync(IDbConnection dbConnection, bool allowNullReturnIfDeleted = false)
+        protected override async IAsyncEnumerable<TModel> DeleteAsSinglyOperationAsync(IDbConnection dbConnection)
         {
-            foreach (TModel deletedModel in ReadyModels)
+            int selectedCount = ReadyModels.Count();
+
+            if (selectedCount > 0)
             {
-                if (deletedModel is null)
+                foreach (TModel selectedModel in ReadyModels)
                 {
-                    continue;
-                }
+                    int deletedCount = await dbConnection.DeleteAsync(selectedModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
-                int deletedCount = await dbConnection.DeleteAsync(deletedModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
-
-                if (deletedCount > 0 && !(deletedModel is null))
-                {
-                    yield return deletedModel;
-                }
-                else if (deletedCount > 0 && deletedModel is null && allowNullReturnIfDeleted)
-                {
-                    yield return null;
+                    if (deletedCount > 0)
+                    {
+                        yield return selectedModel;
+                    }
                 }
             }
         }
 
         protected override async Task<IEnumerable<TModel>> DeleteOperationAsync(IDbConnection dbConnection)
         {
-            int deletedCount = await dbConnection.DeleteAllAsync(ReadyModels, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+            int selectedCount = ReadyModels.Count();
 
-            if (deletedCount > 0)
+            if (selectedCount > 0)
             {
-                int readyModelCount = ReadyModels.Count();
+                int deletedCount = await dbConnection.DeleteAllAsync(ReadyModels, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
-                if (deletedCount != readyModelCount)
+                if (deletedCount > 0)
                 {
-                    Logs.Warning($"{readyModelCount} models inputted and {deletedCount} models deleted");
-                }
+                    if (deletedCount != selectedCount)
+                    {
+                        Logs.Warning($"{selectedCount} models selected and {deletedCount} models deleted");
+                    }
 
-                return ReadyModels;
+                    return ReadyModels;
+                }
             }
 
             return null;
