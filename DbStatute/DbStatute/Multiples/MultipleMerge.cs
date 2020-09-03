@@ -5,6 +5,7 @@ using RepoDb;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DbStatute.Multiples
@@ -25,15 +26,37 @@ namespace DbStatute.Multiples
         {
             foreach (TModel readyModel in ReadyModels)
             {
-                yield return await dbConnection.MergeAsync<TModel, TModel>(readyModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                TModel mergedModel = await dbConnection.MergeAsync<TModel, TModel>(readyModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+
+                if (mergedModel is null)
+                {
+                    continue;
+                }
+
+                yield return mergedModel;
             }
         }
 
         protected override async Task<IEnumerable<TModel>> MergeOperationAsync(IDbConnection dbConnection)
         {
-            int mergedCount = await dbConnection.MergeAllAsync<TModel>(ReadyModels, BatchSize, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+            int readyModelCount = ReadyModels.Count();
 
-            return mergedCount > 0 ? ReadyModels : null;
+            if (readyModelCount > 0)
+            {
+                int mergedCount = await dbConnection.MergeAllAsync(ReadyModels, BatchSize, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+
+                if (mergedCount != readyModelCount)
+                {
+                    Logs.Warning($"{readyModelCount} models selected and {mergedCount} models merged");
+                }
+
+                if (mergedCount > 0)
+                {
+                    return ReadyModels;
+                }
+            }
+
+            return null;
         }
     }
 }

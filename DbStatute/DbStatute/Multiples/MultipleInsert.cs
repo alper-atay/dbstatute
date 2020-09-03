@@ -1,4 +1,5 @@
-﻿using DbStatute.Fundamentals.Multiples;
+﻿using DbStatute.Extensions;
+using DbStatute.Fundamentals.Multiples;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Multiples;
 using RepoDb;
@@ -24,14 +25,9 @@ namespace DbStatute.Multiples
 
         protected override async IAsyncEnumerable<TModel> InsertAsSingleOperationAsync(IDbConnection dbConnection)
         {
-            foreach (TModel selectedModel in ReadyModels)
+            foreach (TModel readyModel in ReadyModels)
             {
-                TModel insertedModel = await dbConnection.InsertAsync<TModel, TModel>(selectedModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
-
-                if (insertedModel is null)
-                {
-                    continue;
-                }
+                TModel insertedModel = await dbConnection.InsertAsync<TModel, TModel>(readyModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
                 yield return insertedModel;
             }
@@ -39,20 +35,24 @@ namespace DbStatute.Multiples
 
         protected override async Task<IEnumerable<TModel>> InsertOperationAsync(IDbConnection dbConnection)
         {
-            int selectedCount = ReadyModels.Count();
+            int readyModelCount = ReadyModels.Count();
 
-            if (selectedCount > 0)
+            if (readyModelCount > 0)
             {
                 int insertedCount = await dbConnection.InsertAllAsync(ReadyModels, BatchSize, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
-                if (insertedCount != selectedCount)
+                if (insertedCount != readyModelCount)
                 {
-                    Logs.Warning($"{selectedCount} models selected and {insertedCount} models inserted");
+                    Logs.Warning($"{readyModelCount} models selected and {insertedCount} models inserted");
                 }
 
                 if (insertedCount > 0)
                 {
-                    return ReadyModels;
+                    QueryField modelIdsInQuery = ReadyModels.GetIdsInQuery();
+
+                    IEnumerable<TModel> insertedModels = await dbConnection.QueryAsync<TModel>(modelIdsInQuery, null, null, null, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder);
+
+                    return insertedModels;
                 }
             }
 

@@ -111,14 +111,12 @@ namespace DbStatute.Multiples
 
                 if (insertModels.Count > 0)
                 {
-                    int insertedCount = await dbConnection.InsertAllAsync(insertModels, BatchSize, fields, Hints, CommandTimeout, Transaction);
+                    int insertedCount = await dbConnection.InsertAllAsync(insertModels, BatchSize, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
                     if(insertedCount > 0)
                     {
                         return insertModels;
                     }
-
-                    return insertedCount > 0 ? insertModels : null;
                 }
             }
 

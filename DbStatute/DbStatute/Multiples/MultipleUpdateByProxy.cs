@@ -29,6 +29,11 @@ namespace DbStatute.Multiples
 
         protected override IAsyncEnumerable<TModel> UpdateAsSinglyOperationAsync(IDbConnection dbConnection)
         {
+
+
+
+
+
             throw new NotImplementedException();
         }
 

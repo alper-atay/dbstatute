@@ -55,14 +55,23 @@ namespace DbStatute.Multiples
 
                 if (selectedCount > 0)
                 {
+                    int selectedDeleteCount = 0;
+
                     foreach (TModel selectedModel in selectedModels)
                     {
                         int deletedCount = await dbConnection.DeleteAsync(selectedModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+
+                        selectedDeleteCount += deletedCount;
 
                         if (deletedCount > 0)
                         {
                             yield return selectedModel;
                         }
+                    }
+
+                    if (selectedDeleteCount != selectedCount)
+                    {
+                        Logs.Warning($"{selectedCount} models selected and {selectedDeleteCount} models deleted");
                     }
                 }
             }

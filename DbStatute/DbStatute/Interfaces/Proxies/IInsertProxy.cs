@@ -6,8 +6,6 @@ namespace DbStatute.Interfaces.Proxies
 {
     public interface IInsertProxy : IProxyBase
     {
-        int? InsertCount { get; set; }
-
         IFieldQualifier InsertedFieldQualifier { get; }
 
         IModelQualifierGroup ModelQualifierGroup { get; }

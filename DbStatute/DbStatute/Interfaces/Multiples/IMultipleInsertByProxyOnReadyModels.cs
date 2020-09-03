@@ -3,12 +3,12 @@ using DbStatute.Interfaces.Proxies;
 
 namespace DbStatute.Interfaces.Multiples
 {
-    public interface IMultipleInsertByProxy : IMultipleInsertBase
+    public interface IMultipleInsertByProxyOnReadyModels : IMultipleInsertBase, IReadyModels
     {
         IInsertProxy InsertProxy { get; }
     }
 
-    public interface IMultipleInsertByProxy<TModel> : IMultipleInsertBase<TModel>, IMultipleInsertByProxy
+    public interface IMultipleInsertByProxyOnReadyModels<TModel> : IMultipleInsertBase<TModel>, IReadyModels<TModel>, IMultipleInsertByProxyOnReadyModels
         where TModel : class, IModel, new()
     {
         new IInsertProxy<TModel> InsertProxy { get; }

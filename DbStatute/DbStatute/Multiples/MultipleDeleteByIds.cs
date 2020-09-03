@@ -23,9 +23,9 @@ namespace DbStatute.Multiples
 
         protected override async IAsyncEnumerable<TModel> DeleteAsSinglyOperationAsync(IDbConnection dbConnection)
         {
-            int idCount = Ids.Count();
+            int modelIdCount = Ids.Count();
 
-            if (idCount > 0)
+            if (modelIdCount > 0)
             {
                 foreach (object id in Ids)
                 {
@@ -49,19 +49,19 @@ namespace DbStatute.Multiples
 
         protected override async Task<IEnumerable<TModel>> DeleteOperationAsync(IDbConnection dbConnection)
         {
-            var idCount = Ids.Count();
+            int modelIdCount = Ids.Count();
 
-            if (idCount > 0)
+            if (modelIdCount > 0)
             {
-                QueryField idsInQuery = new QueryField(nameof(IModel.Id), Operation.In, Ids);
+                QueryField modelIdsInQuery = new QueryField(nameof(IModel.Id), Operation.In, Ids);
 
-                IEnumerable<TModel> selectedModels = await dbConnection.QueryAsync<TModel>(idsInQuery, null, null, null, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder);
+                IEnumerable<TModel> selectedModels = await dbConnection.QueryAsync<TModel>(modelIdsInQuery, null, null, null, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder);
 
                 int selectedCount = selectedModels.Count();
 
                 if (selectedCount > 0)
                 {
-                    int deletedCount = await dbConnection.DeleteAsync<TModel>(idsInQuery, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                    int deletedCount = await dbConnection.DeleteAsync<TModel>(modelIdsInQuery, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
                     if (deletedCount != selectedCount)
                     {

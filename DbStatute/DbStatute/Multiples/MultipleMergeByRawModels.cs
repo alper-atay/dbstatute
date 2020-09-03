@@ -72,34 +72,37 @@ namespace DbStatute.Multiples
 
         protected override async Task<IEnumerable<TModel>> MergeOperationAsync(IDbConnection dbConnection)
         {
-            bool fieldQualified = FieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
+            bool fieldsBuilt = FieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
 
-            if (!fieldQualified)
+            if (!fieldsBuilt)
             {
                 fields = null;
             }
 
-            ICollection<TModel> readyModels = new Collection<TModel>();
+            ICollection<TModel> mergeModels = new Collection<TModel>();
 
             foreach (TModel rawModel in RawModels)
             {
-                IReadOnlyLogbook rawModelPredicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier);
+                IReadOnlyLogbook predicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier);
 
-                Logs.AddRange(rawModelPredicateLogs);
+                Logs.AddRange(predicateLogs);
 
-                if (!rawModelPredicateLogs.Safely)
+                if (!predicateLogs.Safely)
                 {
                     continue;
                 }
 
-                readyModels.Add(rawModel);
+                mergeModels.Add(rawModel);
             }
 
-            if (readyModels.Count > 0)
+            if (mergeModels.Count > 0)
             {
-                int mergedCount = await dbConnection.MergeAllAsync(readyModels, BatchSize, fields, Hints, CommandTimeout, Transaction);
+                int mergedCount = await dbConnection.MergeAllAsync(mergeModels, BatchSize, fields, Hints, CommandTimeout, Transaction);
 
-                return mergedCount > 0 ? readyModels : null;
+                if (mergedCount > 0)
+                {
+                    return mergeModels;
+                }
             }
 
             return null;

@@ -24,18 +24,13 @@ namespace DbStatute.Multiples
 
         protected override async IAsyncEnumerable<TModel> DeleteAsSinglyOperationAsync(IDbConnection dbConnection)
         {
-            int selectedCount = ReadyModels.Count();
-
-            if (selectedCount > 0)
+            foreach (TModel selectedModel in ReadyModels)
             {
-                foreach (TModel selectedModel in ReadyModels)
-                {
-                    int deletedCount = await dbConnection.DeleteAsync(selectedModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                int deletedCount = await dbConnection.DeleteAsync(selectedModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
-                    if (deletedCount > 0)
-                    {
-                        yield return selectedModel;
-                    }
+                if (deletedCount > 0)
+                {
+                    yield return selectedModel;
                 }
             }
         }
