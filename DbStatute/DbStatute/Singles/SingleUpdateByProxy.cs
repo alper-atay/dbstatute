@@ -5,7 +5,7 @@ using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
 using DbStatute.Interfaces.Qualifiers.Groups;
 using DbStatute.Interfaces.Singles;
-using DbStatute.Querying;
+using DbStatute.Proxies;
 using RepoDb;
 using System.Collections.Generic;
 using System.Data;

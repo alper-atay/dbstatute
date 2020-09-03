@@ -7,7 +7,7 @@ using DbStatute.Qualifiers;
 using DbStatute.Qualifiers.Group;
 using System;
 
-namespace DbStatute.Querying
+namespace DbStatute.Proxies
 {
     public class InsertProxy : StatuteProxyBase, IInsertProxy
     {
@@ -33,11 +33,13 @@ namespace DbStatute.Querying
         public InsertProxy()
         {
             InsertedFieldQualifier = new FieldQualifier<TModel>();
+            ModelQualifierGroup = new ModelQualifierGroup<TModel>();
         }
 
-        public InsertProxy(IFieldQualifier<TModel> insertedFieldQualifier)
+        public InsertProxy(IModelQualifierGroup<TModel> modelQualifierGroup, IFieldQualifier<TModel> insertedFieldQualifier)
         {
             InsertedFieldQualifier = insertedFieldQualifier ?? throw new ArgumentNullException(nameof(insertedFieldQualifier));
+            ModelQualifierGroup = modelQualifierGroup ?? throw new ArgumentNullException(nameof(modelQualifierGroup));
         }
 
         public IFieldQualifier<TModel> InsertedFieldQualifier { get; }

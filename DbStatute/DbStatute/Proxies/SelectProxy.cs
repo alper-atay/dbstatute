@@ -7,7 +7,7 @@ using DbStatute.Qualifiers;
 using DbStatute.Qualifiers.Group;
 using System;
 
-namespace DbStatute.Querying
+namespace DbStatute.Proxies
 {
     public class SelectProxy : StatuteProxyBase, ISelectProxy
     {

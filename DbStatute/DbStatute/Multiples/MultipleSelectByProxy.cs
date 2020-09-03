@@ -3,7 +3,7 @@ using DbStatute.Fundamentals.Multiples;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Proxies;
-using DbStatute.Querying;
+using DbStatute.Proxies;
 using RepoDb;
 using System;
 using System.Collections.Generic;

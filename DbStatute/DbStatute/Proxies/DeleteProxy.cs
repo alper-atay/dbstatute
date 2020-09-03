@@ -1,7 +1,6 @@
 ﻿using DbStatute.Fundamentals.Proxies;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Proxies;
-using DbStatute.Querying;
 
 namespace DbStatute.Proxies
 {
