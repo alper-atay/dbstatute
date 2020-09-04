@@ -4,7 +4,7 @@ using DbStatute.Interfaces.Qualifiers.Groups;
 using RepoDb.Enumerations;
 using System;
 
-namespace DbStatute.Qualifiers.Group
+namespace DbStatute.Qualifiers.Groups
 {
     public class SelectQualifierGroup : ModelQualifierGroup, ISelectQualifierGroup
     {

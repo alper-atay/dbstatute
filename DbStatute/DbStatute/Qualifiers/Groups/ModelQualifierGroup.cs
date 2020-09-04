@@ -3,7 +3,7 @@ using DbStatute.Interfaces.Qualifiers;
 using DbStatute.Interfaces.Qualifiers.Groups;
 using System;
 
-namespace DbStatute.Qualifiers.Group
+namespace DbStatute.Qualifiers.Groups
 {
     public class ModelQualifierGroup : IModelQualifierGroup
     {

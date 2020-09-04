@@ -4,7 +4,7 @@ using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
 using DbStatute.Interfaces.Qualifiers.Groups;
 using DbStatute.Qualifiers;
-using DbStatute.Qualifiers.Group;
+using DbStatute.Qualifiers.Groups;
 using System;
 
 namespace DbStatute.Proxies
