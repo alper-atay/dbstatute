@@ -71,6 +71,31 @@ namespace DbStatute.Internals
                     }
                 }
             }
+            else
+            {
+                Type modelType = typeof(TModel);
+
+                foreach (KeyValuePair<Field, ReadOnlyLogbookPredicate<object>> fieldPredicatePair in predicateFieldQualifier)
+                {
+                    Field field = fieldPredicatePair.Key;
+                    ReadOnlyLogbookPredicate<object> predicate = fieldPredicatePair.Value;
+
+                    if (predicate is null)
+                    {
+                        continue;
+                    }
+
+                    PropertyInfo modelProperty = modelType.GetProperty(field.Name);
+                    if (modelProperty is null)
+                    {
+                        throw new PropertyNotFoundException($"{field.Name} named property could not found in {modelType.FullName}");
+                    }
+
+                    object value = modelProperty.GetValue(model);
+
+                    logs.AddRange(predicate.Invoke(value));
+                }
+            }
 
             return logs;
         }

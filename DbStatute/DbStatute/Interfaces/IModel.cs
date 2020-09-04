@@ -1,6 +1,8 @@
-﻿namespace DbStatute.Interfaces
+﻿using System;
+
+namespace DbStatute.Interfaces
 {
-    public interface IModel
+    public interface IModel : ICloneable
     {
         object Id { get; set; }
     }

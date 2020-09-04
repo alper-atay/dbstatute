@@ -26,6 +26,20 @@ namespace DbStatute.Multiples
             PredicateFieldQualifier = new PredicateFieldQualifier<TModel>();
         }
 
+        public MultipleInsertByRawModels(IEnumerable<TModel> rawModels, IFieldQualifier<TModel> fieldQualifier)
+        {
+            RawModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
+            FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
+            PredicateFieldQualifier = new PredicateFieldQualifier<TModel>();
+        }
+
+        public MultipleInsertByRawModels(IEnumerable<TModel> rawModels, IPredicateFieldQualifier<TModel> predicateFieldQualifier)
+        {
+            RawModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
+            FieldQualifier = new FieldQualifier<TModel>();
+            PredicateFieldQualifier = predicateFieldQualifier ?? throw new ArgumentNullException(nameof(predicateFieldQualifier));
+        }
+
         public MultipleInsertByRawModels(IEnumerable<TModel> rawModels, IFieldQualifier<TModel> fieldQualifier, IPredicateFieldQualifier<TModel> predicateFieldQualifier)
         {
             RawModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
@@ -113,7 +127,7 @@ namespace DbStatute.Multiples
                 {
                     int insertedCount = await dbConnection.InsertAllAsync(insertModels, BatchSize, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
-                    if(insertedCount > 0)
+                    if (insertedCount > 0)
                     {
                         return insertModels;
                     }

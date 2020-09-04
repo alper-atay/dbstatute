@@ -29,6 +29,13 @@ namespace DbStatute.Singles
             PredicateFieldQualifier = new PredicateFieldQualifier<TModel>();
         }
 
+        public SingleInsertByRawModel(TModel rawModel, IPredicateFieldQualifier<TModel> predicateFieldQualifier)
+        {
+            RawModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
+            FieldQualifier = new FieldQualifier<TModel>();
+            PredicateFieldQualifier = predicateFieldQualifier ?? throw new ArgumentNullException(nameof(predicateFieldQualifier));
+        }
+
         public SingleInsertByRawModel(TModel rawModel, IFieldQualifier<TModel> fieldQualifier, IPredicateFieldQualifier<TModel> predicateFieldQualifier)
         {
             RawModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
