@@ -16,6 +16,10 @@ namespace DbStatute.Interfaces.Fundamentals
 
         string Hints { get; set; }
 
+        bool IsFailed { get; }
+
+        bool IsSucceed { get; }
+
         public IReadOnlyLogbook ReadOnlyLogs { get; }
 
         IStatementBuilder StatementBuilder { get; set; }

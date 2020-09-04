@@ -27,6 +27,8 @@ namespace DbStatute.Interfaces.Utilities
         int Unset(string name);
 
         bool Unset(OrderField orderField);
+
+        int UnsetAll();
     }
 
     public interface ISettableOrderField<TModel> : ISettableOrderField

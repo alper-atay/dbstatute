@@ -147,6 +147,15 @@ namespace DbStatute.Qualifiers
         {
             return _data.Remove(queryField);
         }
+
+        public int UnsetAll()
+        {
+            int unsettedCount = _data.Count;
+
+            _data.Clear();
+
+            return unsettedCount;
+        }
     }
 
     public class QueryFieldQualifier<TModel> : QueryFieldQualifier, IQueryFieldQualifier<TModel>

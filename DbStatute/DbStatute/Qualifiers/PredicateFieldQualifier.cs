@@ -116,6 +116,15 @@ namespace DbStatute.Qualifiers
         {
             return _data.Remove(field);
         }
+
+        public int UnsetAll()
+        {
+            int unsettedCount = _data.Count;
+
+            _data.Clear();
+
+            return unsettedCount;
+        }
     }
 
     public class PredicateFieldQualifier<TModel> : PredicateFieldQualifier, IPredicateFieldQualifier<TModel>

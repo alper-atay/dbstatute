@@ -28,6 +28,10 @@ namespace DbStatute.Fundamentals
 
         public string Hints { get; set; } = null;
 
+        public bool IsFailed => StatuteResult == StatuteResult.Failure;
+
+        public bool IsSucceed => StatuteResult == StatuteResult.Success;
+
         public IStatementBuilder StatementBuilder { get; set; } = null;
 
         public StatuteResult StatuteResult

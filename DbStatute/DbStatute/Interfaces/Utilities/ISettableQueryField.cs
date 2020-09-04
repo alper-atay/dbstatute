@@ -26,6 +26,8 @@ namespace DbStatute.Interfaces.Utilities
         int Unset(Field field);
 
         bool Unset(QueryField queryField);
+
+        int UnsetAll();
     }
 
     public interface ISettableQueryField<TModel> : ISettableQueryField

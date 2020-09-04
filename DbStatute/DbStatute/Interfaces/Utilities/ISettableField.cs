@@ -20,6 +20,8 @@ namespace DbStatute.Interfaces.Utilities
         bool Set(Field field, bool overrideEnabled = false);
 
         bool Unset(Field field);
+
+        int UnsetAll();
     }
 
     public interface ISettableField<TModel> : ISettableField

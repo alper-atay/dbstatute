@@ -9,7 +9,7 @@ using System;
 
 namespace DbStatute.Proxies
 {
-    public class UpdateProxy : StatuteProxyBase, IUpdateProxy
+    public class UpdateProxy : ProxyBase, IUpdateProxy
     {
         public UpdateProxy()
         {
@@ -28,7 +28,7 @@ namespace DbStatute.Proxies
         public IModelQualifierGroup ModelQualifierGroup { get; }
     }
 
-    public class UpdateProxy<TModel> : StatuteProxyBase<TModel>, IUpdateProxy<TModel>
+    public class UpdateProxy<TModel> : ProxyBase<TModel>, IUpdateProxy<TModel>
         where TModel : class, IModel, new()
     {
         public UpdateProxy()

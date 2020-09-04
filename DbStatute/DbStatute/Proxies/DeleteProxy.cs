@@ -4,7 +4,7 @@ using DbStatute.Interfaces.Proxies;
 
 namespace DbStatute.Proxies
 {
-    public class DeleteProxy : StatuteProxyBase, IDeleteProxy
+    public class DeleteProxy : ProxyBase, IDeleteProxy
     {
         public DeleteProxy(ISelectProxy selectProxy)
         {
@@ -14,7 +14,7 @@ namespace DbStatute.Proxies
         public ISelectProxy SelectProxy { get; }
     }
 
-    public class DeleteProxy<TModel> : StatuteProxyBase<TModel>, IDeleteProxy<TModel>
+    public class DeleteProxy<TModel> : ProxyBase<TModel>, IDeleteProxy<TModel>
         where TModel : class, IModel, new()
     {
         public DeleteProxy()

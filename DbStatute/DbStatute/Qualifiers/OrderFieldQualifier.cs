@@ -102,6 +102,15 @@ namespace DbStatute.Qualifiers
         {
             return _data.RemoveWhere(x => x.Name.Equals(name));
         }
+
+        public int UnsetAll()
+        {
+            int unsettedCount = _data.Count;
+
+            _data.Clear();
+
+            return unsettedCount;
+        }
     }
 
     public class OrderFieldQualifier<TModel> : OrderFieldQualifier, IOrderFieldQualifier<TModel>
