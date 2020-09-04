@@ -63,15 +63,15 @@ namespace DbStatute.Multiples
 
             if (ReadOnlyLogs.Safely)
             {
-                bool selectedFieldsBuilt = SelectProxy.SelectedFieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
-                bool selectedOrderFieldsBuilt = SelectProxy.OrderFieldQualifier.Build<TModel>(out IEnumerable<OrderField> orderFields);
+                bool fieldsBuilt = SelectProxy.SelectedFieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
+                bool orderFieldsBuilt = SelectProxy.OrderFieldQualifier.Build<TModel>(out IEnumerable<OrderField> orderFields);
 
-                if (selectedFieldsBuilt)
+                if (fieldsBuilt)
                 {
                     fields = null;
                 }
 
-                if (selectedOrderFieldsBuilt)
+                if (orderFieldsBuilt)
                 {
                     orderFields = null;
                 }
