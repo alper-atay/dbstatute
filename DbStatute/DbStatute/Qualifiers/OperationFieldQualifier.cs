@@ -12,7 +12,7 @@ namespace DbStatute.Qualifiers
 {
     public class OperationFieldQualifier : IOperationFieldQualifier
     {
-        private Dictionary<Field, Operation> _data = new Dictionary<Field, Operation>();
+        private readonly Dictionary<Field, Operation> _data = new Dictionary<Field, Operation>();
 
         public int Count => _data.Count;
 

@@ -2,9 +2,7 @@
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
-using DbStatute.Interfaces.Qualifiers.Groups;
 using DbStatute.Qualifiers;
-using DbStatute.Qualifiers.Groups;
 using System;
 
 namespace DbStatute.Proxies
@@ -13,19 +11,23 @@ namespace DbStatute.Proxies
     {
         public UpdateProxy()
         {
-            ModelQualifierGroup = new ModelQualifierGroup();
-            MergedFieldQualifier = new FieldQualifier();
+            FieldQualifier = new FieldQualifier();
+            ValueFieldQualifier = new ValueFieldQualifier();
+            PredicateFieldQualifier = new PredicateFieldQualifier();
         }
 
-        public UpdateProxy(IModelQualifierGroup modelQualifierGroup, IFieldQualifier fieldQualifier)
+        public UpdateProxy(IFieldQualifier fieldQualifier, IValueFieldQualifier valueFieldQualifier, IPredicateFieldQualifier predicateFieldQualifier)
         {
-            ModelQualifierGroup = modelQualifierGroup ?? throw new ArgumentNullException(nameof(modelQualifierGroup));
-            MergedFieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
+            FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
+            ValueFieldQualifier = valueFieldQualifier ?? throw new ArgumentNullException(nameof(valueFieldQualifier));
+            PredicateFieldQualifier = predicateFieldQualifier ?? throw new ArgumentNullException(nameof(predicateFieldQualifier));
         }
 
-        public IFieldQualifier MergedFieldQualifier { get; }
+        public IFieldQualifier FieldQualifier { get; }
 
-        public IModelQualifierGroup ModelQualifierGroup { get; }
+        public IPredicateFieldQualifier PredicateFieldQualifier { get; }
+
+        public IValueFieldQualifier ValueFieldQualifier { get; }
     }
 
     public class UpdateProxy<TModel> : ProxyBase<TModel>, IUpdateProxy<TModel>
@@ -33,22 +35,28 @@ namespace DbStatute.Proxies
     {
         public UpdateProxy()
         {
-            ModelQualifierGroup = new ModelQualifierGroup<TModel>();
-            MergedFieldQualifier = new FieldQualifier<TModel>();
+            FieldQualifier = new FieldQualifier<TModel>();
+            ValueFieldQualifier = new ValueFieldQualifier<TModel>();
+            PredicateFieldQualifier = new PredicateFieldQualifier<TModel>();
         }
 
-        public UpdateProxy(IModelQualifierGroup<TModel> modelQualifierGroup, IFieldQualifier<TModel> fieldQualifier)
+        public UpdateProxy(IFieldQualifier<TModel> updatedFieldQualifier, IValueFieldQualifier<TModel> valueFieldQualifier, IPredicateFieldQualifier<TModel> predicateFieldQualifier)
         {
-            ModelQualifierGroup = modelQualifierGroup ?? throw new ArgumentNullException(nameof(modelQualifierGroup));
-            MergedFieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
+            FieldQualifier = updatedFieldQualifier ?? throw new ArgumentNullException(nameof(updatedFieldQualifier));
+            ValueFieldQualifier = valueFieldQualifier ?? throw new ArgumentNullException(nameof(valueFieldQualifier));
+            PredicateFieldQualifier = predicateFieldQualifier ?? throw new ArgumentNullException(nameof(predicateFieldQualifier));
         }
 
-        public IFieldQualifier<TModel> MergedFieldQualifier { get; }
+        public IFieldQualifier<TModel> FieldQualifier { get; }
 
-        IFieldQualifier IUpdateProxy.MergedFieldQualifier => MergedFieldQualifier;
+        IFieldQualifier IUpdateProxy.FieldQualifier => FieldQualifier;
 
-        public IModelQualifierGroup<TModel> ModelQualifierGroup { get; }
+        public IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
 
-        IModelQualifierGroup IUpdateProxy.ModelQualifierGroup => ModelQualifierGroup;
+        IPredicateFieldQualifier IUpdateProxy.PredicateFieldQualifier => PredicateFieldQualifier;
+
+        public IValueFieldQualifier<TModel> ValueFieldQualifier { get; }
+
+        IValueFieldQualifier IUpdateProxy.ValueFieldQualifier => ValueFieldQualifier;
     }
 }

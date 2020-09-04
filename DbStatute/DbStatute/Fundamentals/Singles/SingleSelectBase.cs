@@ -6,6 +6,28 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Fundamentals.Singles
 {
+    public abstract class SingleSelectBase : SelectBase, ISingleSelectBase
+    {
+        private object _selectedModel;
+
+        public override int? MaxSelectCount => 1;
+
+        public override int SelectedCount => _selectedModel is null ? 0 : 1;
+
+        public object SelectedModel => _selectedModel;
+
+        public async Task<object> SelectAsync(IDbConnection dbConnection)
+        {
+            _selectedModel = await SelectOperationAsync(dbConnection);
+
+            StatuteResult = _selectedModel is null ? StatuteResult.Failure : StatuteResult.Success;
+
+            return SelectedModel;
+        }
+
+        protected abstract Task<object> SelectOperationAsync(IDbConnection dbConnection);
+    }
+
     public abstract class SingleSelectBase<TModel> : SelectBase<TModel>, ISingleSelectBase<TModel>
         where TModel : class, IModel, new()
     {

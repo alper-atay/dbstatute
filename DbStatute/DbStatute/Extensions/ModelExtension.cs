@@ -15,7 +15,7 @@ namespace DbStatute.Extensions
 
         public static QueryField GetIdsInQuery(this IEnumerable<IModel> models)
         {
-            var modelIds = GetIds(models);
+            IEnumerable<object> modelIds = GetIds(models);
 
             return new QueryField(nameof(IModel.Id), Operation.In, modelIds);
         }

@@ -37,7 +37,6 @@ namespace DbStatute.Fundamentals
         public StatuteResult StatuteResult
         {
             get => _statuteResult;
-
             set
             {
                 _statuteResult = value;
