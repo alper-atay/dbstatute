@@ -13,16 +13,16 @@ namespace DbStatute.Singles
     {
         public SingleInsert(TModel readyModel)
         {
-            ReadyModel = readyModel ?? throw new ArgumentNullException(nameof(readyModel));
+            SourceModel = readyModel ?? throw new ArgumentNullException(nameof(readyModel));
         }
 
-        public TModel ReadyModel { get; }
+        public TModel SourceModel { get; }
 
-        object IReadyModel.ReadyModel => ReadyModel;
+        object ISourceModel.SourceModel => SourceModel;
 
         protected override async Task<TModel> InsertOperationAsync(IDbConnection dbConnection)
         {
-            return await dbConnection.InsertAsync<TModel, TModel>(ReadyModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+            return await dbConnection.InsertAsync<TModel, TModel>(SourceModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
         }
     }
 }

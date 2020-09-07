@@ -8,22 +8,22 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Multiples
 {
-    public class MultipleUpdateByRawModels<TModel> : MultipleUpdateBase<TModel>, IMultipleUpdateByRawModels<TModel>
+    public class MultipleUpdateByRawModels<TModel> : MultipleUpdateBase<TModel>, IMultipleUpdateBySourceModels<TModel>
             where TModel : class, IModel, new()
     {
         public MultipleUpdateByRawModels(IEnumerable<TModel> rawModels)
         {
-            RawModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
+            SourceModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
         }
 
 
-        public IEnumerable<TModel> RawModels { get; }
+        public IEnumerable<TModel> SourceModels { get; }
 
-        IEnumerable<object> IRawModels.RawModels => RawModels;
+        IEnumerable<object> ISourceModels.SourceModels => SourceModels;
 
         protected override async IAsyncEnumerable<TModel> UpdateAsSinglyOperationAsync(IDbConnection dbConnection)
         {
-            foreach (TModel rawModel in RawModels)
+            foreach (TModel rawModel in SourceModels)
             {
                 yield return rawModel;
             }

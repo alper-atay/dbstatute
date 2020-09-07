@@ -13,17 +13,16 @@ namespace DbStatute.Singles
     {
         public SingleMerge(TModel readyModel)
         {
-            ReadyModel = readyModel ?? throw new ArgumentNullException(nameof(readyModel));
+            SourceModel = readyModel ?? throw new ArgumentNullException(nameof(readyModel));
         }
 
-        public TModel ReadyModel { get; }
+        public TModel SourceModel { get; }
 
-        object IReadyModel.ReadyModel => ReadyModel;
+        object ISourceModel.SourceModel => SourceModel;
 
         protected override async Task<TModel> MergeOperationAsync(IDbConnection dbConnection)
         {
-            return await dbConnection.MergeAsync(ReadyModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder)
-                .ContinueWith(x => (TModel)x.Result);
+            return await dbConnection.MergeAsync(SourceModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder).ContinueWith(x => (TModel)x.Result);
         }
     }
 }

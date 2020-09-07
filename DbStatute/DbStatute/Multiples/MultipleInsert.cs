@@ -16,16 +16,16 @@ namespace DbStatute.Multiples
     {
         public MultipleInsert(IEnumerable<TModel> readyModels)
         {
-            ReadyModels = readyModels ?? throw new ArgumentNullException(nameof(readyModels));
+            SourceModels = readyModels ?? throw new ArgumentNullException(nameof(readyModels));
         }
 
-        public IEnumerable<TModel> ReadyModels { get; }
+        public IEnumerable<TModel> SourceModels { get; }
 
-        IEnumerable<object> IReadyModels.ReadyModels => ReadyModels;
+        IEnumerable<object> ISourceModels.SourceModels => SourceModels;
 
         protected override async IAsyncEnumerable<TModel> InsertAsSingleOperationAsync(IDbConnection dbConnection)
         {
-            foreach (TModel readyModel in ReadyModels)
+            foreach (TModel readyModel in SourceModels)
             {
                 TModel insertedModel = await dbConnection.InsertAsync<TModel, TModel>(readyModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
@@ -35,11 +35,11 @@ namespace DbStatute.Multiples
 
         protected override async Task<IEnumerable<TModel>> InsertOperationAsync(IDbConnection dbConnection)
         {
-            int readyModelCount = ReadyModels.Count();
+            int readyModelCount = SourceModels.Count();
 
             if (readyModelCount > 0)
             {
-                int insertedCount = await dbConnection.InsertAllAsync(ReadyModels, BatchSize, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                int insertedCount = await dbConnection.InsertAllAsync(SourceModels, BatchSize, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
                 if (insertedCount != readyModelCount)
                 {
@@ -48,7 +48,7 @@ namespace DbStatute.Multiples
 
                 if (insertedCount > 0)
                 {
-                    QueryField modelIdsInQuery = ReadyModels.GetIdsInQuery();
+                    QueryField modelIdsInQuery = SourceModels.GetIdsInQuery();
 
                     IEnumerable<TModel> insertedModels = await dbConnection.QueryAsync<TModel>(modelIdsInQuery, null, null, null, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder);
 

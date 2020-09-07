@@ -1,6 +1,7 @@
 ﻿using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Singles;
+using RepoDb;
 using System;
 using System.Data;
 using System.Threading.Tasks;
@@ -10,18 +11,32 @@ namespace DbStatute.Singles
     public class SingleUpdate<TModel> : SingleUpdateBase<TModel>, ISingleUpdate<TModel>
         where TModel : class, IModel, new()
     {
-        public SingleUpdate(TModel readyModel)
+        public SingleUpdate(TModel sourceModel)
         {
-            ReadyModel = readyModel ?? throw new ArgumentNullException(nameof(readyModel));
+            SourceModel = sourceModel ?? throw new ArgumentNullException(nameof(sourceModel));
         }
 
-        public TModel ReadyModel { get; }
+        public TModel SourceModel { get; }
 
-        object IReadyModel.ReadyModel => ReadyModel;
+        object ISourceModel.SourceModel => SourceModel;
 
-        protected override Task<TModel> UpdateOperationAsync(IDbConnection dbConnection)
+        protected override async Task<TModel> UpdateOperationAsync(IDbConnection dbConnection)
         {
-            throw new NotImplementedException();
+            int updatedCount = await dbConnection.UpdateAsync(SourceModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+
+            if (updatedCount > 0)
+            {
+                SingleSelectById<TModel> singleSelectById = new SingleSelectById<TModel>(SourceModel.Id);
+
+                Logs.AddRange(singleSelectById.ReadOnlyLogs);
+
+                if (singleSelectById.IsSucceed)
+                {
+                    return singleSelectById.SelectedModel;
+                }
+            }
+
+            return null;
         }
     }
 }

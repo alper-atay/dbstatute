@@ -1,7 +1,6 @@
 ﻿using Basiclog;
 using DbStatute.Extensions;
 using DbStatute.Fundamentals.Multiples;
-using DbStatute.Helpers;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Qualifiers;
@@ -16,52 +15,52 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Multiples
 {
-    public class MultipleInsertByRawModels<TModel> : MultipleInsertBase<TModel>, IMultipleInsertByRawModels<TModel>
+    public class MultipleInsertByRawModels<TModel> : MultipleInsertBase<TModel>, IMultipleInsertBySourceModels<TModel>
         where TModel : class, IModel, new()
     {
         public MultipleInsertByRawModels(IEnumerable<TModel> rawModels)
         {
-            RawModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
+            SourceModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
             FieldQualifier = new FieldQualifier<TModel>();
             PredicateFieldQualifier = new PredicateFieldQualifier<TModel>();
         }
 
         public MultipleInsertByRawModels(IEnumerable<TModel> rawModels, IFieldQualifier<TModel> fieldQualifier)
         {
-            RawModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
+            SourceModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
             FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
             PredicateFieldQualifier = new PredicateFieldQualifier<TModel>();
         }
 
         public MultipleInsertByRawModels(IEnumerable<TModel> rawModels, IPredicateFieldQualifier<TModel> predicateFieldQualifier)
         {
-            RawModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
+            SourceModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
             FieldQualifier = new FieldQualifier<TModel>();
             PredicateFieldQualifier = predicateFieldQualifier ?? throw new ArgumentNullException(nameof(predicateFieldQualifier));
         }
 
         public MultipleInsertByRawModels(IEnumerable<TModel> rawModels, IFieldQualifier<TModel> fieldQualifier, IPredicateFieldQualifier<TModel> predicateFieldQualifier)
         {
-            RawModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
+            SourceModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
             FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
             PredicateFieldQualifier = predicateFieldQualifier ?? throw new ArgumentNullException(nameof(predicateFieldQualifier));
         }
 
         public IFieldQualifier<TModel> FieldQualifier { get; }
 
-        IFieldQualifier IMultipleInsertByRawModels.FieldQualifier => FieldQualifier;
+        IFieldQualifier IMultipleInsertBySourceModels.FieldQualifier => FieldQualifier;
 
         public IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
 
-        IPredicateFieldQualifier IMultipleInsertByRawModels.PredicateFieldQualifier => PredicateFieldQualifier;
+        IPredicateFieldQualifier IMultipleInsertBySourceModels.PredicateFieldQualifier => PredicateFieldQualifier;
 
-        public IEnumerable<TModel> RawModels { get; }
+        public IEnumerable<TModel> SourceModels { get; }
 
-        IEnumerable<object> IRawModels.RawModels => RawModels;
+        IEnumerable<object> ISourceModels.SourceModels => SourceModels;
 
         protected override async IAsyncEnumerable<TModel> InsertAsSingleOperationAsync(IDbConnection dbConnection)
         {
-            int selectedCount = RawModels.Count();
+            int selectedCount = SourceModels.Count();
 
             if (selectedCount > 0)
             {
@@ -72,11 +71,11 @@ namespace DbStatute.Multiples
                     fields = null;
                 }
 
-                foreach (TModel rawModel in RawModels)
+                foreach (TModel rawModel in SourceModels)
                 {
                     if (fieldsBuilt)
                     {
-                        IReadOnlyLogbook predicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier);
+                        IReadOnlyLogbook predicateLogs = rawModel.Predicate(fields, PredicateFieldQualifier);
                         Logs.AddRange(predicateLogs);
 
                         if (!predicateLogs.Safely)
@@ -94,7 +93,7 @@ namespace DbStatute.Multiples
 
         protected override async Task<IEnumerable<TModel>> InsertOperationAsync(IDbConnection dbConnection)
         {
-            int selectedCount = RawModels.Count();
+            int selectedCount = SourceModels.Count();
 
             if (selectedCount > 0)
             {
@@ -107,11 +106,11 @@ namespace DbStatute.Multiples
 
                 ICollection<TModel> insertModels = new Collection<TModel>();
 
-                foreach (TModel rawModel in RawModels)
+                foreach (TModel rawModel in SourceModels)
                 {
                     if (fieldsBuilt)
                     {
-                        IReadOnlyLogbook predicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier);
+                        IReadOnlyLogbook predicateLogs = rawModel.Predicate(fields, PredicateFieldQualifier);
                         Logs.AddRange(predicateLogs);
 
                         if (!predicateLogs.Safely)

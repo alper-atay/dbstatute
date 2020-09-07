@@ -1,16 +1,16 @@
-﻿using DbStatute.Interfaces.Fundamentals.Multiples;
+﻿using DbStatute.Interfaces.Fundamentals.Singles;
 using DbStatute.Interfaces.Qualifiers;
 
-namespace DbStatute.Interfaces.Multiples
+namespace DbStatute.Interfaces.Singles
 {
-    public interface IMultipleMergeByRawModels : IMultipleMergeBase, IRawModels
+    public interface ISingleMergeOnSourceModel : ISingleMergeBase, ISourceModel
     {
         IFieldQualifier FieldQualifier { get; }
 
         IPredicateFieldQualifier PredicateFieldQualifier { get; }
     }
 
-    public interface IMultipleMergeByRawModels<TModel> : IMultipleMergeBase<TModel>, IRawModels<TModel>, IMultipleMergeByRawModels
+    public interface ISingleMergeOnSourceModel<TModel> : ISingleMergeBase<TModel>, ISourceModel<TModel>, ISingleMergeOnSourceModel
         where TModel : class, IModel, new()
     {
         new IFieldQualifier<TModel> FieldQualifier { get; }

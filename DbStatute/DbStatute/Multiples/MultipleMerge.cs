@@ -15,16 +15,16 @@ namespace DbStatute.Multiples
     {
         public MultipleMerge(IEnumerable<TModel> readyModels)
         {
-            ReadyModels = readyModels ?? throw new ArgumentNullException(nameof(readyModels));
+            SourceModels = readyModels ?? throw new ArgumentNullException(nameof(readyModels));
         }
 
-        public IEnumerable<TModel> ReadyModels { get; }
+        public IEnumerable<TModel> SourceModels { get; }
 
-        IEnumerable<object> IReadyModels.ReadyModels => ReadyModels;
+        IEnumerable<object> ISourceModels.SourceModels => SourceModels;
 
         protected override async IAsyncEnumerable<TModel> MergeAsSinglyOperationAsync(IDbConnection dbConnection)
         {
-            foreach (TModel readyModel in ReadyModels)
+            foreach (TModel readyModel in SourceModels)
             {
                 TModel mergedModel = await dbConnection.MergeAsync<TModel, TModel>(readyModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
@@ -39,11 +39,11 @@ namespace DbStatute.Multiples
 
         protected override async Task<IEnumerable<TModel>> MergeOperationAsync(IDbConnection dbConnection)
         {
-            int readyModelCount = ReadyModels.Count();
+            int readyModelCount = SourceModels.Count();
 
             if (readyModelCount > 0)
             {
-                int mergedCount = await dbConnection.MergeAllAsync(ReadyModels, BatchSize, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                int mergedCount = await dbConnection.MergeAllAsync(SourceModels, BatchSize, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
                 if (mergedCount != readyModelCount)
                 {
@@ -52,7 +52,7 @@ namespace DbStatute.Multiples
 
                 if (mergedCount > 0)
                 {
-                    return ReadyModels;
+                    return SourceModels;
                 }
             }
 

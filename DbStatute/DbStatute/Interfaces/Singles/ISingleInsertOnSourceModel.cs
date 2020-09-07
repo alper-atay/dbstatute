@@ -1,16 +1,16 @@
-﻿using DbStatute.Interfaces.Fundamentals.Proxies;
+﻿using DbStatute.Interfaces.Fundamentals.Singles;
 using DbStatute.Interfaces.Qualifiers;
 
-namespace DbStatute.Interfaces.Proxies
+namespace DbStatute.Interfaces.Singles
 {
-    public interface IUpdateProxyOnRawModel : IUpdateProxyBase
+    public interface ISingleInsertOnSourceModel : ISingleInsertBase, ISourceModel
     {
         IFieldQualifier FieldQualifier { get; }
 
         IPredicateFieldQualifier PredicateFieldQualifier { get; }
     }
 
-    public interface IUpdateProxyOnRawModel<TModel> : IUpdateProxyBase<TModel>, IUpdateProxyOnRawModel
+    public interface ISingleInsertOnSourceModel<TModel> : ISingleInsertBase<TModel>, ISourceModel<TModel>, ISingleInsertOnSourceModel
         where TModel : class, IModel, new()
     {
         new IFieldQualifier<TModel> FieldQualifier { get; }

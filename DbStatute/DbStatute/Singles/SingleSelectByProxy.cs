@@ -34,28 +34,27 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> SelectOperationAsync(IDbConnection dbConnection)
         {
-            Logs.AddRange(SelectProxy.WhereQuery.Build<TModel>(Conjunction.And, out QueryGroup queryGroup));
+            Logs.AddRange(SelectProxy.WhereQuery.Build(Conjunction.And, out QueryGroup queryGroup));
 
             if (ReadOnlyLogs.Safely)
             {
                 IFieldQualifier<TModel> selectedFieldQualifier = SelectProxy.SelectedFieldQualifier;
                 IOrderFieldQualifier<TModel> orderFieldQualifier = SelectProxy.OrderFieldQualifier;
 
-                bool fieldsCreated = selectedFieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
-                bool orderFieldsCreated = orderFieldQualifier.Build<TModel>(out IEnumerable<OrderField> orderFields);
+                bool fieldsBuilt = selectedFieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
+                bool orderFieldsBuilt = orderFieldQualifier.Build<TModel>(out IEnumerable<OrderField> orderFields);
 
-                if (!fieldsCreated)
+                if (!fieldsBuilt)
                 {
                     fields = null;
                 }
 
-                if (!orderFieldsCreated)
+                if (!orderFieldsBuilt)
                 {
                     orderFields = null;
                 }
 
-                return await dbConnection.QueryAsync<TModel>(queryGroup, fields, orderFields, MaxSelectCount, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder)
-                    .ContinueWith(x => x.Result.FirstOrDefault());
+                return await dbConnection.QueryAsync<TModel>(queryGroup, fields, orderFields, MaxSelectCount, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder).ContinueWith(x => x.Result.FirstOrDefault());
             }
 
             return null;

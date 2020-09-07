@@ -11,16 +11,16 @@ namespace DbStatute.Singles
     {
         public SingleDelete(TModel readyModel) : base(readyModel.Id)
         {
-            ReadyModel = readyModel ?? throw new ArgumentNullException(nameof(readyModel));
+            SourceModel = readyModel ?? throw new ArgumentNullException(nameof(readyModel));
         }
 
-        public TModel ReadyModel { get; }
+        public TModel SourceModel { get; }
 
-        object IReadyModel.ReadyModel => ReadyModel;
+        object ISourceModel.SourceModel => SourceModel;
 
         protected override async Task<TModel> DeleteOperationAsync(IDbConnection dbConnection)
         {
-            return await base.DeleteOperationAsync(dbConnection) ?? ReadyModel;
+            return await base.DeleteOperationAsync(dbConnection) ?? SourceModel;
         }
     }
 }

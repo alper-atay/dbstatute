@@ -14,16 +14,16 @@ namespace DbStatute.Multiples
     {
         public MultipleUpdate(IEnumerable<TModel> readyModels)
         {
-            ReadyModels = readyModels ?? throw new ArgumentNullException(nameof(readyModels));
+            SourceModels = readyModels ?? throw new ArgumentNullException(nameof(readyModels));
         }
 
-        public IEnumerable<TModel> ReadyModels { get; }
+        public IEnumerable<TModel> SourceModels { get; }
 
-        IEnumerable<object> IReadyModels.ReadyModels => ReadyModels;
+        IEnumerable<object> ISourceModels.SourceModels => SourceModels;
 
         protected override async IAsyncEnumerable<TModel> UpdateAsSinglyOperationAsync(IDbConnection dbConnection)
         {
-            foreach (TModel readyModel in ReadyModels)
+            foreach (TModel readyModel in SourceModels)
             {
                 int updatedCount = await dbConnection.UpdateAsync(readyModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
@@ -36,11 +36,11 @@ namespace DbStatute.Multiples
 
         protected override async Task<IEnumerable<TModel>> UpdateOperationAsync(IDbConnection dbConnection)
         {
-            int updatedCount = await dbConnection.UpdateAllAsync(ReadyModels, BatchSize, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+            int updatedCount = await dbConnection.UpdateAllAsync(SourceModels, BatchSize, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
             if (updatedCount > 0)
             {
-                return ReadyModels;
+                return SourceModels;
             }
 
             return null;

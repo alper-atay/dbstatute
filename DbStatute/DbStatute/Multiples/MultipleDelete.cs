@@ -15,16 +15,16 @@ namespace DbStatute.Multiples
     {
         public MultipleDelete(IEnumerable<TModel> readyModels)
         {
-            ReadyModels = readyModels ?? throw new ArgumentNullException(nameof(readyModels));
+            SourceModels = readyModels ?? throw new ArgumentNullException(nameof(readyModels));
         }
 
-        public IEnumerable<TModel> ReadyModels { get; }
+        public IEnumerable<TModel> SourceModels { get; }
 
-        IEnumerable<object> IReadyModels.ReadyModels => ReadyModels;
+        IEnumerable<object> ISourceModels.SourceModels => SourceModels;
 
         protected override async IAsyncEnumerable<TModel> DeleteAsSinglyOperationAsync(IDbConnection dbConnection)
         {
-            foreach (TModel selectedModel in ReadyModels)
+            foreach (TModel selectedModel in SourceModels)
             {
                 int deletedCount = await dbConnection.DeleteAsync(selectedModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
@@ -37,11 +37,11 @@ namespace DbStatute.Multiples
 
         protected override async Task<IEnumerable<TModel>> DeleteOperationAsync(IDbConnection dbConnection)
         {
-            int selectedCount = ReadyModels.Count();
+            int selectedCount = SourceModels.Count();
 
             if (selectedCount > 0)
             {
-                int deletedCount = await dbConnection.DeleteAllAsync(ReadyModels, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                int deletedCount = await dbConnection.DeleteAllAsync(SourceModels, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
                 if (deletedCount > 0)
                 {
@@ -50,7 +50,7 @@ namespace DbStatute.Multiples
                         Logs.Warning($"{selectedCount} models selected and {deletedCount} models deleted");
                     }
 
-                    return ReadyModels;
+                    return SourceModels;
                 }
             }
 

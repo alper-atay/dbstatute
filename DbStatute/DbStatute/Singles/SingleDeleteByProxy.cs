@@ -1,17 +1,11 @@
-﻿using DbStatute.Extensions;
-using DbStatute.Fundamentals.Singles;
+﻿using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Proxies;
-using DbStatute.Interfaces.Qualifiers;
-using DbStatute.Interfaces.Queries;
 using DbStatute.Interfaces.Singles;
 using DbStatute.Proxies;
 using RepoDb;
-using RepoDb.Enumerations;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DbStatute.Singles
@@ -35,31 +29,30 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> DeleteOperationAsync(IDbConnection dbConnection)
         {
-            ISelectProxy<TModel> selectQuery = DeleteProxy.SelectProxy;
-
-            IWhereQuery<TModel> whereQuery = selectQuery.WhereQuery;
-            IOrderFieldQualifier<TModel> orderFieldQualifier = selectQuery.OrderFieldQualifier;
-
-            Logs.AddRange(whereQuery.Build<TModel>(Conjunction.And, out QueryGroup queryGroup));
-
-            bool orderFieldsBuilt = orderFieldQualifier.Build<TModel>(out IEnumerable<OrderField> orderFields);
-
-            if (!orderFieldsBuilt)
+            SingleSelectByProxy<TModel> singleSelectByProxy = new SingleSelectByProxy<TModel>(DeleteProxy.SelectProxy)
             {
-                orderFields = null;
-            }
+                Hints = Hints,
+                CommandTimeout = CommandTimeout,
+                Transaction = Transaction,
+                Trace = Trace,
+                StatementBuilder = StatementBuilder,
+                Cacheable = Cacheable
+            };
 
-            if (queryGroup != null)
+            await singleSelectByProxy.SelectAsync(dbConnection);
+
+            Logs.AddRange(singleSelectByProxy.ReadOnlyLogs);
+
+            if (ReadOnlyLogs.Safely)
             {
-                TModel deleteModel = await dbConnection.QueryAsync<TModel>(queryGroup, null, orderFields, 1, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder)
-                    .ContinueWith(x => x.Result.FirstOrDefault());
+                TModel selectedModel = singleSelectByProxy.SelectedModel;
 
-                if (deleteModel != null)
+                int deletedCount = await dbConnection.DeleteAsync<TModel>(selectedModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+
+                if (deletedCount > 0)
                 {
-                    int deletedCount = await dbConnection.DeleteAsync(deleteModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                    return selectedModel;
                 }
-
-                return deleteModel;
             }
 
             return null;

@@ -1,7 +1,6 @@
 ﻿using Basiclog;
 using DbStatute.Extensions;
 using DbStatute.Fundamentals.Multiples;
-using DbStatute.Helpers;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Qualifiers;
@@ -15,34 +14,34 @@ using System.Threading.Tasks;
 
 namespace DbStatute.Multiples
 {
-    public class MultipleMergeByRawModels<TModel> : MultipleMergeBase<TModel>, IMultipleMergeByRawModels<TModel>
+    public class MultipleMergeByRawModels<TModel> : MultipleMergeBase<TModel>, IMultipleMergeBySourceModels<TModel>
         where TModel : class, IModel, new()
     {
         public MultipleMergeByRawModels(IEnumerable<TModel> rawModels)
         {
-            RawModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
+            SourceModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
             FieldQualifier = new FieldQualifier<TModel>();
             PredicateFieldQualifier = new PredicateFieldQualifier<TModel>();
         }
 
         public MultipleMergeByRawModels(IEnumerable<TModel> rawModels, IFieldQualifier<TModel> fieldQualifier, IPredicateFieldQualifier<TModel> predicateFieldQualifier)
         {
-            RawModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
+            SourceModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
             FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
             PredicateFieldQualifier = predicateFieldQualifier ?? throw new ArgumentNullException(nameof(predicateFieldQualifier));
         }
 
         public IFieldQualifier<TModel> FieldQualifier { get; }
 
-        IFieldQualifier IMultipleMergeByRawModels.FieldQualifier => FieldQualifier;
+        IFieldQualifier IMultipleMergeBySourceModels.FieldQualifier => FieldQualifier;
 
         public IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
 
-        IPredicateFieldQualifier IMultipleMergeByRawModels.PredicateFieldQualifier => PredicateFieldQualifier;
+        IPredicateFieldQualifier IMultipleMergeBySourceModels.PredicateFieldQualifier => PredicateFieldQualifier;
 
-        public IEnumerable<TModel> RawModels { get; }
+        public IEnumerable<TModel> SourceModels { get; }
 
-        IEnumerable<object> IRawModels.RawModels => RawModels;
+        IEnumerable<object> ISourceModels.SourceModels => SourceModels;
 
         protected override async IAsyncEnumerable<TModel> MergeAsSinglyOperationAsync(IDbConnection dbConnection)
         {
@@ -53,9 +52,9 @@ namespace DbStatute.Multiples
                 fields = null;
             }
 
-            foreach (TModel rawModel in RawModels)
+            foreach (TModel rawModel in SourceModels)
             {
-                IReadOnlyLogbook rawModelPredicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier);
+                IReadOnlyLogbook rawModelPredicateLogs = rawModel.Predicate(fields, PredicateFieldQualifier);
 
                 Logs.AddRange(rawModelPredicateLogs);
 
@@ -81,9 +80,9 @@ namespace DbStatute.Multiples
 
             ICollection<TModel> mergeModels = new Collection<TModel>();
 
-            foreach (TModel rawModel in RawModels)
+            foreach (TModel rawModel in SourceModels)
             {
-                IReadOnlyLogbook predicateLogs = RawModelHelper.PredicateModel(rawModel, fields, PredicateFieldQualifier);
+                IReadOnlyLogbook predicateLogs = rawModel.Predicate(fields, PredicateFieldQualifier);
 
                 Logs.AddRange(predicateLogs);
 

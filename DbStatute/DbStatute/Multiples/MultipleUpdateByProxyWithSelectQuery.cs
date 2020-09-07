@@ -20,21 +20,21 @@ namespace DbStatute.Multiples
     {
         public MultipleUpdateByProxyWithSelectQuery(IEnumerable<TModel> rawModels)
         {
-            RawModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
+            SourceModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
             UpdateProxy = new UpdateProxy<TModel>();
             WhereQuery = new WhereQuery<TModel>();
         }
 
         public MultipleUpdateByProxyWithSelectQuery(IEnumerable<TModel> rawModels, IUpdateProxy<TModel> updateProxy, IWhereQuery<TModel> whereQuery)
         {
-            RawModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
+            SourceModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
             UpdateProxy = updateProxy ?? throw new ArgumentNullException(nameof(updateProxy));
             WhereQuery = whereQuery ?? throw new ArgumentNullException(nameof(whereQuery));
         }
 
-        public IEnumerable<TModel> RawModels { get; }
+        public IEnumerable<TModel> SourceModels { get; }
 
-        IEnumerable<object> IRawModels.RawModels => RawModels;
+        IEnumerable<object> ISourceModels.SourceModels => SourceModels;
 
         public IUpdateProxy<TModel> UpdateProxy { get; }
 
@@ -53,7 +53,7 @@ namespace DbStatute.Multiples
                 yield break;
             }
 
-            foreach (TModel rawModel in RawModels)
+            foreach (TModel rawModel in SourceModels)
             {
                 await dbConnection.UpdateAsync<TModel>(rawModel, queryGroup);
 
