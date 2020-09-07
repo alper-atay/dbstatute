@@ -2,6 +2,7 @@
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Proxies;
+using DbStatute.Proxies;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,6 +13,12 @@ namespace DbStatute.Multiples
     public class MultipleUpdateByProxy<TModel> : MultipleUpdateBase<TModel>, IMultipleUpdateByProxy<TModel>
             where TModel : class, IModel, new()
     {
+        public MultipleUpdateByProxy(IEnumerable<TModel> rawModels)
+        {
+            RawModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
+            UpdateProxy = new UpdateProxy<TModel>();
+        }
+
         public MultipleUpdateByProxy(IEnumerable<TModel> rawModels, IUpdateProxy<TModel> updateProxy)
         {
             RawModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
@@ -32,8 +39,6 @@ namespace DbStatute.Multiples
             {
                 yield return rawModel;
             }
-
-
         }
 
         protected override Task<IEnumerable<TModel>> UpdateOperationAsync(IDbConnection dbConnection)
