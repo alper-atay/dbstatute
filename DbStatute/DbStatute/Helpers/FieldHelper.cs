@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace DbStatute.Helpers
 {
-    public static class QualifierHelper
+    public static class FieldHelper
     {
         public static IReadOnlyLogbook Predicate<TModel>(IFieldQualifier<TModel> fieldQualifier, IValueFieldQualifier<TModel> valueFieldQualifier, IPredicateFieldQualifier<TModel> predicateFieldQualifier) where TModel : class, IModel, new()
         {

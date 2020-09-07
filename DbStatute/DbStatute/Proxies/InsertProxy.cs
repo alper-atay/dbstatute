@@ -2,9 +2,9 @@
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
-using DbStatute.Interfaces.Qualifiers.Groups;
+using DbStatute.Interfaces.Queries;
 using DbStatute.Qualifiers;
-using DbStatute.Qualifiers.Groups;
+using DbStatute.Queries;
 using System;
 
 namespace DbStatute.Proxies
@@ -13,18 +13,19 @@ namespace DbStatute.Proxies
     {
         public InsertProxy()
         {
-            ModelQualifierGroup = new ModelQualifierGroup();
+            ModelQuery = new ModelQuery();
             InsertedFieldQualifier = new FieldQualifier();
         }
 
-        public InsertProxy(IFieldQualifier insertedFieldQualifier)
+        public InsertProxy(IModelQuery modelQuery, IFieldQualifier ınsertedFieldQualifier)
         {
-            InsertedFieldQualifier = insertedFieldQualifier ?? throw new ArgumentNullException(nameof(insertedFieldQualifier));
+            ModelQuery = modelQuery ?? throw new ArgumentNullException(nameof(modelQuery));
+            InsertedFieldQualifier = ınsertedFieldQualifier ?? throw new ArgumentNullException(nameof(ınsertedFieldQualifier));
         }
 
         public IFieldQualifier InsertedFieldQualifier { get; }
 
-        public IModelQualifierGroup ModelQualifierGroup { get; }
+        public IModelQuery ModelQuery { get; }
     }
 
     public class InsertProxy<TModel> : ProxyBase<TModel>, IInsertProxy<TModel>
@@ -32,22 +33,22 @@ namespace DbStatute.Proxies
     {
         public InsertProxy()
         {
+            ModelQuery = new ModelQuery<TModel>();
             InsertedFieldQualifier = new FieldQualifier<TModel>();
-            ModelQualifierGroup = new ModelQualifierGroup<TModel>();
         }
 
-        public InsertProxy(IModelQualifierGroup<TModel> modelQualifierGroup, IFieldQualifier<TModel> insertedFieldQualifier)
+        public InsertProxy(IModelQuery<TModel> modelQuery, IFieldQualifier<TModel> ınsertedFieldQualifier)
         {
-            InsertedFieldQualifier = insertedFieldQualifier ?? throw new ArgumentNullException(nameof(insertedFieldQualifier));
-            ModelQualifierGroup = modelQualifierGroup ?? throw new ArgumentNullException(nameof(modelQualifierGroup));
+            ModelQuery = modelQuery ?? throw new ArgumentNullException(nameof(modelQuery));
+            InsertedFieldQualifier = ınsertedFieldQualifier ?? throw new ArgumentNullException(nameof(ınsertedFieldQualifier));
         }
 
         public IFieldQualifier<TModel> InsertedFieldQualifier { get; }
 
         IFieldQualifier IInsertProxy.InsertedFieldQualifier => InsertedFieldQualifier;
 
-        public IModelQualifierGroup<TModel> ModelQualifierGroup { get; }
+        public IModelQuery<TModel> ModelQuery { get; }
 
-        IModelQualifierGroup IInsertProxy.ModelQualifierGroup => ModelQualifierGroup;
+        IModelQuery IInsertProxy.ModelQuery => ModelQuery;
     }
 }

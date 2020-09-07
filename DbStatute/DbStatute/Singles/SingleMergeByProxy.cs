@@ -3,7 +3,6 @@ using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
-using DbStatute.Interfaces.Qualifiers.Groups;
 using DbStatute.Interfaces.Singles;
 using DbStatute.Proxies;
 using RepoDb;
@@ -33,9 +32,7 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> MergeOperationAsync(IDbConnection dbConnection)
         {
-            IModelQualifierGroup<TModel> modelQualifierGroup = MergeProxy.ModelQualifierGroup;
-
-            Logs.AddRange(modelQualifierGroup.Build(out TModel model));
+            Logs.AddRange(MergeProxy.ModelQuery.Build(out TModel model));
 
             if (ReadOnlyLogs.Safely)
             {

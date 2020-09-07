@@ -5,6 +5,7 @@ using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Proxies;
 using RepoDb;
+using RepoDb.Enumerations;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -31,7 +32,7 @@ namespace DbStatute.Multiples
 
         protected override async IAsyncEnumerable<TModel> SelectAsSignlyOperationAsync(IDbConnection dbConnection)
         {
-            Logs.AddRange(SelectProxy.SelectQualifierGroup.Build<TModel>(out QueryGroup queryGroup));
+            Logs.AddRange(SelectProxy.WhereQuery.Build<TModel>(Conjunction.And, out QueryGroup queryGroup));
 
             if (ReadOnlyLogs.Safely)
             {
@@ -59,7 +60,7 @@ namespace DbStatute.Multiples
 
         protected override async Task<IEnumerable<TModel>> SelectOperationAsync(IDbConnection dbConnection)
         {
-            Logs.AddRange(SelectProxy.SelectQualifierGroup.Build<TModel>(out QueryGroup queryGroup));
+            Logs.AddRange(SelectProxy.WhereQuery.Build<TModel>(Conjunction.And, out QueryGroup queryGroup));
 
             if (ReadOnlyLogs.Safely)
             {

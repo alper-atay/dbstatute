@@ -2,9 +2,9 @@
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
-using DbStatute.Interfaces.Qualifiers.Groups;
+using DbStatute.Interfaces.Queries;
 using DbStatute.Qualifiers;
-using DbStatute.Qualifiers.Groups;
+using DbStatute.Queries;
 using System;
 
 namespace DbStatute.Proxies
@@ -13,19 +13,19 @@ namespace DbStatute.Proxies
     {
         public MergeProxy()
         {
-            ModelQualifierGroup = new ModelQualifierGroup();
+            ModelQuery = new ModelQuery();
             MergedFieldQualifier = new FieldQualifier();
         }
 
-        public MergeProxy(IModelQualifierGroup modelQualifierGroup, IFieldQualifier mergedFieldQualifier)
+        public MergeProxy(IModelQuery modelQuery, IFieldQualifier mergedFieldQualifier)
         {
-            ModelQualifierGroup = modelQualifierGroup ?? throw new ArgumentNullException(nameof(modelQualifierGroup));
+            ModelQuery = modelQuery ?? throw new ArgumentNullException(nameof(modelQuery));
             MergedFieldQualifier = mergedFieldQualifier ?? throw new ArgumentNullException(nameof(mergedFieldQualifier));
         }
 
         public IFieldQualifier MergedFieldQualifier { get; }
 
-        public IModelQualifierGroup ModelQualifierGroup { get; }
+        public IModelQuery ModelQuery { get; }
     }
 
     public class MergeProxy<TModel> : ProxyBase<TModel>, IMergeProxy<TModel>
@@ -33,13 +33,13 @@ namespace DbStatute.Proxies
     {
         public MergeProxy()
         {
-            ModelQualifierGroup = new ModelQualifierGroup<TModel>();
+            ModelQuery = new ModelQuery<TModel>();
             MergedFieldQualifier = new FieldQualifier<TModel>();
         }
 
-        public MergeProxy(IModelQualifierGroup<TModel> modelQualifierGroup, IFieldQualifier<TModel> mergedFieldQualifier)
+        public MergeProxy(IModelQuery<TModel> modelQuery, IFieldQualifier<TModel> mergedFieldQualifier)
         {
-            ModelQualifierGroup = modelQualifierGroup ?? throw new ArgumentNullException(nameof(modelQualifierGroup));
+            ModelQuery = modelQuery ?? throw new ArgumentNullException(nameof(modelQuery));
             MergedFieldQualifier = mergedFieldQualifier ?? throw new ArgumentNullException(nameof(mergedFieldQualifier));
         }
 
@@ -47,8 +47,8 @@ namespace DbStatute.Proxies
 
         IFieldQualifier IMergeProxy.MergedFieldQualifier => MergedFieldQualifier;
 
-        public IModelQualifierGroup<TModel> ModelQualifierGroup { get; }
+        public IModelQuery<TModel> ModelQuery { get; }
 
-        IModelQualifierGroup IMergeProxy.ModelQualifierGroup => ModelQualifierGroup;
+        IModelQuery IMergeProxy.ModelQuery => ModelQuery;
     }
 }

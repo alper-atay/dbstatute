@@ -1,6 +1,6 @@
 ﻿using Basiclog;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Qualifiers.Groups;
+using DbStatute.Interfaces.Queries;
 using RepoDb;
 using System;
 using System.Collections.Generic;
@@ -8,18 +8,18 @@ using System.Reflection;
 
 namespace DbStatute.Extensions
 {
-    public static class ModelQualifierGroupExtension
+    public static class ModelQueryExtension
     {
-        public static IReadOnlyLogbook Build<TModel>(this IModelQualifierGroup modelQualifierGroup, out TModel model) where TModel : class, IModel, new()
+        public static IReadOnlyLogbook Build<TModel>(this IModelQuery<TModel> modelQuery, out TModel model) where TModel : class, IModel, new()
         {
             model = null;
 
             ILogbook logs = Logger.NewLogbook();
 
-            if (modelQualifierGroup.FieldQualifier.Build<TModel>(out IEnumerable<Field> fields))
+            if (modelQuery.FieldQualifier.Build<TModel>(out IEnumerable<Field> fields))
             {
-                IReadOnlyDictionary<Field, object> valueMap = modelQualifierGroup.ValueFieldQualifier;
-                IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> predicateMap = modelQualifierGroup.PredicateFieldQualifier;
+                IReadOnlyDictionary<Field, object> valueMap = modelQuery.ValueFieldQualifier;
+                IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> predicateMap = modelQuery.PredicateFieldQualifier;
 
                 foreach (Field field in fields)
                 {

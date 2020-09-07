@@ -1,6 +1,6 @@
 ﻿using DbStatute.Interfaces.Fundamentals.Proxies;
 using DbStatute.Interfaces.Qualifiers;
-using DbStatute.Interfaces.Qualifiers.Groups;
+using DbStatute.Interfaces.Queries;
 
 namespace DbStatute.Interfaces.Proxies
 {
@@ -10,7 +10,7 @@ namespace DbStatute.Interfaces.Proxies
 
         IFieldQualifier SelectedFieldQualifier { get; }
 
-        ISelectQualifierGroup SelectQualifierGroup { get; }
+        IWhereQuery WhereQuery { get; }
     }
 
     public interface ISelectProxy<TModel> : IProxyBase<TModel>, ISelectProxy
@@ -20,6 +20,6 @@ namespace DbStatute.Interfaces.Proxies
 
         new IFieldQualifier<TModel> SelectedFieldQualifier { get; }
 
-        new ISelectQualifierGroup<TModel> SelectQualifierGroup { get; }
+        new IWhereQuery<TModel> WhereQuery { get; }
     }
 }

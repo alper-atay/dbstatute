@@ -2,9 +2,9 @@
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
-using DbStatute.Interfaces.Qualifiers.Groups;
+using DbStatute.Interfaces.Queries;
 using DbStatute.Qualifiers;
-using DbStatute.Qualifiers.Groups;
+using DbStatute.Queries;
 using System;
 
 namespace DbStatute.Proxies
@@ -13,14 +13,14 @@ namespace DbStatute.Proxies
     {
         public SelectProxy()
         {
-            SelectQualifierGroup = new SelectQualifierGroup();
+            WhereQuery = new WhereQuery();
             OrderFieldQualifier = new OrderFieldQualifier();
             SelectedFieldQualifier = new FieldQualifier();
         }
 
-        public SelectProxy(ISelectQualifierGroup selectQualifierGroup, IOrderFieldQualifier orderFieldQualifier, IFieldQualifier selectedFieldQualifier)
+        public SelectProxy(IWhereQuery whereQuery, IOrderFieldQualifier orderFieldQualifier, IFieldQualifier selectedFieldQualifier)
         {
-            SelectQualifierGroup = selectQualifierGroup ?? throw new ArgumentNullException(nameof(selectQualifierGroup));
+            WhereQuery = whereQuery ?? throw new ArgumentNullException(nameof(whereQuery));
             OrderFieldQualifier = orderFieldQualifier ?? throw new ArgumentNullException(nameof(orderFieldQualifier));
             SelectedFieldQualifier = selectedFieldQualifier ?? throw new ArgumentNullException(nameof(selectedFieldQualifier));
         }
@@ -29,7 +29,7 @@ namespace DbStatute.Proxies
 
         public IFieldQualifier SelectedFieldQualifier { get; }
 
-        public ISelectQualifierGroup SelectQualifierGroup { get; }
+        public IWhereQuery WhereQuery { get; }
     }
 
     public class SelectProxy<TModel> : ProxyBase<TModel>, ISelectProxy<TModel>
@@ -37,14 +37,14 @@ namespace DbStatute.Proxies
     {
         public SelectProxy()
         {
-            SelectQualifierGroup = new SelectQualifierGroup<TModel>();
+            WhereQuery = new WhereQuery<TModel>();
             OrderFieldQualifier = new OrderFieldQualifier<TModel>();
             SelectedFieldQualifier = new FieldQualifier<TModel>();
         }
 
-        public SelectProxy(ISelectQualifierGroup<TModel> selectQualifierGroup, IOrderFieldQualifier<TModel> orderFieldQualifier, IFieldQualifier<TModel> selectedFieldQualifier)
+        public SelectProxy(IWhereQuery<TModel> whereQuery, IOrderFieldQualifier<TModel> orderFieldQualifier, IFieldQualifier<TModel> selectedFieldQualifier)
         {
-            SelectQualifierGroup = selectQualifierGroup ?? throw new ArgumentNullException(nameof(selectQualifierGroup));
+            WhereQuery = whereQuery ?? throw new ArgumentNullException(nameof(whereQuery));
             OrderFieldQualifier = orderFieldQualifier ?? throw new ArgumentNullException(nameof(orderFieldQualifier));
             SelectedFieldQualifier = selectedFieldQualifier ?? throw new ArgumentNullException(nameof(selectedFieldQualifier));
         }
@@ -57,8 +57,8 @@ namespace DbStatute.Proxies
 
         IFieldQualifier ISelectProxy.SelectedFieldQualifier => SelectedFieldQualifier;
 
-        public ISelectQualifierGroup<TModel> SelectQualifierGroup { get; }
+        public IWhereQuery<TModel> WhereQuery { get; }
 
-        ISelectQualifierGroup ISelectProxy.SelectQualifierGroup => SelectQualifierGroup;
+        IWhereQuery ISelectProxy.WhereQuery => WhereQuery;
     }
 }

@@ -3,10 +3,10 @@ using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
-using DbStatute.Interfaces.Qualifiers.Groups;
 using DbStatute.Interfaces.Singles;
 using DbStatute.Proxies;
 using RepoDb;
+using RepoDb.Enumerations;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -34,9 +34,7 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> SelectOperationAsync(IDbConnection dbConnection)
         {
-            ISelectQualifierGroup<TModel> selectQualifierGroup = SelectProxy.SelectQualifierGroup;
-
-            Logs.AddRange(selectQualifierGroup.Build<TModel>(out QueryGroup queryGroup));
+            Logs.AddRange(SelectProxy.WhereQuery.Build<TModel>(Conjunction.And, out QueryGroup queryGroup));
 
             if (ReadOnlyLogs.Safely)
             {

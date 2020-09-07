@@ -1,8 +1,8 @@
 ﻿using DbStatute.Fundamentals.Singles;
+using DbStatute.Helpers;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Qualifiers;
 using DbStatute.Interfaces.Singles;
-using DbStatute.Internals;
 using DbStatute.Qualifiers;
 using RepoDb;
 using System;

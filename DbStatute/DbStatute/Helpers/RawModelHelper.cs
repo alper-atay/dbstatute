@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace DbStatute.Internals
+namespace DbStatute.Helpers
 {
     internal static class RawModelHelper
     {

@@ -1,6 +1,6 @@
 ﻿using DbStatute.Interfaces.Fundamentals.Proxies;
 using DbStatute.Interfaces.Qualifiers;
-using DbStatute.Interfaces.Qualifiers.Groups;
+using DbStatute.Interfaces.Queries;
 
 namespace DbStatute.Interfaces.Proxies
 {
@@ -8,7 +8,7 @@ namespace DbStatute.Interfaces.Proxies
     {
         IFieldQualifier InsertedFieldQualifier { get; }
 
-        IModelQualifierGroup ModelQualifierGroup { get; }
+        IModelQuery ModelQuery { get; }
     }
 
     public interface IInsertProxy<TModel> : IProxyBase<TModel>, IInsertProxy
@@ -16,6 +16,6 @@ namespace DbStatute.Interfaces.Proxies
     {
         new IFieldQualifier<TModel> InsertedFieldQualifier { get; }
 
-        new IModelQualifierGroup<TModel> ModelQualifierGroup { get; }
+        new IModelQuery<TModel> ModelQuery { get; }
     }
 }

@@ -2,7 +2,6 @@
 using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Proxies;
-using DbStatute.Interfaces.Qualifiers.Groups;
 using DbStatute.Interfaces.Singles;
 using DbStatute.Proxies;
 using RepoDb;
@@ -32,8 +31,7 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> InsertOperationAsync(IDbConnection dbConnection)
         {
-            IModelQualifierGroup<TModel> modelBuilder = InsertProxy.ModelQualifierGroup;
-            Logs.AddRange(modelBuilder.Build(out TModel model));
+            Logs.AddRange(InsertProxy.ModelQuery.Build(out TModel model));
 
             if (ReadOnlyLogs.Safely)
             {

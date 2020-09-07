@@ -1,6 +1,8 @@
-﻿namespace DbStatute.Interfaces.Qualifiers.Groups
+﻿using DbStatute.Interfaces.Qualifiers;
+
+namespace DbStatute.Interfaces.Queries
 {
-    public interface IModelQualifierGroup
+    public interface IModelQuery
     {
         IFieldQualifier FieldQualifier { get; }
 
@@ -9,8 +11,8 @@
         IValueFieldQualifier ValueFieldQualifier { get; }
     }
 
-    public interface IModelQualifierGroup<TModel> : IModelQualifierGroup
-    where TModel : class, IModel, new()
+    public interface IModelQuery<TModel> : IModelQuery
+        where TModel : class, IModel, new()
     {
         new IFieldQualifier<TModel> FieldQualifier { get; }
 

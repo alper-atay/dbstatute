@@ -3,10 +3,11 @@ using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
-using DbStatute.Interfaces.Qualifiers.Groups;
+using DbStatute.Interfaces.Queries;
 using DbStatute.Interfaces.Singles;
 using DbStatute.Proxies;
 using RepoDb;
+using RepoDb.Enumerations;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -36,10 +37,10 @@ namespace DbStatute.Singles
         {
             ISelectProxy<TModel> selectQuery = DeleteProxy.SelectProxy;
 
-            ISelectQualifierGroup<TModel> selectQualifierGroup = selectQuery.SelectQualifierGroup;
+            IWhereQuery<TModel> whereQuery = selectQuery.WhereQuery;
             IOrderFieldQualifier<TModel> orderFieldQualifier = selectQuery.OrderFieldQualifier;
 
-            Logs.AddRange(selectQualifierGroup.Build<TModel>(out QueryGroup queryGroup));
+            Logs.AddRange(whereQuery.Build<TModel>(Conjunction.And, out QueryGroup queryGroup));
 
             bool orderFieldsBuilt = orderFieldQualifier.Build<TModel>(out IEnumerable<OrderField> orderFields);
 

@@ -1,10 +1,10 @@
 ﻿using Basiclog;
 using DbStatute.Extensions;
 using DbStatute.Fundamentals.Multiples;
+using DbStatute.Helpers;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Qualifiers;
-using DbStatute.Internals;
 using DbStatute.Qualifiers;
 using RepoDb;
 using System;
