@@ -4,14 +4,14 @@ using DbStatute.Interfaces.Queries;
 
 namespace DbStatute.Interfaces.Proxies
 {
-    public interface IMergeProxy : IProxyBase
+    public interface IMergeProxy : IMergeProxyBase
     {
         IFieldQualifier MergedFieldQualifier { get; }
 
         IModelQuery ModelQuery { get; }
     }
 
-    public interface IMergeProxy<TModel> : IProxyBase<TModel>, IMergeProxy
+    public interface IMergeProxy<TModel> : IMergeProxyBase<TModel>, IMergeProxy
         where TModel : class, IModel, new()
     {
         new IFieldQualifier<TModel> MergedFieldQualifier { get; }

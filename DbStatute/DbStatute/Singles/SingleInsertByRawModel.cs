@@ -17,28 +17,28 @@ namespace DbStatute.Singles
     {
         public SingleInsertByRawModel(TModel rawModel)
         {
-            RawModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
+            SourceModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
             FieldQualifier = new FieldQualifier<TModel>();
             PredicateFieldQualifier = new PredicateFieldQualifier<TModel>();
         }
 
         public SingleInsertByRawModel(TModel rawModel, IFieldQualifier<TModel> fieldQualifier)
         {
-            RawModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
+            SourceModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
             FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
             PredicateFieldQualifier = new PredicateFieldQualifier<TModel>();
         }
 
         public SingleInsertByRawModel(TModel rawModel, IPredicateFieldQualifier<TModel> predicateFieldQualifier)
         {
-            RawModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
+            SourceModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
             FieldQualifier = new FieldQualifier<TModel>();
             PredicateFieldQualifier = predicateFieldQualifier ?? throw new ArgumentNullException(nameof(predicateFieldQualifier));
         }
 
         public SingleInsertByRawModel(TModel rawModel, IFieldQualifier<TModel> fieldQualifier, IPredicateFieldQualifier<TModel> predicateFieldQualifier)
         {
-            RawModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
+            SourceModel = rawModel ?? throw new ArgumentNullException(nameof(rawModel));
             FieldQualifier = fieldQualifier ?? throw new ArgumentNullException(nameof(fieldQualifier));
             PredicateFieldQualifier = predicateFieldQualifier ?? throw new ArgumentNullException(nameof(predicateFieldQualifier));
         }
@@ -51,17 +51,17 @@ namespace DbStatute.Singles
 
         IPredicateFieldQualifier ISingleInsertByRawModel.PredicateFieldQualifier => PredicateFieldQualifier;
 
-        public TModel RawModel { get; }
+        public TModel SourceModel { get; }
 
-        object IRawModel.RawModel => RawModel;
+        object ISourceModel.SourceModel => SourceModel;
 
         protected override async Task<TModel> InsertOperationAsync(IDbConnection dbConnection)
         {
-            Logs.AddRange(RawModelHelper.PredicateModel(RawModel, FieldQualifier, PredicateFieldQualifier, out IEnumerable<Field> fields));
+            Logs.AddRange(RawModelHelper.PredicateModel(SourceModel, FieldQualifier, PredicateFieldQualifier, out IEnumerable<Field> fields));
 
             if (ReadOnlyLogs.Safely)
             {
-                return await dbConnection.InsertAsync<TModel, TModel>(RawModel, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                return await dbConnection.InsertAsync<TModel, TModel>(SourceModel, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
             }
 
             return null;

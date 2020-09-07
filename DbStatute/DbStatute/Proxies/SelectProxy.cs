@@ -9,7 +9,7 @@ using System;
 
 namespace DbStatute.Proxies
 {
-    public class SelectProxy : ProxyBase, ISelectProxy
+    public class SelectProxy : SelectProxyBase, ISelectProxy
     {
         public SelectProxy()
         {
@@ -32,7 +32,7 @@ namespace DbStatute.Proxies
         public IWhereQuery WhereQuery { get; }
     }
 
-    public class SelectProxy<TModel> : ProxyBase<TModel>, ISelectProxy<TModel>
+    public class SelectProxy<TModel> : SelectProxyBase<TModel>, ISelectProxy<TModel>
         where TModel : class, IModel, new()
     {
         public SelectProxy()

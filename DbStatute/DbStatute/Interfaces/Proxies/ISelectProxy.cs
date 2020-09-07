@@ -4,7 +4,7 @@ using DbStatute.Interfaces.Queries;
 
 namespace DbStatute.Interfaces.Proxies
 {
-    public interface ISelectProxy : IProxyBase
+    public interface ISelectProxy : ISelectProxyBase
     {
         IOrderFieldQualifier OrderFieldQualifier { get; }
 
@@ -13,7 +13,7 @@ namespace DbStatute.Interfaces.Proxies
         IWhereQuery WhereQuery { get; }
     }
 
-    public interface ISelectProxy<TModel> : IProxyBase<TModel>, ISelectProxy
+    public interface ISelectProxy<TModel> : ISelectProxyBase<TModel>, ISelectProxy
         where TModel : class, IModel, new()
     {
         new IOrderFieldQualifier<TModel> OrderFieldQualifier { get; }

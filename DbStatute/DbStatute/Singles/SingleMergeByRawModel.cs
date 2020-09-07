@@ -21,17 +21,17 @@ namespace DbStatute.Singles
 
         IPredicateFieldQualifier ISingleMergeByRawModel.PredicateFieldQualifier => PredicateFieldQualifier;
 
-        public TModel RawModel { get; }
+        public TModel SourceModel { get; }
 
-        object IRawModel.RawModel => RawModel;
+        object ISourceModel.SourceModel => SourceModel;
 
         protected override async Task<TModel> MergeOperationAsync(IDbConnection dbConnection)
         {
-            Logs.AddRange(RawModelHelper.PredicateModel(RawModel, FieldQualifier, PredicateFieldQualifier, out IEnumerable<Field> fields));
+            Logs.AddRange(RawModelHelper.PredicateModel(SourceModel, FieldQualifier, PredicateFieldQualifier, out IEnumerable<Field> fields));
 
             if (ReadOnlyLogs.Safely)
             {
-                return await dbConnection.MergeAsync<TModel, TModel>(RawModel, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                return await dbConnection.MergeAsync<TModel, TModel>(SourceModel, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
             }
 
             return null;

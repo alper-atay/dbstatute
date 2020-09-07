@@ -2,12 +2,12 @@
 
 namespace DbStatute.Interfaces.Proxies
 {
-    public interface IDeleteProxy : IProxyBase
+    public interface IDeleteProxy : IDeleteProxyBase
     {
         ISelectProxy SelectProxy { get; }
     }
 
-    public interface IDeleteProxy<TModel> : IProxyBase<TModel>, IDeleteProxy
+    public interface IDeleteProxy<TModel> : IDeleteProxyBase<TModel>, IDeleteProxy
         where TModel : class, IModel, new()
     {
         new ISelectProxy<TModel> SelectProxy { get; }

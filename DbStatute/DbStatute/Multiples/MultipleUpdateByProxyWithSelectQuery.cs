@@ -1,6 +1,5 @@
 ﻿using DbStatute.Extensions;
 using DbStatute.Fundamentals.Multiples;
-using DbStatute.Helpers;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Proxies;
@@ -45,23 +44,21 @@ namespace DbStatute.Multiples
 
         IWhereQuery IMultipleUpdateByProxyWithWhereQuery.WhereQuery => WhereQuery;
 
-        protected override IAsyncEnumerable<TModel> UpdateAsSinglyOperationAsync(IDbConnection dbConnection)
+        protected override async IAsyncEnumerable<TModel> UpdateAsSinglyOperationAsync(IDbConnection dbConnection)
         {
             Logs.AddRange(WhereQuery.Build(Conjunction.And, out QueryGroup queryGroup));
 
-            if(!ReadOnlyLogs.Safely)
+            if (!ReadOnlyLogs.Safely)
             {
                 yield break;
             }
 
-            
-
             foreach (TModel rawModel in RawModels)
             {
-                dbConnection.UpdateAsync<TModel>(rawModel, queryGroup,   );
+                await dbConnection.UpdateAsync<TModel>(rawModel, queryGroup);
+
+                yield return rawModel;
             }
-
-
         }
 
         protected override Task<IEnumerable<TModel>> UpdateOperationAsync(IDbConnection dbConnection)

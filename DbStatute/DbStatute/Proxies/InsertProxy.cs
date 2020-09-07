@@ -9,7 +9,7 @@ using System;
 
 namespace DbStatute.Proxies
 {
-    public class InsertProxy : ProxyBase, IInsertProxy
+    public class InsertProxy : InsertProxyBase, IInsertProxy
     {
         public InsertProxy()
         {
@@ -28,7 +28,7 @@ namespace DbStatute.Proxies
         public IModelQuery ModelQuery { get; }
     }
 
-    public class InsertProxy<TModel> : ProxyBase<TModel>, IInsertProxy<TModel>
+    public class InsertProxy<TModel> : InsertProxyBase<TModel>, IInsertProxy<TModel>
         where TModel : class, IModel, new()
     {
         public InsertProxy()

@@ -1,11 +1,26 @@
-﻿using DbStatute.Interfaces;
+﻿using DbStatute.Fundamentals.Proxies;
+using DbStatute.Interfaces;
 using DbStatute.Interfaces.Proxies;
-using DbStatute.Interfaces.Qualifiers;
 using System;
 
 namespace DbStatute.Proxies
 {
-    public class UpdateProxyWithSelect<TModel> : UpdateProxy<TModel>, IUpdateProxyWithSelect<TModel>
+    public class UpdateProxyWithSelect : UpdateProxyBase, IUpdateProxyWithSelect
+    {
+        public UpdateProxyWithSelect()
+        {
+            SelectProxy = new SelectProxy();
+        }
+
+        public UpdateProxyWithSelect(ISelectProxy selectProxy)
+        {
+            SelectProxy = selectProxy ?? throw new ArgumentNullException(nameof(selectProxy));
+        }
+
+        public ISelectProxy SelectProxy { get; }
+    }
+
+    public class UpdateProxyWithSelect<TModel> : UpdateProxyBase<TModel>, IUpdateProxyWithSelect<TModel>
         where TModel : class, IModel, new()
     {
         public UpdateProxyWithSelect()
@@ -14,11 +29,6 @@ namespace DbStatute.Proxies
         }
 
         public UpdateProxyWithSelect(ISelectProxy<TModel> selectProxy)
-        {
-            SelectProxy = selectProxy ?? throw new ArgumentNullException(nameof(selectProxy));
-        }
-
-        public UpdateProxyWithSelect(ISelectProxy<TModel> selectProxy, IFieldQualifier<TModel> updatedFieldQualifier, IValueFieldQualifier<TModel> valueFieldQualifier, IPredicateFieldQualifier<TModel> predicateFieldQualifier) : base(updatedFieldQualifier, valueFieldQualifier, predicateFieldQualifier)
         {
             SelectProxy = selectProxy ?? throw new ArgumentNullException(nameof(selectProxy));
         }

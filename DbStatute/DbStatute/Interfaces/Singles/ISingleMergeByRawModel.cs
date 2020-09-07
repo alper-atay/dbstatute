@@ -3,14 +3,14 @@ using DbStatute.Interfaces.Qualifiers;
 
 namespace DbStatute.Interfaces.Singles
 {
-    public interface ISingleMergeByRawModel : ISingleMergeBase, IRawModel
+    public interface ISingleMergeByRawModel : ISingleMergeBase, ISourceModel
     {
         IFieldQualifier FieldQualifier { get; }
 
         IPredicateFieldQualifier PredicateFieldQualifier { get; }
     }
 
-    public interface ISingleMergeByRawModel<TModel> : ISingleMergeBase<TModel>, IRawModel<TModel>, ISingleMergeByRawModel
+    public interface ISingleMergeByRawModel<TModel> : ISingleMergeBase<TModel>, ISourceModel<TModel>, ISingleMergeByRawModel
         where TModel : class, IModel, new()
     {
         new IFieldQualifier<TModel> FieldQualifier { get; }

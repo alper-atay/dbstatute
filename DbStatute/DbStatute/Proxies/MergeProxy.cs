@@ -9,7 +9,7 @@ using System;
 
 namespace DbStatute.Proxies
 {
-    public class MergeProxy : ProxyBase, IMergeProxy
+    public class MergeProxy : MergeProxyBase, IMergeProxy
     {
         public MergeProxy()
         {
@@ -28,7 +28,7 @@ namespace DbStatute.Proxies
         public IModelQuery ModelQuery { get; }
     }
 
-    public class MergeProxy<TModel> : ProxyBase<TModel>, IMergeProxy<TModel>
+    public class MergeProxy<TModel> : MergeProxyBase<TModel>, IMergeProxy<TModel>
         where TModel : class, IModel, new()
     {
         public MergeProxy()
