@@ -13,9 +13,9 @@ namespace DbStatute.Multiples
     public class MultipleDelete<TModel> : MultipleDeleteBase<TModel>, IMultipleDelete<TModel>
         where TModel : class, IModel, new()
     {
-        public MultipleDelete(IEnumerable<TModel> readyModels)
+        public MultipleDelete(IEnumerable<TModel> sourceModels)
         {
-            SourceModels = readyModels ?? throw new ArgumentNullException(nameof(readyModels));
+            SourceModels = sourceModels ?? throw new ArgumentNullException(nameof(sourceModels));
         }
 
         public IEnumerable<TModel> SourceModels { get; }
