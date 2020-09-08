@@ -3,7 +3,7 @@ using DbStatute.Interfaces.Fundamentals.Proxies;
 
 namespace DbStatute.Fundamentals.Proxies
 {
-    public  abstract class UpdateProxyBase : ProxyBase, IUpdateProxyBase
+    public abstract class UpdateProxyBase : ProxyBase, IUpdateProxyBase
     {
     }
 

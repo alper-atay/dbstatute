@@ -1,5 +1,4 @@
-﻿using DbStatute.Interfaces.Fundamentals.Multiples;
-using DbStatute.Interfaces.Queries;
+﻿using DbStatute.Interfaces.Queries;
 
 namespace DbStatute.Interfaces.Multiples
 {
