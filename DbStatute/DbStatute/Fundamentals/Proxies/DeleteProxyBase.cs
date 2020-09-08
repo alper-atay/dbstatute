@@ -3,6 +3,7 @@ using DbStatute.Interfaces.Fundamentals.Proxies;
 using DbStatute.Interfaces.Fundamentals.Queries;
 using DbStatute.Interfaces.Queries;
 using DbStatute.Queries;
+using RepoDb.Enumerations;
 using System;
 
 namespace DbStatute.Fundamentals.Proxies
@@ -19,6 +20,8 @@ namespace DbStatute.Fundamentals.Proxies
             SearchQuery = searchQuery ?? throw new ArgumentNullException(nameof(searchQuery));
         }
 
+        public Conjunction Conjunction { get; set; }
+
         public ISearchQuery SearchQuery { get; }
     }
 
@@ -34,6 +37,8 @@ namespace DbStatute.Fundamentals.Proxies
         {
             SearchQuery = searchQuery ?? throw new ArgumentNullException(nameof(searchQuery));
         }
+
+        public Conjunction Conjunction { get; set; }
 
         public ISearchQuery<TModel> SearchQuery { get; }
 

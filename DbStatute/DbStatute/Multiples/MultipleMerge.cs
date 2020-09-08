@@ -1,5 +1,6 @@
 ﻿using DbStatute.Fundamentals.Multiples;
 using DbStatute.Interfaces;
+using DbStatute.Interfaces.Fundamentals.Queries;
 using DbStatute.Interfaces.Multiples;
 using RepoDb;
 using System;
@@ -20,7 +21,7 @@ namespace DbStatute.Multiples
 
         public IEnumerable<TModel> SourceModels { get; }
 
-        IEnumerable<object> ISourceModels.SourceModels => SourceModels;
+        IEnumerable<object> ISourceableModelsQuery.SourceModels => SourceModels;
 
         protected override async IAsyncEnumerable<TModel> MergeAsSinglyOperationAsync(IDbConnection dbConnection)
         {

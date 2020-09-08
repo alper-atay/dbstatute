@@ -1,12 +1,13 @@
-﻿using DbStatute.Interfaces.Fundamentals.Singles;
+﻿using DbStatute.Interfaces.Fundamentals.Queries;
+using DbStatute.Interfaces.Fundamentals.Singles;
 
 namespace DbStatute.Interfaces.Singles
 {
-    public interface ISingleMerge : ISingleMergeBase, ISourceModel
+    public interface ISingleMerge : ISingleMergeBase, ISourceableModelQuery
     {
     }
 
-    public interface ISingleMerge<TModel> : ISingleMergeBase<TModel>, ISourceModel<TModel>, ISingleMerge
+    public interface ISingleMerge<TModel> : ISingleMergeBase<TModel>, ISourceableModelQuery<TModel>, ISingleMerge
         where TModel : class, IModel, new()
     {
     }

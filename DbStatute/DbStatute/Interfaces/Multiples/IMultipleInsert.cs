@@ -1,12 +1,13 @@
 ﻿using DbStatute.Interfaces.Fundamentals.Multiples;
+using DbStatute.Interfaces.Fundamentals.Queries;
 
 namespace DbStatute.Interfaces.Multiples
 {
-    public interface IMultipleInsert : IMultipleInsertBase, ISourceModels
+    public interface IMultipleInsert : IMultipleInsertBase, ISourceableModelsQuery
     {
     }
 
-    public interface IMultipleInsert<TModel> : IMultipleInsertBase<TModel>, ISourceModels<TModel>, IMultipleInsert
+    public interface IMultipleInsert<TModel> : IMultipleInsertBase<TModel>, ISourceableModelsQuery<TModel>, IMultipleInsert
         where TModel : class, IModel, new()
     {
     }

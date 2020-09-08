@@ -1,8 +1,9 @@
-﻿using DbStatute.Interfaces.Fundamentals.Singles;
+﻿using DbStatute.Interfaces.Fundamentals.Queries;
+using DbStatute.Interfaces.Fundamentals.Singles;
 
 namespace DbStatute.Interfaces.Singles
 {
-    public interface ISingleDeleteById : ISingleDeleteBase, IId
+    public interface ISingleDeleteById : ISingleDeleteBase, IIdentifiableQuery
     {
     }
 

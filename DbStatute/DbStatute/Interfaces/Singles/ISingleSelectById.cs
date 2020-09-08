@@ -1,8 +1,9 @@
-﻿using DbStatute.Interfaces.Fundamentals.Singles;
+﻿using DbStatute.Interfaces.Fundamentals.Queries;
+using DbStatute.Interfaces.Fundamentals.Singles;
 
 namespace DbStatute.Interfaces.Singles
 {
-    public interface ISingleSelectById : ISingleSelectBase, IId
+    public interface ISingleSelectById : ISingleSelectBase, IIdentifiableQuery
     {
     }
 

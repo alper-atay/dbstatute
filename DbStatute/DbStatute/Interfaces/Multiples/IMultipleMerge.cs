@@ -1,12 +1,13 @@
 ﻿using DbStatute.Interfaces.Fundamentals.Multiples;
+using DbStatute.Interfaces.Fundamentals.Queries;
 
 namespace DbStatute.Interfaces.Multiples
 {
-    public interface IMultipleMerge : IMultipleMergeBase, ISourceModels
+    public interface IMultipleMerge : IMultipleMergeBase, ISourceableModelsQuery
     {
     }
 
-    public interface IMultipleMerge<TModel> : IMultipleMergeBase<TModel>, ISourceModels<TModel>, IMultipleMerge
+    public interface IMultipleMerge<TModel> : IMultipleMergeBase<TModel>, ISourceableModelsQuery<TModel>, IMultipleMerge
         where TModel : class, IModel, new()
     {
     }

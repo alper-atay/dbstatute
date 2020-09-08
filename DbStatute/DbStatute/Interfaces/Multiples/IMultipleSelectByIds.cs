@@ -1,8 +1,9 @@
 ﻿using DbStatute.Interfaces.Fundamentals.Multiples;
+using DbStatute.Interfaces.Fundamentals.Queries;
 
 namespace DbStatute.Interfaces.Multiples
 {
-    public interface IMultipleSelectByIds : IMultipleSelectBase, IIds
+    public interface IMultipleSelectByIds : IMultipleSelectBase, IIdentifiablesQuery
     {
     }
 

@@ -1,5 +1,6 @@
 ﻿using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
+using DbStatute.Interfaces.Fundamentals.Queries;
 using DbStatute.Interfaces.Singles;
 using RepoDb;
 using System;
@@ -18,7 +19,7 @@ namespace DbStatute.Singles
 
         public TModel SourceModel { get; }
 
-        object ISourceModel.SourceModel => SourceModel;
+        object ISourceableModelQuery.SourceModel => SourceModel;
 
         protected override async Task<TModel> UpdateOperationAsync(IDbConnection dbConnection)
         {
