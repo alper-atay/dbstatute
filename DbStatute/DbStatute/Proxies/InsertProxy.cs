@@ -4,7 +4,6 @@ using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Qualifiers;
 using DbStatute.Interfaces.Queries;
 using DbStatute.Qualifiers;
-using DbStatute.Queries;
 using System;
 
 namespace DbStatute.Proxies
@@ -13,19 +12,15 @@ namespace DbStatute.Proxies
     {
         public InsertProxy()
         {
-            ModelQuery = new ModelQuery();
             InsertedFieldQualifier = new FieldQualifier();
         }
 
-        public InsertProxy(IModelQuery modelQuery, IFieldQualifier ınsertedFieldQualifier)
+        public InsertProxy(IFieldQualifier insertedFieldQualifier)
         {
-            ModelQuery = modelQuery ?? throw new ArgumentNullException(nameof(modelQuery));
-            InsertedFieldQualifier = ınsertedFieldQualifier ?? throw new ArgumentNullException(nameof(ınsertedFieldQualifier));
+            InsertedFieldQualifier = insertedFieldQualifier ?? throw new ArgumentNullException(nameof(insertedFieldQualifier));
         }
 
         public IFieldQualifier InsertedFieldQualifier { get; }
-
-        public IModelQuery ModelQuery { get; }
     }
 
     public class InsertProxy<TModel> : InsertProxyBase<TModel>, IInsertProxy<TModel>
@@ -33,22 +28,16 @@ namespace DbStatute.Proxies
     {
         public InsertProxy()
         {
-            ModelQuery = new ModelQuery<TModel>();
             InsertedFieldQualifier = new FieldQualifier<TModel>();
         }
 
-        public InsertProxy(IModelQuery<TModel> modelQuery, IFieldQualifier<TModel> ınsertedFieldQualifier)
+        public InsertProxy(IFieldQualifier<TModel> ınsertedFieldQualifier)
         {
-            ModelQuery = modelQuery ?? throw new ArgumentNullException(nameof(modelQuery));
             InsertedFieldQualifier = ınsertedFieldQualifier ?? throw new ArgumentNullException(nameof(ınsertedFieldQualifier));
         }
 
         public IFieldQualifier<TModel> InsertedFieldQualifier { get; }
 
         IFieldQualifier IInsertProxy.InsertedFieldQualifier => InsertedFieldQualifier;
-
-        public IModelQuery<TModel> ModelQuery { get; }
-
-        IModelQuery IInsertProxy.ModelQuery => ModelQuery;
     }
 }

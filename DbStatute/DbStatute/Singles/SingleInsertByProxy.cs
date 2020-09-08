@@ -1,7 +1,9 @@
 ﻿using DbStatute.Extensions;
 using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
+using DbStatute.Interfaces.Fundamentals.Queries;
 using DbStatute.Interfaces.Proxies;
+using DbStatute.Interfaces.Proxies.Inserts;
 using DbStatute.Interfaces.Singles;
 using DbStatute.Proxies;
 using RepoDb;
@@ -31,18 +33,26 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> InsertOperationAsync(IDbConnection dbConnection)
         {
-            Logs.AddRange(InsertProxy.ModelQuery.Build(out TModel model));
+            bool fieldsBuilt = InsertProxy.InsertedFieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
 
-            if (ReadOnlyLogs.Safely)
+            if (!fieldsBuilt)
             {
-                bool fieldsBuilt = InsertProxy.InsertedFieldQualifier.Build<TModel>(out IEnumerable<Field> fields);
+                fields = null;
+            }
 
-                if (!fieldsBuilt)
+            if (InsertProxy is IWithModelQuery<TModel> withModelQuery)
+            {
+                Logs.AddRange(withModelQuery.ModelQuery.Build(out TModel model));
+
+                if (ReadOnlyLogs.Safely)
                 {
-                    fields = null;
+                    return await dbConnection.InsertAsync<TModel, TModel>(model, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
                 }
+            }
 
-                return await dbConnection.InsertAsync<TModel, TModel>(model, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+            if (InsertProxy is ISourceModel<TModel> sourceModel)
+            {
+                return await dbConnection.InsertAsync<TModel, TModel>(sourceModel.SourceModel, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
             }
 
             return null;
