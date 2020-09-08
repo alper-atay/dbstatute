@@ -3,7 +3,7 @@ using RepoDb;
 using System;
 using System.Linq.Expressions;
 
-namespace DbStatute.Interfaces.Querying.Fundamentals.Qualifiers
+namespace DbStatute.Interfaces.Utilities
 {
     public interface ISettableSpecializedField<TValue> : ISettableField
     {

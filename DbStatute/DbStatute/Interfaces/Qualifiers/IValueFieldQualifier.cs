@@ -1,5 +1,5 @@
 ﻿using DbStatute.Interfaces.Fundamentals.Enumerables;
-using DbStatute.Interfaces.Querying.Fundamentals.Qualifiers;
+using DbStatute.Interfaces.Utilities;
 using RepoDb;
 using System;
 using System.Linq.Expressions;

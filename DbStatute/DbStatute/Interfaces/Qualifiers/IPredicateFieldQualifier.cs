@@ -1,6 +1,6 @@
 ﻿using Basiclog;
 using DbStatute.Interfaces.Fundamentals.Enumerables;
-using DbStatute.Interfaces.Querying.Fundamentals.Qualifiers;
+using DbStatute.Interfaces.Utilities;
 
 namespace DbStatute.Interfaces.Qualifiers
 {
