@@ -8,6 +8,7 @@ namespace DbStatute.Interfaces
         object Id { get; set; }
 
         IValueFieldQualifier GetInsertValueFieldQualifier();
+
         IValueFieldQualifier GetUpdateValueFieldQualifier();
     }
 }

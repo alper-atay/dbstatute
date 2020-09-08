@@ -16,7 +16,6 @@ namespace DbStatute.Multiples
             SourceModels = rawModels ?? throw new ArgumentNullException(nameof(rawModels));
         }
 
-
         public IEnumerable<TModel> SourceModels { get; }
 
         IEnumerable<object> ISourceModels.SourceModels => SourceModels;

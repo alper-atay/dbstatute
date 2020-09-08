@@ -13,7 +13,6 @@ namespace DbStatute.Helpers
         {
             if (fieldQualifier.Build<TModel>(out IEnumerable<Field> fields))
             {
-
             }
 
             return null;

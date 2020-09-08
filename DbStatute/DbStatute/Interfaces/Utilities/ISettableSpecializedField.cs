@@ -1,5 +1,4 @@
-﻿using DbStatute.Interfaces.Utilities;
-using RepoDb;
+﻿using RepoDb;
 using System;
 using System.Linq.Expressions;
 
