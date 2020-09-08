@@ -4,7 +4,7 @@ using DbStatute.Interfaces.Queries;
 
 namespace DbStatute.Interfaces.Proxies
 {
-    public interface IUpdateProxy : IUpdateProxyBase
+    public interface IUpdateProxy : IUpdateProxyBase, ISourceModel
     {
         IPredicateFieldQualifier PredicateFieldQualifier { get; }
 
@@ -13,7 +13,7 @@ namespace DbStatute.Interfaces.Proxies
         IWhereQuery WhereQuery { get; }
     }
 
-    public interface IUpdateProxy<TModel> : IUpdateProxyBase<TModel>, IUpdateProxy
+    public interface IUpdateProxy<TModel> : IUpdateProxyBase<TModel>, ISourceModel<TModel>, IUpdateProxy
         where TModel : class, IModel, new()
     {
         new IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }

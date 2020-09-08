@@ -47,7 +47,7 @@ namespace DbStatute.Singles
             {
                 TModel selectedModel = singleSelectByProxy.SelectedModel;
 
-                int deletedCount = await dbConnection.DeleteAsync<TModel>(selectedModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                int deletedCount = await dbConnection.DeleteAsync(selectedModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
                 if (deletedCount > 0)
                 {

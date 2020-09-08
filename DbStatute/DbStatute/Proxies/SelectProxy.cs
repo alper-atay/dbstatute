@@ -42,7 +42,14 @@ namespace DbStatute.Proxies
             SelectedFieldQualifier = new FieldQualifier<TModel>();
         }
 
-        public SelectProxy(IWhereQuery<TModel> whereQuery, IOrderFieldQualifier<TModel> orderFieldQualifier, IFieldQualifier<TModel> selectedFieldQualifier)
+        public SelectProxy(IWhereQuery<TModel> whereQuery)
+        {
+            WhereQuery = whereQuery ?? throw new ArgumentNullException(nameof(whereQuery));
+            OrderFieldQualifier = new OrderFieldQualifier<TModel>();
+            SelectedFieldQualifier = new FieldQualifier<TModel>();
+        }
+
+        public SelectProxy(IWhereQuery<TModel> whereQuery, IFieldQualifier<TModel> selectedFieldQualifier, IOrderFieldQualifier<TModel> orderFieldQualifier)
         {
             WhereQuery = whereQuery ?? throw new ArgumentNullException(nameof(whereQuery));
             OrderFieldQualifier = orderFieldQualifier ?? throw new ArgumentNullException(nameof(orderFieldQualifier));

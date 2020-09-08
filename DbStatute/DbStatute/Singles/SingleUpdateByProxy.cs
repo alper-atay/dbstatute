@@ -3,6 +3,7 @@ using DbStatute.Interfaces;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Singles;
 using DbStatute.Proxies;
+using RepoDb;
 using System;
 using System.Data;
 using System.Threading.Tasks;
@@ -28,8 +29,6 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> UpdateOperationAsync(IDbConnection dbConnection)
         {
-
-
 
             return null;
         }

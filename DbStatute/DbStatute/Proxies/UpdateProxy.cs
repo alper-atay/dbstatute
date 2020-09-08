@@ -11,21 +11,25 @@ namespace DbStatute.Proxies
 {
     public class UpdateProxy : UpdateProxyBase, IUpdateProxy
     {
-        public UpdateProxy()
+        public UpdateProxy(object sourceModel)
         {
+            SourceModel = sourceModel;
             WhereQuery = new WhereQuery();
             UpdatedFieldQualifier = new FieldQualifier();
             PredicateFieldQualifier = new PredicateFieldQualifier();
         }
 
-        public UpdateProxy(IWhereQuery whereQuery, IFieldQualifier updatedFieldQualifier, IPredicateFieldQualifier predicateFieldQualifier)
+        public UpdateProxy(object sourceModel, IWhereQuery whereQuery, IFieldQualifier updatedFieldQualifier, IPredicateFieldQualifier predicateFieldQualifier)
         {
+            SourceModel = sourceModel;
             WhereQuery = whereQuery ?? throw new ArgumentNullException(nameof(whereQuery));
             UpdatedFieldQualifier = updatedFieldQualifier ?? throw new ArgumentNullException(nameof(updatedFieldQualifier));
             PredicateFieldQualifier = predicateFieldQualifier ?? throw new ArgumentNullException(nameof(predicateFieldQualifier));
         }
 
         public IPredicateFieldQualifier PredicateFieldQualifier { get; }
+
+        public object SourceModel { get; }
 
         public IFieldQualifier UpdatedFieldQualifier { get; }
 
@@ -52,6 +56,10 @@ namespace DbStatute.Proxies
         public IPredicateFieldQualifier<TModel> PredicateFieldQualifier { get; }
 
         IPredicateFieldQualifier IUpdateProxy.PredicateFieldQualifier => PredicateFieldQualifier;
+
+        public TModel SourceModel { get; }
+
+        object ISourceModel.SourceModel => SourceModel;
 
         public IFieldQualifier<TModel> UpdatedFieldQualifier { get; }
 

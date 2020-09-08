@@ -57,6 +57,11 @@ namespace DbStatute.Qualifiers
             return _data.GetEnumerator();
         }
 
+        public object GetValue(Field field)
+        {
+            return _data[field];
+        }
+
         public bool IsSetted(Field field)
         {
             return _data.ContainsKey(field);
@@ -130,6 +135,13 @@ namespace DbStatute.Qualifiers
     public class ValueFieldQualifier<TModel> : ValueFieldQualifier, IValueFieldQualifier<TModel>
         where TModel : class, IModel, new()
     {
+        public object GetValue(Expression<Func<TModel, object>> expression)
+        {
+            Field field = Field.Parse(expression).FirstOrDefault();
+
+            return GetValue(field);
+        }
+
         public int IsSetted(Expression<Func<TModel, object>> expression)
         {
             IEnumerable<Field> fields = Field.Parse(expression);
