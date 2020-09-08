@@ -11,9 +11,9 @@ namespace DbStatute.Singles
     public class SingleMerge<TModel> : SingleMergeBase<TModel>, ISingleMerge<TModel>
         where TModel : class, IModel, new()
     {
-        public SingleMerge(TModel readyModel)
+        public SingleMerge(TModel sourceModel)
         {
-            SourceModel = readyModel ?? throw new ArgumentNullException(nameof(readyModel));
+            SourceModel = sourceModel ?? throw new ArgumentNullException(nameof(sourceModel));
         }
 
         public TModel SourceModel { get; }

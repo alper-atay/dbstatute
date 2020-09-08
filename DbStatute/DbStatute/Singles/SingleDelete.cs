@@ -9,9 +9,9 @@ namespace DbStatute.Singles
     public class SingleDelete<TModel> : SingleDeleteById<TModel>, ISingleDelete<TModel>
         where TModel : class, IModel, new()
     {
-        public SingleDelete(TModel readyModel) : base(readyModel.Id)
+        public SingleDelete(TModel sourceModel) : base(sourceModel.Id)
         {
-            SourceModel = readyModel ?? throw new ArgumentNullException(nameof(readyModel));
+            SourceModel = sourceModel ?? throw new ArgumentNullException(nameof(sourceModel));
         }
 
         public TModel SourceModel { get; }

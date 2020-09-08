@@ -11,9 +11,9 @@ namespace DbStatute.Singles
     public class SingleInsert<TModel> : SingleInsertBase<TModel>, ISingleInsert<TModel>
         where TModel : class, IModel, new()
     {
-        public SingleInsert(TModel readyModel)
+        public SingleInsert(TModel sourceModel)
         {
-            SourceModel = readyModel ?? throw new ArgumentNullException(nameof(readyModel));
+            SourceModel = sourceModel ?? throw new ArgumentNullException(nameof(sourceModel));
         }
 
         public TModel SourceModel { get; }

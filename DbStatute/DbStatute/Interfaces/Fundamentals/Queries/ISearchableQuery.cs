@@ -1,9 +1,12 @@
 ﻿using DbStatute.Interfaces.Queries;
+using RepoDb.Enumerations;
 
 namespace DbStatute.Interfaces.Fundamentals.Queries
 {
     public interface ISearchableQuery
     {
+        Conjunction Conjunction { get; set; }
+
         ISearchQuery SearchQuery { get; }
     }
 
