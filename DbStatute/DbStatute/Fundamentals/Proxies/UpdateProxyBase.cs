@@ -1,7 +1,8 @@
 ﻿using DbStatute.Interfaces;
 using DbStatute.Interfaces.Fundamentals.Proxies;
-using DbStatute.Interfaces.Qualifiers;
-using DbStatute.Qualifiers;
+using DbStatute.Interfaces.Fundamentals.Queries;
+using DbStatute.Interfaces.Queries;
+using DbStatute.Queries;
 using System;
 
 namespace DbStatute.Fundamentals.Proxies
@@ -10,32 +11,32 @@ namespace DbStatute.Fundamentals.Proxies
     {
         protected UpdateProxyBase()
         {
-            UpdatedFieldQualifier = new FieldQualifier();
+            FieldQuery = new FieldQuery();
         }
 
-        protected UpdateProxyBase(IFieldQualifier updatedFieldQualifier)
+        protected UpdateProxyBase(FieldQuery fieldQuery)
         {
-            UpdatedFieldQualifier = updatedFieldQualifier ?? throw new ArgumentNullException(nameof(updatedFieldQualifier));
+            FieldQuery = fieldQuery ?? throw new ArgumentNullException(nameof(fieldQuery));
         }
 
-        public IFieldQualifier UpdatedFieldQualifier { get; }
+        public IFieldQuery FieldQuery { get; }
     }
 
     public abstract class UpdateProxyBase<TModel> : ProxyBase<TModel>, IUpdateProxyBase<TModel>
         where TModel : class, IModel, new()
     {
-        public UpdateProxyBase()
+        protected UpdateProxyBase()
         {
-            UpdatedFieldQualifier = new FieldQualifier<TModel>();
+            FieldQuery = new FieldQuery<TModel>();
         }
 
-        public UpdateProxyBase(IFieldQualifier<TModel> updatedFieldQualifier)
+        protected UpdateProxyBase(FieldQuery<TModel> fieldQuery)
         {
-            UpdatedFieldQualifier = updatedFieldQualifier ?? throw new ArgumentNullException(nameof(updatedFieldQualifier));
+            FieldQuery = fieldQuery ?? throw new ArgumentNullException(nameof(fieldQuery));
         }
 
-        public IFieldQualifier<TModel> UpdatedFieldQualifier { get; }
+        public IFieldQuery<TModel> FieldQuery { get; }
 
-        IFieldQualifier IUpdateProxyBase.UpdatedFieldQualifier => UpdatedFieldQualifier;
+        IFieldQuery IFieldableQuery.FieldQuery => throw new NotImplementedException();
     }
 }

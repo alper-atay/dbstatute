@@ -6,29 +6,12 @@ namespace DbStatute.Proxies
 {
     public class DeleteProxy : DeleteProxyBase, IDeleteProxy
     {
-        public DeleteProxy(ISelectProxy selectProxy)
-        {
-            SelectProxy = selectProxy;
-        }
 
-        public ISelectProxy SelectProxy { get; }
     }
 
     public class DeleteProxy<TModel> : DeleteProxyBase<TModel>, IDeleteProxy<TModel>
         where TModel : class, IModel, new()
     {
-        public DeleteProxy()
-        {
-            SelectProxy = new SelectProxy<TModel>();
-        }
 
-        public DeleteProxy(ISelectProxy<TModel> selectProxy)
-        {
-            SelectProxy = selectProxy;
-        }
-
-        public ISelectProxy<TModel> SelectProxy { get; }
-
-        ISelectProxy IDeleteProxy.SelectProxy => SelectProxy;
     }
 }

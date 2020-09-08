@@ -16,10 +16,10 @@ namespace DbStatute.Extensions
 
             ILogbook logs = Logger.NewLogbook();
 
-            if (modelQuery.FieldQualifier.Build<TModel>(out IEnumerable<Field> fields))
+            if (modelQuery.Fields.Build<TModel>(out IEnumerable<Field> fields))
             {
-                IReadOnlyDictionary<Field, object> valueMap = modelQuery.ValueFieldQualifier;
-                IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> predicateMap = modelQuery.PredicateFieldQualifier;
+                IReadOnlyDictionary<Field, object> valueMap = modelQuery.ValueMap;
+                IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> predicateMap = modelQuery.PredicateMap;
 
                 foreach (Field field in fields)
                 {

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace DbStatute.Extensions
 {
-    public static class OrderFieldCollectionExtension
+    public static class OrderFieldExtension
     {
         public static bool Build(this IOrderFieldCollection orderFieldCollection, out IEnumerable<OrderField> orderFields)
         {

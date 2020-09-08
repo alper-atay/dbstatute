@@ -2,12 +2,12 @@
 
 namespace DbStatute.Interfaces.Fundamentals.Queries
 {
-    public interface IWithModelQuery
+    public interface IModelableQuery
     {
         IModelQuery ModelQuery { get; }
     }
 
-    public interface IWithModelQuery<TModel> : IWithModelQuery
+    public interface IModelableQuery<TModel> : IModelableQuery
         where TModel : class, IModel, new()
     {
         new IModelQuery<TModel> ModelQuery { get; }

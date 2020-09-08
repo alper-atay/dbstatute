@@ -6,56 +6,66 @@ using System;
 
 namespace DbStatute.Queries
 {
-    public class ModelQuery : IModelQuery
+    public class SearchQuery : ISearchQuery
     {
-        public ModelQuery()
+        public SearchQuery()
         {
             Fields = new FieldQualifier();
             ValueMap = new ValueFieldQualifier();
             PredicateMap = new PredicateFieldQualifier();
+            OperationMap = new OperationFieldQualifier();
         }
 
-        public ModelQuery(IFieldQualifier fields, IValueFieldQualifier valueMap, IPredicateFieldQualifier predicateMap)
+        public SearchQuery(IFieldQualifier fields, IValueFieldQualifier valueMap, IPredicateFieldQualifier predicateMap, IOperationFieldQualifier operationMap)
         {
             Fields = fields ?? throw new ArgumentNullException(nameof(fields));
             ValueMap = valueMap ?? throw new ArgumentNullException(nameof(valueMap));
             PredicateMap = predicateMap ?? throw new ArgumentNullException(nameof(predicateMap));
+            OperationMap = operationMap ?? throw new ArgumentNullException(nameof(operationMap));
         }
 
         public IFieldQualifier Fields { get; }
+
+        public IOperationFieldQualifier OperationMap { get; }
 
         public IPredicateFieldQualifier PredicateMap { get; }
 
         public IValueFieldQualifier ValueMap { get; }
     }
 
-    public class ModelQuery<TModel> : IModelQuery<TModel>
+    public class SearchQuery<TModel> : ISearchQuery<TModel>
         where TModel : class, IModel, new()
     {
-        public ModelQuery()
+        public SearchQuery()
         {
             Fields = new FieldQualifier<TModel>();
             ValueMap = new ValueFieldQualifier<TModel>();
             PredicateMap = new PredicateFieldQualifier<TModel>();
+            OperationMap = new OperationFieldQualifier<TModel>();
         }
 
-        public ModelQuery(IFieldQualifier<TModel> fields, IValueFieldQualifier<TModel> valueMap, IPredicateFieldQualifier<TModel> predicateMap)
+        public SearchQuery(IFieldQualifier<TModel> fields, IValueFieldQualifier<TModel> valueMap, IPredicateFieldQualifier<TModel> predicateMap, IOperationFieldQualifier<TModel> operationMap)
         {
             Fields = fields ?? throw new ArgumentNullException(nameof(fields));
             ValueMap = valueMap ?? throw new ArgumentNullException(nameof(valueMap));
             PredicateMap = predicateMap ?? throw new ArgumentNullException(nameof(predicateMap));
+            OperationMap = operationMap ?? throw new ArgumentNullException(nameof(operationMap));
         }
 
         public IFieldQualifier<TModel> Fields { get; }
 
-        IFieldQualifier IModelQuery.Fields => Fields;
+        IFieldQualifier ISearchQuery.Fields => Fields;
+
+        public IOperationFieldQualifier<TModel> OperationMap { get; }
+
+        IOperationFieldQualifier ISearchQuery.OperationMap => OperationMap;
 
         public IPredicateFieldQualifier<TModel> PredicateMap { get; }
 
-        IPredicateFieldQualifier IModelQuery.PredicateMap => PredicateMap;
+        IPredicateFieldQualifier ISearchQuery.PredicateMap => PredicateMap;
 
         public IValueFieldQualifier<TModel> ValueMap { get; }
 
-        IValueFieldQualifier IModelQuery.ValueMap => ValueMap;
+        IValueFieldQualifier ISearchQuery.ValueMap => ValueMap;
     }
 }

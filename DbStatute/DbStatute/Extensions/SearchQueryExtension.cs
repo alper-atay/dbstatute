@@ -7,15 +7,15 @@ using System.Collections.Generic;
 
 namespace DbStatute.Extensions
 {
-    public static class WhereQueryExtension
+    public static class SearchQueryExtension
     {
-        public static IReadOnlyLogbook Build<TModel>(this IWhereQuery<TModel> whereQuery, Conjunction conjunction, out QueryGroup queryGroup) where TModel : class, IModel, new()
+        public static IReadOnlyLogbook Build<TModel>(this ISearchQuery<TModel> searchQuery, Conjunction conjunction, out QueryGroup queryGroup) where TModel : class, IModel, new()
         {
             queryGroup = null;
 
             ILogbook logs = Logger.NewLogbook();
 
-            logs.AddRange(QueryFieldExtension.Build<TModel>(whereQuery.FieldQualifier, whereQuery.ValueFieldQualifier, whereQuery.PredicateFieldQualifier, whereQuery.OperationFieldQualifier, out IEnumerable<QueryField> queryFields));
+            logs.AddRange(QueryFieldExtension.Build<TModel>(searchQuery.Fields, searchQuery.ValueMap, searchQuery.PredicateMap, searchQuery.OperationMap, out IEnumerable<QueryField> queryFields));
 
             if (logs.Safely)
             {

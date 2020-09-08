@@ -1,13 +1,13 @@
 ﻿using DbStatute.Interfaces.Queries;
 
-namespace DbStatute.Interfaces.Fundamentals.Proxies
+namespace DbStatute.Interfaces.Fundamentals.Queries
 {
-    public interface ISelectProxyBase : IProxyBase
+    public interface ISearchableQuery
     {
         ISearchQuery SearchQuery { get; }
     }
 
-    public interface ISelectProxyBase<TModel> : IProxyBase<TModel>, ISelectProxyBase
+    public interface ISearchableQuery<TModel> : ISearchableQuery
         where TModel : class, IModel, new()
     {
         new ISearchQuery<TModel> SearchQuery { get; }
