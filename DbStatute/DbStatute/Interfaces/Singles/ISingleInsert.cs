@@ -3,11 +3,11 @@ using DbStatute.Interfaces.Fundamentals.Singles;
 
 namespace DbStatute.Interfaces.Singles
 {
-    public interface ISingleInsert : ISingleInsertBase, ISourceableModelQuery
+    public interface ISingleInsert : ISingleInsertBase, ISourceableQuery
     {
     }
 
-    public interface ISingleInsert<TModel> : ISingleInsertBase<TModel>, ISourceableModelQuery<TModel>, ISingleInsert
+    public interface ISingleInsert<TModel> : ISingleInsertBase<TModel>, ISourceableQuery<TModel>, ISingleInsert
         where TModel : class, IModel, new()
     {
     }

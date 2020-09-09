@@ -1,5 +1,4 @@
-﻿using DbStatute.Extensions;
-using DbStatute.Fundamentals.Singles;
+﻿using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Fundamentals.Queries;
 using DbStatute.Interfaces.Proxies;
@@ -8,7 +7,6 @@ using RepoDb;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DbStatute.Singles
@@ -22,58 +20,49 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> DeleteOperationAsync(IDbConnection dbConnection)
         {
-            if (DeleteProxy is IModelableQuery<TModel> modelableQuery)
+            TModel selectedModel = null;
+
             {
-                Logs.AddRange(modelableQuery.ModelQuery.Build(out TModel model));
-
-                if (ReadOnlyLogs.Safely)
+                if (DeleteProxy is IIdentifiableQuery identifiableQuery)
                 {
-                    int deletedCount = await dbConnection.DeleteAsync(model, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                    selectedModel = await GetModelAsync(dbConnection, identifiableQuery.Id);
+                }
+            }
 
-                    if (deletedCount > 0)
+            {
+                if (DeleteProxy is ISearchableQuery<TModel> searchableQuery)
+                {
+                    QueryGroup queryGroup = GetSearchableProxyResult(searchableQuery);
+
+                    if (ReadOnlyLogs.Safely)
                     {
-                        return model;
+                        IEnumerable<Field> fields = DeleteProxy is IFieldableQuery<TModel> fieldableQuery ? GetFieldableQueryResult(fieldableQuery) : null;
+                        IEnumerable<OrderField> orderFields = DeleteProxy is IOrderFieldableQuery<TModel> orderFieldableQuery ? GetOrderFieldableQueryResult(orderFieldableQuery) : null;
+
+                        selectedModel = await GetModelAsync(dbConnection, queryGroup, fields, orderFields);
                     }
                 }
             }
 
-            if (DeleteProxy is ISearchableQuery<TModel> searchableModel)
             {
-                Logs.AddRange(searchableModel.SearchQuery.Build(searchableModel.Conjunction, out QueryGroup queryGroup));
-
-                if (ReadOnlyLogs.Safely)
+                if (DeleteProxy is IModelableQuery<TModel> modelableQuery)
                 {
-                    IEnumerable<Field> fields = null;
-                    IEnumerable<OrderField> orderFields = null;
+                    TModel model = GetModelableQueryResult(modelableQuery);
 
-                    if (DeleteProxy is IFieldableQuery<TModel> fieldableQuery)
+                    if (!(model is null))
                     {
-                        bool fieldsBuilt = fieldableQuery.FieldQuery.Fields.Build(out fields);
-
-                        if (!fieldsBuilt)
-                        {
-                            fields = null;
-                        }
+                        selectedModel = await GetModelAsync(dbConnection, model.Id);
                     }
+                }
+            }
 
-                    if (DeleteProxy is IOrderFieldableQuery<TModel> orderFieldableQuery)
-                    {
-                        bool orderFieldsBuilt = orderFieldableQuery.OrderFieldQuery.OrderFields.Build(out orderFields);
+            if (!(selectedModel is null))
+            {
+                int deletedCount = await dbConnection.DeleteAsync(selectedModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
-                        if (!orderFieldsBuilt)
-                        {
-                            orderFields = null;
-                        }
-                    }
-
-                    TModel selectedModel = await dbConnection.QueryAsync<TModel>(queryGroup, fields, orderFields, 1, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder).ContinueWith(x => x.Result.FirstOrDefault());
-
-                    int deletedCount = await dbConnection.DeleteAsync(selectedModel, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
-
-                    if (deletedCount > 0)
-                    {
-                        return selectedModel;
-                    }
+                if (deletedCount > 0)
+                {
+                    return selectedModel;
                 }
             }
 

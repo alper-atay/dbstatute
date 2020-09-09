@@ -1,4 +1,5 @@
-﻿using DbStatute.Extensions;
+﻿using Basiclog;
+using DbStatute.Extensions;
 using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Fundamentals.Queries;
@@ -32,53 +33,118 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> UpdateOperationAsync(IDbConnection dbConnection)
         {
+            object updateId = default;
+            int updatedCount = 0;
 
-
-            if (UpdateProxy is ISearchableQuery<TModel> searchableQuery)
             {
-                Logs.AddRange(searchableQuery.SearchQuery.Build(searchableQuery.Conjunction, out QueryGroup queryGroup));
-
-                if(ReadOnlyLogs.Safely)
+                if (UpdateProxy is ISearchableQuery<TModel> searchableQuery)
                 {
-                    if (UpdateProxy is IFieldableQuery<TModel> fieldableQuery)
-                    {
-                        bool fieldsBuilt = fieldableQuery.FieldQuery.Fields.Build(out IEnumerable<Field> fields);
+                    QueryGroup queryGroup = GetSearchableProxyResult(searchableQuery);
 
-                        if (!fieldsBuilt)
+                    IEnumerable<Field> fields = UpdateProxy is IFieldableQuery<TModel> fieldableQuery ? GetFieldableQueryResult(fieldableQuery) : null;
+                    IEnumerable<OrderField> orderFields = UpdateProxy is IOrderFieldableQuery<TModel> orderFieldableQuery ? GetOrderFieldableQueryResult(orderFieldableQuery) : null;
+
+                    if (!(queryGroup is null))
+                    {
+                        TModel searchModel = await GetModelAsync(dbConnection, queryGroup, fields, orderFields);
+
+                        if (searchModel is null)
                         {
-                            fields = null;
+                            return null;
+                        }
+
+                        if (UpdateProxy is IIdentifiableQuery identifiableQuery)
+                        {
+                            updateId = identifiableQuery.Id;
+
+                            updatedCount = await dbConnection.UpdateAsync(searchModel, updateId, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                        }
+                        else
+                        {
+                            TModel updateModel = null;
+
+                            if (UpdateProxy is IModelableQuery<TModel> modelableQuery)
+                            {
+                                updateModel = GetModelableQueryResult(modelableQuery);
+                            }
+
+                            if (UpdateProxy is ISourceableQuery<TModel> sourceableModelQuery)
+                            {
+                                updateModel = GetSourceableModelQueryResult(sourceableModelQuery);
+                            }
+
+                            if (updateModel is null)
+                            {
+                                return null;
+                            }
+
+                            updateId = updateModel.Id = searchModel.Id;
+
+                            updatedCount = await dbConnection.UpdateAsync(updateModel, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
                         }
                     }
-
-
-
                 }
-
-
             }
 
-
-
-
-
-            if (UpdateProxy is ISourceableModelQuery<TModel> sourceableModelQuery)
             {
-                TModel sourceModel = sourceableModelQuery.SourceModel;
-            }
-
-            if (UpdateProxy is IModelableQuery<TModel> modelableQuery)
-            {
-                Logs.AddRange(modelableQuery.ModelQuery.Build(out TModel model));
-
-                if (ReadOnlyLogs.Safely)
+                if (UpdateProxy is ISourceableQuery<TModel> sourceableModelQuery)
                 {
-                    int deletedCount = await dbConnection.DeleteAsync(model, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                    TModel sourceModel = GetSourceableModelQueryResult(sourceableModelQuery);
 
-                    if (deletedCount > 0)
+                    if (sourceModel is null)
                     {
-                        return model;
+                        return null;
+                    }
+
+                    IEnumerable<Field> fields = UpdateProxy is IFieldableQuery<TModel> fieldableQuery ? GetFieldableQueryResult(fieldableQuery) : null;
+
+                    if (UpdateProxy is IIdentifiableQuery identifiableQuery)
+                    {
+                        updateId = identifiableQuery.Id;
+
+                        updatedCount = await dbConnection.UpdateAsync(sourceModel, updateId, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                    }
+                    else
+                    {
+                        updateId = sourceModel.Id;
+
+                        updatedCount = await dbConnection.UpdateAsync(sourceModel, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
                     }
                 }
+            }
+
+            {
+                if (UpdateProxy is IModelableQuery<TModel> modelableQuery)
+                {
+                    IReadOnlyLogbook modelableQueryLogs = modelableQuery.ModelQuery.Build(out TModel model);
+
+                    Logs.AddRange(modelableQueryLogs);
+
+                    if (!modelableQueryLogs.Safely && model is null)
+                    {
+                        return null;
+                    }
+
+                    IEnumerable<Field> fields = UpdateProxy is IFieldableQuery<TModel> fieldableQuery ? GetFieldableQueryResult(fieldableQuery) : null;
+
+                    if (UpdateProxy is IIdentifiableQuery identifiableQuery)
+                    {
+                        updateId = identifiableQuery.Id;
+
+                        updatedCount = await dbConnection.UpdateAsync(model, updateId, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                    }
+                    else
+                    {
+                        updateId = model.Id;
+
+                        updatedCount = await dbConnection.UpdateAsync(model, fields, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                    }
+                }
+            }
+
+            if (updatedCount > 0)
+            {
+                return await GetModelAsync(dbConnection, updateId);
             }
 
             return null;

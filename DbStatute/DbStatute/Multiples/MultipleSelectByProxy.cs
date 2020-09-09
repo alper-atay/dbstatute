@@ -1,11 +1,11 @@
-﻿using DbStatute.Extensions;
+﻿using Basiclog;
+using DbStatute.Extensions;
 using DbStatute.Fundamentals.Multiples;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Fundamentals.Queries;
 using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Proxies;
 using RepoDb;
-using RepoDb.Enumerations;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -27,11 +27,11 @@ namespace DbStatute.Multiples
 
         protected override async IAsyncEnumerable<TModel> SelectAsSignlyOperationAsync(IDbConnection dbConnection)
         {
-            var selectedModels = await SelectAsync(dbConnection);
+            IEnumerable<TModel> selectedModels = await SelectAsync(dbConnection);
 
             if (IsSucceed)
             {
-                foreach (var selectedModel in selectedModels)
+                foreach (TModel selectedModel in selectedModels)
                 {
                     yield return selectedModel;
                 }
@@ -40,34 +40,30 @@ namespace DbStatute.Multiples
 
         protected override async Task<IEnumerable<TModel>> SelectOperationAsync(IDbConnection dbConnection)
         {
-            Logs.AddRange(SelectProxy.SearchQuery.Build(Conjunction.And, out QueryGroup queryGroup));
-
-            if (Logs.Safely)
             {
-                IEnumerable<Field> fields = null;
-                IEnumerable<OrderField> orderFields = null;
-
-                if (SelectProxy is IFieldableQuery<TModel> fieldableQuery)
+                if (SelectProxy is IIdentifiablesQuery identifiablesQuery)
                 {
-                    bool fieldsBuilt = fieldableQuery.FieldQuery.Fields.Build(out fields);
+                    IEnumerable<Field> fields = SelectProxy is IFieldableQuery<TModel> fieldableQuery ? GetFieldableQueryResult(fieldableQuery) : null;
 
-                    if (!fieldsBuilt)
+                    return await dbConnection.QueryAsync<TModel>(identifiablesQuery.Ids, fields, null, MaxSelectCount, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder);
+                }
+            }
+
+            {
+                if (SelectProxy is ISearchableQuery<TModel> searchableQuery)
+                {
+                    IReadOnlyLogbook searchableQueryLogs = searchableQuery.Build(out QueryGroup queryGroup);
+
+                    Logs.AddRange(searchableQueryLogs);
+
+                    if (searchableQueryLogs.Safely)
                     {
-                        fields = null;
+                        IEnumerable<Field> fields = SelectProxy is IFieldableQuery<TModel> fieldableQuery ? GetFieldableQueryResult(fieldableQuery) : null;
+                        IEnumerable<OrderField> orderFields = SelectProxy is IOrderFieldableQuery<TModel> orderFieldableQuery ? GetOrderFieldableQueryResult(orderFieldableQuery) : null;
+
+                        return await dbConnection.QueryAsync<TModel>(queryGroup, fields, orderFields, MaxSelectCount, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder);
                     }
                 }
-
-                if (SelectProxy is IOrderFieldableQuery<TModel> orderFieldableQuery)
-                {
-                    bool orderFieldsBuilt = orderFieldableQuery.OrderFieldQuery.OrderFields.Build(out orderFields);
-
-                    if (!orderFieldsBuilt)
-                    {
-                        orderFields = null;
-                    }
-                }
-
-                return await dbConnection.QueryAsync<TModel>(queryGroup, fields, orderFields, MaxSelectCount, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder);
             }
 
             return null;

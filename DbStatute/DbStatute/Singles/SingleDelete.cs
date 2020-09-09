@@ -17,7 +17,7 @@ namespace DbStatute.Singles
 
         public TModel SourceModel { get; }
 
-        object ISourceableModelQuery.SourceModel => SourceModel;
+        object ISourceableQuery.SourceModel => SourceModel;
 
         protected override async Task<TModel> DeleteOperationAsync(IDbConnection dbConnection)
         {

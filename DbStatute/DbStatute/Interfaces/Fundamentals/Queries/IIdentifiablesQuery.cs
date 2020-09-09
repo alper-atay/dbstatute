@@ -4,6 +4,6 @@ namespace DbStatute.Interfaces.Fundamentals.Queries
 {
     public interface IIdentifiablesQuery
     {
-        IEnumerable<object> Id { get; }
+        IEnumerable<object> Ids { get; }
     }
 }

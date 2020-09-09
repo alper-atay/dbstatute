@@ -1,11 +1,11 @@
 ﻿namespace DbStatute.Interfaces.Fundamentals.Queries
 {
-    public interface ISourceableModelQuery
+    public interface ISourceableQuery
     {
         object SourceModel { get; }
     }
 
-    public interface ISourceableModelQuery<TModel> : ISourceableModelQuery
+    public interface ISourceableQuery<TModel> : ISourceableQuery
         where TModel : class, IModel, new()
     {
         new TModel SourceModel { get; }

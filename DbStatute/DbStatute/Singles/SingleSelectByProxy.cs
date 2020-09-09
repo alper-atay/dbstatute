@@ -1,16 +1,13 @@
-﻿using DbStatute.Extensions;
-using DbStatute.Fundamentals.Singles;
+﻿using DbStatute.Fundamentals.Singles;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Fundamentals.Queries;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Singles;
 using DbStatute.Proxies;
 using RepoDb;
-using RepoDb.Enumerations;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DbStatute.Singles
@@ -34,34 +31,26 @@ namespace DbStatute.Singles
 
         protected override async Task<TModel> SelectOperationAsync(IDbConnection dbConnection)
         {
-            Logs.AddRange(SelectProxy.SearchQuery.Build(Conjunction.And, out QueryGroup queryGroup));
-
-            if (Logs.Safely)
             {
-                IEnumerable<Field> fields = null;
-                IEnumerable<OrderField> orderFields = null;
-
-                if (SelectProxy is IFieldableQuery<TModel> fieldableQuery)
+                if (SelectProxy is IIdentifiableQuery identifiableQuery)
                 {
-                    bool fieldsBuilt = fieldableQuery.FieldQuery.Fields.Build(out fields);
+                    return await GetModelAsync(dbConnection, identifiableQuery.Id);
+                }
+            }
 
-                    if (!fieldsBuilt)
+            {
+                if (SelectProxy is ISearchableQuery<TModel> searchableQuery)
+                {
+                    QueryGroup queryGroup = GetSearchableProxyResult(searchableQuery);
+
+                    if (ReadOnlyLogs.Safely)
                     {
-                        fields = null;
+                        IEnumerable<Field> fields = SelectProxy is IFieldableQuery<TModel> fieldableQuery ? GetFieldableQueryResult(fieldableQuery) : null;
+                        IEnumerable<OrderField> orderFields = SelectProxy is IOrderFieldableQuery<TModel> orderFieldableQuery ? GetOrderFieldableQueryResult(orderFieldableQuery) : null;
+
+                        return await GetModelAsync(dbConnection, queryGroup, fields, orderFields);
                     }
                 }
-
-                if (SelectProxy is IOrderFieldableQuery<TModel> orderFieldableQuery)
-                {
-                    bool orderFieldsBuilt = orderFieldableQuery.OrderFieldQuery.OrderFields.Build(out orderFields);
-
-                    if (!orderFieldsBuilt)
-                    {
-                        orderFields = null;
-                    }
-                }
-
-                return await dbConnection.QueryAsync<TModel>(queryGroup, fields, orderFields, 1, Hints, Cacheable?.Key, Cacheable?.ItemExpiration, CommandTimeout, Transaction, Cacheable?.Cache, Trace, StatementBuilder).ContinueWith(x => x.Result.FirstOrDefault());
             }
 
             return null;
