@@ -5,6 +5,7 @@ using DbStatute.Interfaces;
 using DbStatute.Interfaces.Fundamentals.Queries;
 using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Proxies;
+using DbStatute.Proxies;
 using RepoDb;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,11 @@ namespace DbStatute.Multiples
     public class MultipleSelectByProxy<TModel> : MultipleSelectBase<TModel>, IMultipleSelectByProxy<TModel>
         where TModel : class, IModel, new()
     {
+        public MultipleSelectByProxy()
+        {
+            SelectProxy = new SelectProxy<TModel>();
+        }
+
         public MultipleSelectByProxy(ISelectProxy<TModel> selectProxy)
         {
             SelectProxy = selectProxy ?? throw new ArgumentNullException(nameof(selectProxy));

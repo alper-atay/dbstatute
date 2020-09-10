@@ -3,6 +3,7 @@ using DbStatute.Interfaces;
 using DbStatute.Interfaces.Fundamentals.Queries;
 using DbStatute.Interfaces.Proxies;
 using DbStatute.Interfaces.Singles;
+using DbStatute.Proxies;
 using RepoDb;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,19 @@ namespace DbStatute.Singles
     public class SingleDeleteByProxy<TModel> : SingleDeleteBase<TModel>, ISingleDeleteByProxy<TModel>
         where TModel : class, IModel, new()
     {
-        public IDeleteProxy<TModel> DeleteProxy => throw new NotImplementedException();
+        public SingleDeleteByProxy()
+        {
+            DeleteProxy = new DeleteProxy<TModel>();
+        }
 
-        IDeleteProxy ISingleDeleteByProxy.DeleteProxy => throw new NotImplementedException();
+        public SingleDeleteByProxy(IDeleteProxy<TModel> deleteProxy)
+        {
+            DeleteProxy = deleteProxy ?? throw new ArgumentNullException(nameof(deleteProxy));
+        }
+
+        public IDeleteProxy<TModel> DeleteProxy { get; }
+
+        IDeleteProxy ISingleDeleteByProxy.DeleteProxy => DeleteProxy;
 
         protected override async Task<TModel> DeleteOperationAsync(IDbConnection dbConnection)
         {

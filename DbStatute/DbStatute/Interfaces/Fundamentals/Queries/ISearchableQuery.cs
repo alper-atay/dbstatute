@@ -5,7 +5,7 @@ namespace DbStatute.Interfaces.Fundamentals.Queries
 {
     public interface ISearchableQuery
     {
-        Conjunction Conjunction { get; set; }
+        Conjunction Conjunction { get; }
 
         ISearchQuery SearchQuery { get; }
     }

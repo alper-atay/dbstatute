@@ -13,9 +13,9 @@ namespace DbStatute.Multiples
     public class MultipleUpdate<TModel> : MultipleUpdateBase<TModel>, IMultipleUpdate<TModel>
         where TModel : class, IModel, new()
     {
-        public MultipleUpdate(IEnumerable<TModel> readyModels)
+        public MultipleUpdate(IEnumerable<TModel> sourceModels)
         {
-            SourceModels = readyModels ?? throw new ArgumentNullException(nameof(readyModels));
+            SourceModels = sourceModels ?? throw new ArgumentNullException(nameof(sourceModels));
         }
 
         public IEnumerable<TModel> SourceModels { get; }

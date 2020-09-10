@@ -5,7 +5,6 @@ using DbStatute.Interfaces;
 using DbStatute.Interfaces.Fundamentals.Queries;
 using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Proxies;
-using DbStatute.Proxies;
 using RepoDb;
 using System;
 using System.Collections.Generic;
@@ -20,11 +19,16 @@ namespace DbStatute.Multiples
     {
         public IDeleteProxy<TModel> DeleteProxy { get; }
 
+        public MultipleDeleteByProxy(IDeleteProxy<TModel> deleteProxy)
+        {
+            DeleteProxy = deleteProxy ?? throw new ArgumentNullException(nameof(deleteProxy));
+        }
+
         IDeleteProxy IMultipleDeleteByProxy.DeleteProxy => DeleteProxy;
 
         protected override IAsyncEnumerable<TModel> DeleteAsSinglyOperationAsync(IDbConnection dbConnection)
         {
-            
+
 
             throw new NotImplementedException();
         }
@@ -59,7 +63,7 @@ namespace DbStatute.Multiples
                 }
             }
 
-            if(!(selectedModels is null) && selectedModels.Count() > 0)
+            if (!(selectedModels is null) && selectedModels.Count() > 0)
             {
                 int deletedCount = await dbConnection.DeleteAllAsync(selectedModels, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
             }
