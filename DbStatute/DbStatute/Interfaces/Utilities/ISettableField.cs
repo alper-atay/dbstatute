@@ -19,7 +19,7 @@ namespace DbStatute.Interfaces.Utilities
 
         bool Set(Field field, bool overrideEnabled = false);
 
-        int SetAll(IEnumerable<Field> fields);
+        int SetAll(IEnumerable<Field> fields, bool overrideEnabled = false);
 
         bool Unset(Field field);
 

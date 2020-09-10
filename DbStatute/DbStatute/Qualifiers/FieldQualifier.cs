@@ -102,6 +102,21 @@ namespace DbStatute.Qualifiers
 
             return unsettedCount;
         }
+
+        public int SetAll(IEnumerable<Field> fields, bool overrideEnabled = false)
+        {
+            int settedCount = 0;
+
+            foreach (Field field in fields)
+            {
+                if (Set(field, overrideEnabled))
+                {
+                    settedCount += 1;
+                }
+            }
+
+            return settedCount;
+        }
     }
 
     public class FieldQualifier<TModel> : FieldQualifier, IFieldQualifier<TModel>

@@ -125,6 +125,36 @@ namespace DbStatute.Qualifiers
 
             return unsettedCount;
         }
+
+        public int SetAll(IReadOnlyDictionary<Field, ReadOnlyLogbookPredicate<object>> map, bool overrideEnabled = false)
+        {
+            int settedCount = 0;
+
+            foreach (KeyValuePair<Field, ReadOnlyLogbookPredicate<object>> pair in map)
+            {
+                if (Set(pair.Key, pair.Value, overrideEnabled))
+                {
+                    settedCount += 1;
+                }
+            }
+
+            return settedCount;
+        }
+
+        public int SetAll(IEnumerable<Field> fields, bool overrideEnabled = false)
+        {
+            int settedCount = 0;
+
+            foreach (Field field in fields)
+            {
+                if (Set(field, overrideEnabled))
+                {
+                    settedCount += 1;
+                }
+            }
+
+            return settedCount;
+        }
     }
 
     public class PredicateFieldQualifier<TModel> : PredicateFieldQualifier, IPredicateFieldQualifier<TModel>

@@ -9,7 +9,7 @@ namespace DbStatute.Interfaces.Utilities
     {
         bool Set(Field field, TValue value, bool overrideEnabled = false);
 
-        int SetAll(IReadOnlyDictionary<Field, TValue> map);
+        int SetAll(IReadOnlyDictionary<Field, TValue> map, bool overrideEnabled = false);
     }
 
     public interface ISettableSpecializedField<TModel, TValue> : ISettableField<TModel>, ISettableSpecializedField<TValue>
