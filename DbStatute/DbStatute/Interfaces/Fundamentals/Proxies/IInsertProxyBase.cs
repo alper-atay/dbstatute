@@ -1,5 +1,4 @@
 ﻿using DbStatute.Interfaces.Fundamentals.Queries;
-using DbStatute.Interfaces.Qualifiers;
 
 namespace DbStatute.Interfaces.Fundamentals.Proxies
 {

@@ -1,6 +1,4 @@
-﻿using DbStatute.Interfaces.Fundamentals.Queries;
-
-namespace DbStatute.Interfaces.Fundamentals.Proxies
+﻿namespace DbStatute.Interfaces.Fundamentals.Proxies
 {
     public interface IUpdateProxyBase : IProxyBase
     {
