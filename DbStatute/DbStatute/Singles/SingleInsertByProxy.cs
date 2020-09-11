@@ -2,6 +2,7 @@
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Fundamentals.Queries;
 using DbStatute.Interfaces.Proxies;
+using DbStatute.Interfaces.Queries;
 using DbStatute.Interfaces.Singles;
 using DbStatute.Proxies;
 using RepoDb;

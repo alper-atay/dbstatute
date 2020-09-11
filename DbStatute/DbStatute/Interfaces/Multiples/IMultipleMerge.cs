@@ -1,5 +1,5 @@
 ﻿using DbStatute.Interfaces.Fundamentals.Multiples;
-using DbStatute.Interfaces.Fundamentals.Queries;
+using DbStatute.Interfaces.Queries;
 
 namespace DbStatute.Interfaces.Multiples
 {

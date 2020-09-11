@@ -1,4 +1,4 @@
-﻿namespace DbStatute.Interfaces.Fundamentals.Queries
+﻿namespace DbStatute.Interfaces.Queries
 {
     public interface IIdentifiableQuery
     {

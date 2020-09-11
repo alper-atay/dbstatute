@@ -1,6 +1,4 @@
-﻿using DbStatute.Interfaces.Queries;
-
-namespace DbStatute.Interfaces.Fundamentals.Queries
+﻿namespace DbStatute.Interfaces.Queries
 {
     public interface IModelableQuery
     {

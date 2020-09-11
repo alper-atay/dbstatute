@@ -1,6 +1,6 @@
 ﻿using Basiclog;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Fundamentals.Queries;
+using DbStatute.Interfaces.Queries;
 using RepoDb;
 
 namespace DbStatute.Extensions

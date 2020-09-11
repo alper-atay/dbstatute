@@ -1,7 +1,6 @@
-﻿using DbStatute.Interfaces.Queries;
-using RepoDb.Enumerations;
+﻿using RepoDb.Enumerations;
 
-namespace DbStatute.Interfaces.Fundamentals.Queries
+namespace DbStatute.Interfaces.Queries
 {
     public interface ISearchableQuery
     {

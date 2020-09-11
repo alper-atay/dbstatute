@@ -1,5 +1,5 @@
-﻿using DbStatute.Interfaces.Fundamentals.Queries;
-using DbStatute.Interfaces.Fundamentals.Singles;
+﻿using DbStatute.Interfaces.Fundamentals.Singles;
+using DbStatute.Interfaces.Queries;
 
 namespace DbStatute.Interfaces.Singles
 {

@@ -2,9 +2,9 @@
 using DbStatute.Extensions;
 using DbStatute.Fundamentals.Multiples;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Fundamentals.Queries;
 using DbStatute.Interfaces.Multiples;
 using DbStatute.Interfaces.Proxies;
+using DbStatute.Interfaces.Queries;
 using DbStatute.Proxies;
 using RepoDb;
 using System;

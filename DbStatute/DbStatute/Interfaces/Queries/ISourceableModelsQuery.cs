@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DbStatute.Interfaces.Fundamentals.Queries
+namespace DbStatute.Interfaces.Queries
 {
     public interface ISourceableModelsQuery
     {

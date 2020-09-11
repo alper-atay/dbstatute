@@ -1,7 +1,7 @@
 ﻿using DbStatute.Fundamentals.Multiples;
 using DbStatute.Interfaces;
-using DbStatute.Interfaces.Fundamentals.Queries;
 using DbStatute.Interfaces.Multiples;
+using DbStatute.Interfaces.Queries;
 using RepoDb;
 using System;
 using System.Collections.Generic;

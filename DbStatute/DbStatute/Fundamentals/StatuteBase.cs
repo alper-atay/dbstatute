@@ -4,6 +4,7 @@ using DbStatute.Extensions;
 using DbStatute.Interfaces;
 using DbStatute.Interfaces.Fundamentals;
 using DbStatute.Interfaces.Fundamentals.Queries;
+using DbStatute.Interfaces.Queries;
 using RepoDb;
 using RepoDb.Interfaces;
 using System;
