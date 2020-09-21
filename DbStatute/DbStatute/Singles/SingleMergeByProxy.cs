@@ -66,7 +66,7 @@ namespace DbStatute.Singles
 
                             if (MergeProxy is ISourceableQuery<TModel> sourceableModelQuery)
                             {
-                                mergeModel = GetSourceableModelQueryResult(sourceableModelQuery);
+                                mergeModel = GetSourceableQueryResult(sourceableModelQuery);
                             }
 
                             if (mergeModel is null)
@@ -89,7 +89,7 @@ namespace DbStatute.Singles
 
                 if (MergeProxy is ISourceableQuery<TModel> sourceableQuery)
                 {
-                    mergeModel = GetSourceableModelQueryResult(sourceableQuery);
+                    mergeModel = GetSourceableQueryResult(sourceableQuery);
                 }
 
                 if (MergeProxy is IModelableQuery<TModel> modelableQuery)

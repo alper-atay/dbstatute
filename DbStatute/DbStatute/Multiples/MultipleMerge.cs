@@ -14,9 +14,9 @@ namespace DbStatute.Multiples
     public class MultipleMerge<TModel> : MultipleMergeBase<TModel>, IMultipleMerge<TModel>
         where TModel : class, IModel, new()
     {
-        public MultipleMerge(IEnumerable<TModel> readyModels)
+        public MultipleMerge(IEnumerable<TModel> sourceModels)
         {
-            SourceModels = readyModels ?? throw new ArgumentNullException(nameof(readyModels));
+            SourceModels = sourceModels ?? throw new ArgumentNullException(nameof(sourceModels));
         }
 
         public IEnumerable<TModel> SourceModels { get; }
@@ -25,9 +25,9 @@ namespace DbStatute.Multiples
 
         protected override async IAsyncEnumerable<TModel> MergeAsSinglyOperationAsync(IDbConnection dbConnection)
         {
-            foreach (TModel readyModel in SourceModels)
+            foreach (TModel sourceModel in SourceModels)
             {
-                TModel mergedModel = await dbConnection.MergeAsync<TModel, TModel>(readyModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                TModel mergedModel = await dbConnection.MergeAsync<TModel, TModel>(sourceModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
                 if (mergedModel is null)
                 {

@@ -138,7 +138,7 @@ namespace DbStatute.Fundamentals
             return null;
         }
 
-        protected TModel GetSourceableModelQueryResult(ISourceableQuery<TModel> sourceableModelQuery)
+        protected TModel GetSourceableQueryResult(ISourceableQuery<TModel> sourceableModelQuery)
         {
             return sourceableModelQuery.SourceModel;
         }

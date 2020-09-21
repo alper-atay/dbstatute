@@ -34,22 +34,18 @@ namespace DbStatute.Singles
         {
             TModel insertModel = null;
 
+            if (InsertProxy is ISourceableQuery<TModel> sourceableQuery)
             {
-                if (InsertProxy is ISourceableQuery<TModel> query)
-                {
-                    ThrowIfNotNull(insertModel, nameof(insertModel));
+                ThrowIfNotNull(insertModel, nameof(insertModel));
 
-                    insertModel = GetSourceableModelQueryResult(query);
-                }
+                insertModel = GetSourceableQueryResult(sourceableQuery);
             }
 
+            if (InsertProxy is IModelableQuery<TModel> modelableQuery)
             {
-                if (InsertProxy is IModelableQuery<TModel> query)
-                {
-                    ThrowIfNotNull(insertModel, nameof(insertModel));
+                ThrowIfNotNull(insertModel, nameof(insertModel));
 
-                    insertModel = GetModelableQueryResult(query);
-                }
+                insertModel = GetModelableQueryResult(modelableQuery);
             }
 
             if (!(insertModel is null))

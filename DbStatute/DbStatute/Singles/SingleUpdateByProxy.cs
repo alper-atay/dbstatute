@@ -71,7 +71,7 @@ namespace DbStatute.Singles
 
                             if (UpdateProxy is ISourceableQuery<TModel> sourceableModelQuery)
                             {
-                                updateModel = GetSourceableModelQueryResult(sourceableModelQuery);
+                                updateModel = GetSourceableQueryResult(sourceableModelQuery);
                             }
 
                             if (updateModel is null)
@@ -90,7 +90,7 @@ namespace DbStatute.Singles
             {
                 if (UpdateProxy is ISourceableQuery<TModel> sourceableModelQuery)
                 {
-                    TModel sourceModel = GetSourceableModelQueryResult(sourceableModelQuery);
+                    TModel sourceModel = GetSourceableQueryResult(sourceableModelQuery);
 
                     if (sourceModel is null)
                     {

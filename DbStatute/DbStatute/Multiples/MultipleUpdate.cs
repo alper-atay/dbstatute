@@ -24,13 +24,13 @@ namespace DbStatute.Multiples
 
         protected override async IAsyncEnumerable<TModel> UpdateAsSinglyOperationAsync(IDbConnection dbConnection)
         {
-            foreach (TModel readyModel in SourceModels)
+            foreach (TModel sourceModel in SourceModels)
             {
-                int updatedCount = await dbConnection.UpdateAsync(readyModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                int updatedCount = await dbConnection.UpdateAsync(sourceModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
                 if (updatedCount > 0)
                 {
-                    yield return readyModel;
+                    yield return sourceModel;
                 }
             }
         }

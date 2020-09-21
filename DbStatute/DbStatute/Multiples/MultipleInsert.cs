@@ -15,9 +15,9 @@ namespace DbStatute.Multiples
     public class MultipleInsert<TModel> : MultipleInsertBase<TModel>, IMultipleInsert<TModel>
         where TModel : class, IModel, new()
     {
-        public MultipleInsert(IEnumerable<TModel> readyModels)
+        public MultipleInsert(IEnumerable<TModel> sourceModels)
         {
-            SourceModels = readyModels ?? throw new ArgumentNullException(nameof(readyModels));
+            SourceModels = sourceModels ?? throw new ArgumentNullException(nameof(sourceModels));
         }
 
         public IEnumerable<TModel> SourceModels { get; }
@@ -26,9 +26,9 @@ namespace DbStatute.Multiples
 
         protected override async IAsyncEnumerable<TModel> InsertAsSingleOperationAsync(IDbConnection dbConnection)
         {
-            foreach (TModel readyModel in SourceModels)
+            foreach (TModel sourceModel in SourceModels)
             {
-                TModel insertedModel = await dbConnection.InsertAsync<TModel, TModel>(readyModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
+                TModel insertedModel = await dbConnection.InsertAsync<TModel, TModel>(sourceModel, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
                 yield return insertedModel;
             }
@@ -36,15 +36,15 @@ namespace DbStatute.Multiples
 
         protected override async Task<IEnumerable<TModel>> InsertOperationAsync(IDbConnection dbConnection)
         {
-            int readyModelCount = SourceModels.Count();
+            int sourceModelCount = SourceModels.Count();
 
-            if (readyModelCount > 0)
+            if (sourceModelCount > 0)
             {
                 int insertedCount = await dbConnection.InsertAllAsync(SourceModels, BatchSize, null, Hints, CommandTimeout, Transaction, Trace, StatementBuilder);
 
-                if (insertedCount != readyModelCount)
+                if (insertedCount != sourceModelCount)
                 {
-                    Logs.Warning($"{readyModelCount} models selected and {insertedCount} models inserted");
+                    Logs.Warning($"{sourceModelCount} models selected and {insertedCount} models inserted");
                 }
 
                 if (insertedCount > 0)
